@@ -1,9 +1,32 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>addForm</ion-title>
+    <ion-title>Add To Portfolio</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ionic-selectable item-content [(ngModel)]="coin" itemValueField="name" itemTextField="ticker" [items]="allCoins" [canSearch]="true"
+  (onChange)="portChange($event)">
+  </ionic-selectable>
 
+  <ion-item>
+    <ion-label position="floating">Amount Purchased:</ion-label>
+    <ion-input type="number" value={amountPurchased} ref={amountPurchasedRef}></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Purchase Price:</ion-label>
+    <ion-input type="number" value={purchasePrice} ref={purchasePriceRef}></ion-input>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <ion-button expand="block" (click)="addCoin()">Add</ion-button>
+      </ion-col>
+      <ion-col col-6>
+        <ion-button fill="solid" color="danger" expand="block" (click)="clearAllInputs()">Clear</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

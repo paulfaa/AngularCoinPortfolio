@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SettingsPageRoutingModule } from './settings-routing.module';
-
+import { AlertController } from '@ionic/angular';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
@@ -17,4 +17,18 @@ import { SettingsPage } from './settings.page';
   ],
   declarations: [SettingsPage]
 })
-export class SettingsPageModule {}
+
+export class SettingsPageModule {
+  constructor(public alertController: AlertController) {}
+
+  async showDeleteAlert() {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Subtitle',
+      message: 'This is an alert message.',
+      buttons: ['OK', 'Cancel']
+    });
+
+    await alert.present();
+  }
+}
