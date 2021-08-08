@@ -19,17 +19,5 @@ import { AddFormPage } from './add-form.page';
   declarations: [AddFormPage]
 })
 
-@Component({
-  selector: 'add-form',
-  templateUrl: './add-form.page.html'
-})
-export class AddFormPageModule implements OnInit {
-
-  constructor() {}
-
-  ngOnInit(){}
-
-  clearAllInputs(){
-
-  }
+export class AddFormPageModule{
 }

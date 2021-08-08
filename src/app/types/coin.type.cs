@@ -1,4 +1,4 @@
-import { ICoin } from './coin.interface';
+import { IValue } from './value.interface';
 
 export class Coin implements ICoin {
     value: IValue;

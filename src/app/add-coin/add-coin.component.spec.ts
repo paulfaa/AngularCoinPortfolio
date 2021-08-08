@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { CoinServiceComponent } from './coin-service.component';
+import { AddCoinComponent } from './add-coin.component';
 
-describe('CoinServiceComponent', () => {
-  let component: CoinServiceComponent;
-  let fixture: ComponentFixture<CoinServiceComponent>;
+describe('AddCoinComponent', () => {
+  let component: AddCoinComponent;
+  let fixture: ComponentFixture<AddCoinComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoinServiceComponent ],
+      declarations: [ AddCoinComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CoinServiceComponent);
+    fixture = TestBed.createComponent(AddCoinComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

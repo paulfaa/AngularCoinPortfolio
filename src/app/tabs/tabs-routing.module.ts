@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AddCoinComponent } from '../add-coin/add-coin.component';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
@@ -16,8 +17,7 @@ const routes: Routes = [
         loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
       },
       {
-        path: 'add-form',
-        loadChildren: () => import('../add-form/add-form.module').then(m => m.AddFormPageModule)
+        path: 'add-coin', component: AddCoinComponent
       },
       {
         path: '',

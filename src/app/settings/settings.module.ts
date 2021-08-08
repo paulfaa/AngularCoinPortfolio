@@ -30,5 +30,7 @@ export class SettingsPageModule {
     });
 
     await alert.present();
+    let result = await alert.onDidDismiss();
+    console.log(result);
   }
 }
