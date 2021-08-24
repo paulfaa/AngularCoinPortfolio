@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Coin } from '../../app/types/coin.interface';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-coin',
@@ -11,7 +12,7 @@ export class AddCoinComponent implements OnInit {
   allCoins: Coin[];
   coin: Coin;
   
-  constructor() { }
+  constructor(public navController: NavController) { }
 
   ngOnInit() {}
 

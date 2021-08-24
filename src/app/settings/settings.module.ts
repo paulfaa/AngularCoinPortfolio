@@ -5,8 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SettingsPageRoutingModule } from './settings-routing.module';
-import { AlertController } from '@ionic/angular';
 import { SettingsPage } from './settings.page';
+import { DateUpdatedComponent } from '../date-updated/date-updated.component'
 
 @NgModule({
   imports: [
@@ -15,7 +15,10 @@ import { SettingsPage } from './settings.page';
     IonicModule,
     SettingsPageRoutingModule
   ],
-  declarations: [SettingsPage]
+  declarations: [
+    SettingsPage,
+    DateUpdatedComponent
+  ]
 })
 
 export class SettingsPageModule {

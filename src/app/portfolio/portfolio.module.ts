@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 
 import { PortfolioPageRoutingModule } from './portfolio-routing.module';
 
@@ -17,4 +17,4 @@ import { PortfolioPage } from './portfolio.page';
   ],
   declarations: [PortfolioPage]
 })
-export class PortfolioPageModule {}
+export class PortfolioPageModule {public navController: NavController}
