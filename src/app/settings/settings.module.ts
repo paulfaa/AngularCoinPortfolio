@@ -19,18 +19,5 @@ import { SettingsPage } from './settings.page';
 })
 
 export class SettingsPageModule {
-  constructor(public alertController: AlertController) {}
-
-  async showDeleteAlert() {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Subtitle',
-      message: 'This is an alert message.',
-      buttons: ['OK', 'Cancel']
-    });
-
-    await alert.present();
-    let result = await alert.onDidDismiss();
-    console.log(result);
-  }
+ 
 }

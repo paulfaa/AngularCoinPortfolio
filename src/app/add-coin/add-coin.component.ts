@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Coin } from '../../app/types/coin.interface';
 
 @Component({
   selector: 'app-add-coin',
@@ -7,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddCoinComponent implements OnInit {
 
+  allCoins: Coin[];
+  coin: Coin;
+  
   constructor() { }
 
   ngOnInit() {}
