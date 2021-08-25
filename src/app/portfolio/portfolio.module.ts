@@ -7,14 +7,19 @@ import { IonicModule, NavController } from '@ionic/angular';
 import { PortfolioPageRoutingModule } from './portfolio-routing.module';
 
 import { PortfolioPage } from './portfolio.page';
+import { SharedModule } from '../shared/pipes/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PortfolioPageRoutingModule
+    PortfolioPageRoutingModule,
+    SharedModule
   ],
   declarations: [PortfolioPage]
 })
-export class PortfolioPageModule {public navController: NavController}
+export class PortfolioPageModule {
+  public navController: NavController;
+  profit: 5;
+}
