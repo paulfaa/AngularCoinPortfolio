@@ -30,24 +30,24 @@ export class AddFormPage implements OnInit {
 
   coinForm = this.formBuilder.group({
     name: ['', Validators.required],
-    amount: ['', Validators.required],
-    purchasePrice: ['', Validators.required]
+    amount: ['', [Validators.required, Validators.min(0.00000001)]],
+    purchasePrice: ['', [Validators.required, Validators.min(0.01)]]
   })
 
   constructor(
     private coinService: CoinServiceComponent,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
-    private coinName: string
+    //private coinName: String
   ) { }
 
   ngOnInit() {
     this.coins = this.coinService.getAllCoinNames();
   }
 
-  async presentToast() {
+  async presentToast(toastContent: string) {
     const toast = await this.toastController.create({
-      message: 'You added ...',
+      message: toastContent,
       duration: 2000
     });
     toast.present();
@@ -64,10 +64,15 @@ export class AddFormPage implements OnInit {
   public submitForm(){
     //Coin coinToAdd = new Coin(this.coinForm.controls['name'].value, null);
     //this.coinService.addCoin(new Coin(this.coin.name, this.coin.ticker));
-    this.coinService.addToHeldCoins(this.coinForm.controls['name'].value, "JOE", this.coinForm.controls['value'].value);
-    //console.log(this.coinForm.value);
+    //this.coinService.addToHeldCoins(this.coinForm.controls['name'].value, "JOE", this.coinForm.controls['value'].value);
+    this.coinService.addToHeldCoins('Beepcoin', "BEP", 5);
+    console.log(this.coinForm.controls['name'].get('ticker'));
+    console.log(this.coinForm.controls['amount'].value);
     console.log(this.coinService.getAllHeldCoins());
-    this.presentToast();
+    this.presentToast("Added: " + " amount " + " coinName");
   }
 
+  public clearAllInputs(){
+    this.coinForm.reset();
+  }
 }

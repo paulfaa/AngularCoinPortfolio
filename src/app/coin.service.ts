@@ -1,13 +1,22 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { Coin } from './types/coin.interface';
+import { CoinName } from './types/coinName.type';
 import { IValue } from './types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CoinServiceComponent {
 
-  private allCoins: Coin[] = [
+  private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
+    new Coin("Cardano","ADA"),
     new Coin("Litecoin","LTE")
+  ]
+
+  private coinNamesTest: CoinName[] = [
+    new CoinName("Bitcoin","BTC"),
+    new CoinName("Cardano","ADA"),
+    new CoinName("Litecoin","LTE"),
+    new CoinName("Tron","TRX")
   ]
 
   private heldCoins: Coin[];
@@ -23,7 +32,7 @@ export class CoinServiceComponent {
   getAllCoinNames(): Coin[] {
     let coins = [];
 
-    this.allCoins.forEach(Coin => {
+    this.coinNames.forEach(Coin => {
       coins.push(Coin)
     });
     console.log("Output of getallcoinnames: ", coins);
