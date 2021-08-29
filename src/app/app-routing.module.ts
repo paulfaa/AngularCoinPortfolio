@@ -16,7 +16,8 @@ const routes: Routes = [
     loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
   },
   {
-    path: 'add-coin', component: AddCoinComponent  
+    path: 'add-coin',
+    loadChildren: () => import('./add-form/add-form.module').then( m => m.AddFormPageModule)
   }
 ];
 @NgModule({

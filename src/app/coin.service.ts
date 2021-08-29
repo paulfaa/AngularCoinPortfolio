@@ -25,6 +25,11 @@ export class CoinServiceComponent {
     return coins;
   }
 
-  
+  filterCoins(coins: Coin[], text: string): Coin[] {
+    return coins.filter(coin => {
+      return coin.name.toLowerCase().indexOf(text) !== -1;
+    });
+  }
 
+  
 }
