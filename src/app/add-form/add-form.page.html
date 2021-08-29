@@ -9,27 +9,29 @@
 
 
   <ion-content>
+    <form [formGroup]="coinForm" (ngSubmit)="submitForm()">
     <ion-item>
     <ion-label>Coin</ion-label>
-    <ionic-selectable item-content [(ngModel)]="coin" itemValueField="ticker" itemTextField="name" [items]="coins" [canSearch]="true"
+    <ionic-selectable formControlName="name" item-content [(ngModel)]="coin" itemValueField="ticker" itemTextField="searchString" [items]="coins" [canSearch]="true"
     (onChange)="coinChange($event)">
    </ionic-selectable>
     </ion-item>
 
   <ion-item>
     <ion-label position="floating">Amount Purchased:</ion-label>
-    <ion-input type="number" value={amountPurchased} ref={amountPurchasedRef}></ion-input>
+    <ion-input formControlName="amount" type="number" value={amountPurchased} ref={amountPurchasedRef}></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label position="floating">Purchase Price:</ion-label>
-    <ion-input type="number" value={purchasePrice} ref={purchasePriceRef}></ion-input>
+    <ion-input formControlName="purchasePrice" type="number" value={purchasePrice} ref={purchasePriceRef}></ion-input>
   </ion-item>
+  </form>
 
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <ion-button expand="block" (click)="addCoin()">Add</ion-button>
+        <ion-button expand="block" (click)="submitForm()">Add</ion-button>
       </ion-col>
       <ion-col col-6>
         <ion-button fill="solid" color="danger" expand="block" (click)="clearAllInputs()">Clear</ion-button>
@@ -39,6 +41,6 @@
 
   <ion-item-divider></ion-item-divider>
   
-  <ion-button expand="block" (click)="addCoin()">Done</ion-button>
+  <ion-button expand="block" (click)="presentToast()">Done</ion-button>
 
 </ion-content>

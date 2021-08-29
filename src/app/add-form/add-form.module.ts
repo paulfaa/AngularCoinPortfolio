@@ -1,6 +1,6 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 import { IonicSelectableModule } from 'ionic-selectable';
@@ -11,10 +11,11 @@ import { AddFormPage } from './add-form.page';
 @NgModule({
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     FormsModule,
     IonicModule,
     IonicSelectableModule,
-    AddFormPageRoutingModule
+    AddFormPageRoutingModule,
   ],
   declarations: [AddFormPage]
 })
