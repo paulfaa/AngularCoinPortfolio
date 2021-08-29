@@ -1,10 +1,11 @@
 import { IValue } from './value.interface';
 
 export class Coin {
-    value: IValue;
-    quantity: number;
     name: string;
     ticker: string;
+    value?: IValue;
+    quantity?: number;
+    purchaseDate?: Date;
 
     constructor(cName: string, cTicker: string){
         this.name = cName;

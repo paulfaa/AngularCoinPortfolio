@@ -1,7 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { Coin } from './types/coin.interface';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class CoinServiceComponent {
 
   private allCoins: Coin[] = [
@@ -21,7 +21,7 @@ export class CoinServiceComponent {
     this.allCoins.forEach(Coin => {
       coins.push(Coin)
     });
-
+    console.log("Output of getallcoinnames: ", coins);
     return coins;
   }
 

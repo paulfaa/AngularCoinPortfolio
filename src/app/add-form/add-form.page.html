@@ -11,8 +11,8 @@
   <ion-content>
     <ion-item>
     <ion-label>Coin</ion-label>
-    <ionic-selectable item-content [(ngModel)]="coin" itemValueField="name" itemTextField="ticker" [items]="allCoins" [canSearch]="true"
-    (onChange)="portChange($event)">
+    <ionic-selectable item-content [(ngModel)]="coin" itemValueField="ticker" itemTextField="name" [items]="coins" [canSearch]="true"
+    (onChange)="coinChange($event)">
    </ionic-selectable>
     </ion-item>
 
