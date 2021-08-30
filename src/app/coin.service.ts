@@ -19,7 +19,7 @@ export class CoinServiceComponent {
     new CoinName("Tron","TRX")
   ]
 
-  private heldCoins: Coin[];
+  private heldCoins: Coin[] = [];
 
   private addCoin(c: Coin){
     this.heldCoins.push(c);

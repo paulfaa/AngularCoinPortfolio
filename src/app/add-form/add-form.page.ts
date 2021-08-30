@@ -11,7 +11,7 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
   styleUrls: ['./add-form.page.scss'],
 })
 export class AddFormPage implements OnInit {
-  coins: Coin[];
+  coinNames: Coin[];
   coin: Coin;
 
   get name(){
@@ -42,7 +42,7 @@ export class AddFormPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.coins = this.coinService.getAllCoinNames();
+    this.coinNames = this.coinService.getAllCoinNames();
   }
 
   async presentToast(toastContent: string) {
@@ -57,7 +57,7 @@ export class AddFormPage implements OnInit {
     component: IonicSelectableComponent,
     value: any
   }) {
-    console.log('coin:', event.value);
+    console.log('eventValue:', event.value);
     //this.coinName = event as HTMLElement
   }
 
@@ -65,9 +65,12 @@ export class AddFormPage implements OnInit {
     //Coin coinToAdd = new Coin(this.coinForm.controls['name'].value, null);
     //this.coinService.addCoin(new Coin(this.coin.name, this.coin.ticker));
     //this.coinService.addToHeldCoins(this.coinForm.controls['name'].value, "JOE", this.coinForm.controls['value'].value);
-    this.coinService.addToHeldCoins('Beepcoin', "BEP", 5);
-    console.log(this.coinForm.controls['name'].get('ticker'));
-    console.log(this.coinForm.controls['amount'].value);
+    //this.coinService.addToHeldCoins('Beepcoin', "BEP", 5);
+
+    //has to be a cleaner way instead of converting to json
+    var json = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
+    console.log(json.ticker);
+    this.coinService.addToHeldCoins('Beepcoin', json.ticker, 5);
     console.log(this.coinService.getAllHeldCoins());
     this.presentToast("Added: " + " amount " + " coinName");
   }

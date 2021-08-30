@@ -12,7 +12,7 @@
     <form [formGroup]="coinForm" (ngSubmit)="submitForm()">
     <ion-item>
     <ion-label>Coin</ion-label>
-    <ionic-selectable formControlName="name" item-content [(ngModel)]="coin" itemValueField="ticker" itemTextField="searchString" [items]="coins" [canSearch]="true"
+    <ionic-selectable formControlName="name" item-content [(ngModel)]="coin" itemValueField="ticker" itemTextField="searchString" [items]="coinNames" [canSearch]="true"
     (onChange)="coinChange($event)">
    </ionic-selectable>
     </ion-item>
