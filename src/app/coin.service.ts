@@ -20,26 +20,29 @@ export class CoinServiceComponent {
   ]
 
   private heldCoins: Coin[] = [];
+  private counter: number;
 
   private addCoin(c: Coin){
     this.heldCoins.push(c);
   }
 
-  public addToHeldCoins(name: string, ticker: string, value: number){
-    this.heldCoins.push(new Coin(name, ticker, value));
+  //change this constructor to only require ticker and set name automatically based on lookup
+  public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
+    this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
   }
   
-  getAllCoinNames(): Coin[] {
-    let coins = [];
+  getAllCoinNames(): CoinName[] {
+    let names = [];
 
     this.coinNames.forEach(Coin => {
-      coins.push(Coin)
+      names.push(Coin)
     });
-    console.log("Output of getallcoinnames: ", coins);
-    return coins;
+    console.log("Output of getallcoinnames: ", names);
+    return names;
   }
 
   getAllHeldCoins(){
+    this.getPriceOfHoldings();
     return this.heldCoins;
   }
 
@@ -47,6 +50,15 @@ export class CoinServiceComponent {
     return coins.filter(coin => {
       return coin.name.toLowerCase().indexOf(text) !== -1;
     });
+  }
+
+  public getPriceOfHoldings(): number{
+    this.counter = 0;
+    this.heldCoins.forEach(heldCoin => {
+      this.counter = this.counter + heldCoin.value;
+    });
+    console.log("Result getPriceOfHoldings: ", this.counter);
+    return this.counter;
   }
 
   

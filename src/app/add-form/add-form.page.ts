@@ -4,6 +4,7 @@ import { Coin } from '@types';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { CoinServiceComponent } from '../coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { CoinName } from '../types/coinName.type';
 
 @Component({
   selector: 'app-add-form',
@@ -11,7 +12,7 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
   styleUrls: ['./add-form.page.scss'],
 })
 export class AddFormPage implements OnInit {
-  coinNames: Coin[];
+  coinNames: CoinName[];
   coin: Coin;
 
   get name(){
@@ -69,10 +70,11 @@ export class AddFormPage implements OnInit {
 
     //has to be a cleaner way instead of converting to json
     var json = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
-    console.log(json.ticker);
-    this.coinService.addToHeldCoins('Beepcoin', json.ticker, 5);
+    //console.log(json.ticker);
+    console.log('value: ', this.coinForm.controls['amount'].value);
+    this.coinService.addToHeldCoins(json.name, json.ticker, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
     console.log(this.coinService.getAllHeldCoins());
-    this.presentToast("Added: " + " amount " + " coinName");
+    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name);
   }
 
   public clearAllInputs(){

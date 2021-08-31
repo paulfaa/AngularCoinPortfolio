@@ -3,15 +3,20 @@ import { IValue } from './value.interface';
 export class Coin implements ICoin {
     name: string;
     ticker: string;
+    searchString: string;
+    purchasePrice: number;
+    value: number;
+    //value?: IValue;
     quantity: number;
-    value: IValue;
     purchaseDate: Date;
-    
+
   constructor(coin: ICoin) {
-      this.value = value;
-      this.quantity = quantity;
-      this.name = name;
+    this.name = name;
       this.ticker = ticker;
+      this.searchString = searchString;
+      this.purchasePrice = purchasePrice;
+      this.quantity = quantity;
+      this.value = value;
       this.purchaseDate = date;
   }
 }
