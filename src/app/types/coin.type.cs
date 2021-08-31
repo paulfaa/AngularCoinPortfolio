@@ -5,7 +5,7 @@ export class Coin implements ICoin {
     ticker: string;
     searchString: string;
     purchasePrice: number;
-    value: number;
+    currentValue: number;
     //value?: IValue;
     quantity: number;
     purchaseDate: Date;

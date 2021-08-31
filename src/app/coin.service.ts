@@ -20,7 +20,6 @@ export class CoinServiceComponent {
   ]
 
   private heldCoins: Coin[] = [];
-  private counter: number;
 
   private addCoin(c: Coin){
     this.heldCoins.push(c);
@@ -31,7 +30,7 @@ export class CoinServiceComponent {
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
   }
   
-  getAllCoinNames(): CoinName[] {
+  public getAllCoinNames(): CoinName[] {
     let names = [];
 
     this.coinNames.forEach(Coin => {
@@ -41,7 +40,7 @@ export class CoinServiceComponent {
     return names;
   }
 
-  getAllHeldCoins(){
+  public getAllHeldCoins(){
     this.getPriceOfHoldings();
     return this.heldCoins;
   }
@@ -53,13 +52,21 @@ export class CoinServiceComponent {
   }
 
   public getPriceOfHoldings(): number{
-    this.counter = 0;
+    var counter = 0;
     this.heldCoins.forEach(heldCoin => {
-      this.counter = this.counter + heldCoin.value;
+      counter = counter + heldCoin.purchasePrice;
     });
-    console.log("Result getPriceOfHoldings: ", this.counter);
-    return this.counter;
+    console.log("Counter: ", counter);
+    return counter;
   }
 
-  
+  public getLastUpdatedDate(): string{
+    var minDate = new Date;
+    this.heldCoins.forEach(heldCoin => {
+      if (heldCoin.purchaseDate < minDate){
+        minDate = heldCoin.purchaseDate;
+      }
+    });
+    return minDate.toLocaleString();
+  }
 }

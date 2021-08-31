@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddCoinComponent } from '../add-coin/add-coin.component';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [

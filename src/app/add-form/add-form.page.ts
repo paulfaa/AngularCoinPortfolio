@@ -63,18 +63,16 @@ export class AddFormPage implements OnInit {
   }
 
   public submitForm(){
-    //Coin coinToAdd = new Coin(this.coinForm.controls['name'].value, null);
-    //this.coinService.addCoin(new Coin(this.coin.name, this.coin.ticker));
-    //this.coinService.addToHeldCoins(this.coinForm.controls['name'].value, "JOE", this.coinForm.controls['value'].value);
-    //this.coinService.addToHeldCoins('Beepcoin', "BEP", 5);
-
     //has to be a cleaner way instead of converting to json
     var json = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
     //console.log(json.ticker);
-    console.log('value: ', this.coinForm.controls['amount'].value);
+    //console.log('value: ', this.coinForm.controls['amount'].value);
+
     this.coinService.addToHeldCoins(json.name, json.ticker, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
-    console.log(this.coinService.getAllHeldCoins());
     this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name);
+    this.clearAllInputs();
+
+    //console.log(this.coinService.getAllHeldCoins());
   }
 
   public clearAllInputs(){

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AddCoinComponent } from './add-coin/add-coin.component';
 
 const routes: Routes = [
   {

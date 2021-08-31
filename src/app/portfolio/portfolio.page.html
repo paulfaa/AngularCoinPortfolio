@@ -5,11 +5,11 @@
 </ion-header>
 
 <ion-content>
-
+  
   <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
+  
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
@@ -17,24 +17,24 @@
       <!-- <ion-card-title>12345 {{settings.getCurrency }}</ion-card-title> -->
     </ion-card-header>
   </ion-card>
-
+  
   <p>Profit: {{ 5 | profitFormat}} </p>
-
-  <ion-item-sliding>
+  
+  <ion-item-sliding ngFor *ngFor="let coin of heldCoins">
     <ion-item>
-      <h3>Holding: btc</h3>
-      <p>Amount: 3</p>
-      <p>Added: 12/4/21</p>
+      <h3>Holding: {{coin.ticker}}</h3>
+      <p>Amount: {{coin.quantity}}</p>
+      <p>Added: {{coin.purchaseDate}}</p>
     </ion-item>
     <ion-item-options side="end">
-    <ion-item-option color="danger" (click)="console.log(result)">Delete</ion-item-option>
-  </ion-item-options>
-    </ion-item-sliding>
-
+      <ion-item-option color="danger" (click)="console.log(result)">Delete</ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+  
   <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-fab-button [routerLink]="['/add-coin']">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
+  
 </ion-content>

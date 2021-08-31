@@ -5,7 +5,7 @@ export class Coin {
     ticker: string;
     searchString: string;
     purchasePrice: number;
-    value: number;
+    currentValue: number;
     //value?: IValue;
     quantity: number;
     purchaseDate: Date;
@@ -16,7 +16,7 @@ export class Coin {
         this.searchString = cName + " - " + cTicker;
         this.purchasePrice = cPurchasePrice;
         this.quantity = cQuantity;
-        this.value = cValue;
+        this.currentValue = cValue;
         this.purchaseDate = new Date();
     }
 }
