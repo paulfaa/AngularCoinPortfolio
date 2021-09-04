@@ -23,11 +23,11 @@
   <ion-item-sliding ngFor *ngFor="let coin of heldCoins">
     <ion-item>
       <h3>Holding: {{coin.ticker}}</h3>
-      <p>Amount: {{coin.quantity}}</p>
-      <p>Added: {{coin.purchaseDate}}</p>
+      <h6>Amount: {{coin.quantity}}</h6>
+      <h6>Added: {{coin.purchaseDate | date:'shortDate'}}</h6>
     </ion-item>
     <ion-item-options side="end">
-      <ion-item-option color="danger" (click)="console.log(result)">Delete</ion-item-option>
+      <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
   

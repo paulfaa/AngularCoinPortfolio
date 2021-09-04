@@ -10,7 +10,7 @@ import { CoinServiceComponent } from '../coin.service';
 })
 export class PortfolioPage implements OnInit, AfterViewInit {
   
-  coinList: Coin[];
+  heldCoins: Coin[];
   
   constructor(public alertController: AlertController, 
     //not should another coinservice get initialised
@@ -18,11 +18,15 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     
     ngOnInit() {
       this.showEmptyPortfolioAlert();
-      this.coinList = this.coinService.getAllHeldCoins();
+      this.heldCoins = this.coinService.getAllHeldCoins();
     }
     
     ngAfterViewInit() {
-      this.coinList = this.coinService.getAllHeldCoins();
+      this.heldCoins = this.coinService.getAllHeldCoins();
+    }
+
+    public callDeleteMethod(coin: Coin){
+      this.coinService.removeFromHeldCoins(coin);
     }
     
     async showEmptyPortfolioAlert() {

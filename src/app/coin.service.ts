@@ -29,7 +29,13 @@ export class CoinServiceComponent {
   public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
   }
-  
+
+  public removeFromHeldCoins(coinToDelete: Coin) {
+    this.heldCoins.forEach((value,index)=>{
+      if(value==coinToDelete) this.heldCoins.splice(index,1);
+    });
+  }
+
   public getAllCoinNames(): CoinName[] {
     let names = [];
 
