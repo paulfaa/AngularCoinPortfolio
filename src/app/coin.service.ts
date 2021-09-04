@@ -19,7 +19,8 @@ export class CoinServiceComponent {
     new CoinName("Tron","TRX")
   ]
 
-  private heldCoins: Coin[] = [];
+  //might be initialised to an empty list here each time?
+  private heldCoins: Coin[];
 
   private addCoin(c: Coin){
     this.heldCoins.push(c);
@@ -28,12 +29,18 @@ export class CoinServiceComponent {
   //change this constructor to only require ticker and set name automatically based on lookup
   public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
+    this.saveStorage();
+  }
+
+  public saveStorage(){
+    localStorage.setItem('savedCoins', JSON.stringify(this.heldCoins));
   }
 
   public removeFromHeldCoins(coinToDelete: Coin) {
     this.heldCoins.forEach((value,index)=>{
       if(value==coinToDelete) this.heldCoins.splice(index,1);
     });
+    this.saveStorage();
   }
 
   public getAllCoinNames(): CoinName[] {
@@ -47,7 +54,10 @@ export class CoinServiceComponent {
   }
 
   public getAllHeldCoins(){
-    this.getPriceOfHoldings();
+    //should only have to load this once on app start, rewrite this
+    if(this.heldCoins == null){
+      this.heldCoins = JSON.parse(localStorage.getItem('savedCoins'));
+    }
     return this.heldCoins;
   }
 
@@ -57,12 +67,21 @@ export class CoinServiceComponent {
     });
   }
 
-  public getPriceOfHoldings(): number{
+  public getTotalExpenditure(): number{
     var counter = 0;
     this.heldCoins.forEach(heldCoin => {
       counter = counter + heldCoin.purchasePrice;
     });
-    console.log("Counter: ", counter);
+    console.log("Total spend: ", counter);
+    return counter;
+  }
+
+  public getGrossHoldingsValue(): number {
+    var counter = 0;
+    this.heldCoins.forEach(heldCoin => {
+      //need to create other component to get exchange rate based on ticker and user currecny selected
+      counter = counter + (heldCoin.quantity * 1);
+    });
     return counter;
   }
 

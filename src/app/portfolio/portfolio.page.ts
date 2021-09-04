@@ -28,6 +28,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     public callDeleteMethod(coin: Coin){
       this.coinService.removeFromHeldCoins(coin);
     }
+
+    public callGetTotalExpenditure(){
+      this.coinService.getTotalExpenditure();
+    }
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({

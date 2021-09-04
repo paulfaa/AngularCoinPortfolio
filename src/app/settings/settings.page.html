@@ -10,7 +10,7 @@
 
   <ion-item>
     <ion-label>App Currency:</ion-label>
-    <ion-select value='EUR'>
+    <ion-select (ionChange)="callSetCurrency(value)" value="callGetCurrency()">
       <ion-select-option value='EUR'>Euro</ion-select-option>
       <ion-select-option value='USD'>US Dollar</ion-select-option>
     </ion-select>
