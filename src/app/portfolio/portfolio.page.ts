@@ -12,8 +12,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   
   heldCoins: Coin[];
   
-  constructor(public alertController: AlertController, 
-    //not should another coinservice get initialised
+  constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent) {}
     
     ngOnInit() {
@@ -22,6 +21,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     }
     
     ngAfterViewInit() {
+      console.log("ngAfterViewInit All held coins: ", this.coinService.getAllHeldCoins());
       this.heldCoins = this.coinService.getAllHeldCoins();
     }
 

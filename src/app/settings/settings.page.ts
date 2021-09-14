@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { CoinServiceComponent } from '../coin.service';
 import { CurrencyServiceComponent } from '../currency.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { CurrencyServiceComponent } from '../currency.service';
 })
 export class SettingsPage {
 
-  constructor(public alertController: AlertController, private currencyService: CurrencyServiceComponent) {}
+  constructor(public alertController: AlertController, private currencyService: CurrencyServiceComponent, private coinService: CoinServiceComponent) {}
 
   async showDeleteAlert() {
     const alert = await this.alertController.create({
@@ -18,7 +19,7 @@ export class SettingsPage {
       buttons: [
         {text: 'OK',
         handler: () => {
-          console.log('Confirm Ok: need to call clear method here');
+          this.coinService.clearAllHeldCoins();
         }}, 
         {text: 'Cancel',
         cssClass: 'modal-button-cancel'}

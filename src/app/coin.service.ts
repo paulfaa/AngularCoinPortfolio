@@ -4,7 +4,9 @@ import { CoinName } from './types/coinName.type';
 import { IValue } from './types/value.interface';
 
 @Injectable({providedIn: 'root'})
-export class CoinServiceComponent {
+export class CoinServiceComponent{
+
+  private ratesMap = new Map();
 
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
@@ -19,8 +21,13 @@ export class CoinServiceComponent {
     new CoinName("Tron","TRX")
   ]
 
-  //might be initialised to an empty list here each time?
   private heldCoins: Coin[];
+
+  public checkListState(): void {
+    if(this.heldCoins == null){
+      this.heldCoins = [];
+    }
+  }
 
   private addCoin(c: Coin){
     this.heldCoins.push(c);
@@ -28,6 +35,8 @@ export class CoinServiceComponent {
 
   //change this constructor to only require ticker and set name automatically based on lookup
   public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
+    this.checkListState();
+    console.log(this.heldCoins);
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
     this.saveStorage();
   }
@@ -41,6 +50,19 @@ export class CoinServiceComponent {
       if(value==coinToDelete) this.heldCoins.splice(index,1);
     });
     this.saveStorage();
+  }
+
+  public clearAllHeldCoins(){
+    console.log("clearing all coins");
+    this.heldCoins = [];
+    this.saveStorage();
+  }
+
+  public updateAllExchangeRates(){
+    //first check age of exchange rates, if not too recent then...
+    //clear entire map
+    //for each unique ticker in heldcoins
+    //ratesMap.set
   }
 
   public getAllCoinNames(): CoinName[] {
