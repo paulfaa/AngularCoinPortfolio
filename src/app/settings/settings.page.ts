@@ -32,12 +32,10 @@ export class SettingsPage {
   }
 
   public callSetCurrency(value: string){
-    console.log("Currency set to: ", value);
     this.currencyService.setCurrencySelected(value);
   }
 
   public callGetCurrency(): string{
-    console.log("Currency set to: ", this.currencyService.getCurrencySelected())
     return this.currencyService.getCurrencySelected();
   }
 }

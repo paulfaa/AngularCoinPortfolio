@@ -41,11 +41,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
           {text: 'OK'}
         ]
       });
-      //need to check here if portfolio is empty before calling
-      await alert.present();
-      let result = await alert.onDidDismiss();
-      console.log(result);
+      if(this.coinService.getAllHeldCoins().length == 0){
+        await alert.present();
+        let result = await alert.onDidDismiss();
+        console.log(result);
+      }
     }
-  }
-  
-  
+}

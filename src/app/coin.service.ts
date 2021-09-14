@@ -67,7 +67,6 @@ export class CoinServiceComponent{
 
   public getAllCoinNames(): CoinName[] {
     let names = [];
-
     this.coinNames.forEach(Coin => {
       names.push(Coin)
     });
@@ -83,7 +82,7 @@ export class CoinServiceComponent{
     return this.heldCoins;
   }
 
-  filterCoins(coins: Coin[], text: string): Coin[] {
+  private filterCoins(coins: Coin[], text: string): Coin[] {
     return coins.filter(coin => {
       return coin.name.toLowerCase().indexOf(text) !== -1;
     });

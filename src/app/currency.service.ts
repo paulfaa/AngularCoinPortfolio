@@ -3,7 +3,6 @@ import { Coin } from './types/coin.interface';
 import { CoinName } from './types/coinName.type';
 import { IValue } from './types/value.interface';
 
-//shoul probably be injected somewhere else
 @Injectable({providedIn: 'root'})
 export class CurrencyServiceComponent {
 
@@ -12,9 +11,12 @@ export class CurrencyServiceComponent {
 
     public setCurrencySelected(currency: string){
         this.currencySelected = currency;
+        localStorage.setItem("currencySelected", this.currencySelected);
     }
 
     public getCurrencySelected(): string{
+        //default to EUR if nothing selected
+        this.currencySelected = localStorage.getItem("currencySelected");
         if(this.currencySelected == null){
             this.currencySelected = "EUR"
         }
