@@ -25,11 +25,35 @@ export class SettingsPage {
         cssClass: 'modal-button-cancel'}
       ]
     });
-
     await alert.present();
     let result = await alert.onDidDismiss();
     console.log(result);
   }
+
+  private ConvertToCSV(): string {
+    var data = this.coinService.getAllHeldCoins();
+    var headerList: string[] = ['name', 'ticker', 'searchString', 'purchasePrice', 'quantity', 'purchaseDate'];
+    let array = typeof data != 'object' ? JSON.parse(data) : data;
+    let str = '';
+    let row = 'S.No,';
+
+    for (let index in headerList) {
+        row += headerList[index] + ',';
+    }
+    row = row.slice(0, -1);
+    str += row + '\r\n';
+    for (let i = 0; i < array.length; i++) {
+        let line = (i+1)+'';
+        for (let index in headerList) {
+           let head = headerList[index];
+
+            line += ',' + array[i][head];
+        }
+        str += line + '\r\n';
+    }
+    console.log(str);
+    return str;
+}
 
   public callSetCurrency(value: string){
     this.currencyService.setCurrencySelected(value);
