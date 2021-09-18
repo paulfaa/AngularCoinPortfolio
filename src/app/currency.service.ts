@@ -15,6 +15,17 @@ export class CurrencyServiceComponent {
         localStorage.setItem("currencySelected", this.currencySelected);
     }
 
+    public getCurrencySymbol(): string{
+        var symbol = localStorage.getItem("currencySelected");
+        switch(symbol){
+            case 'EUR':
+            case null:
+                return "€";
+            case 'USD':
+                return "$";
+        }
+    }
+
     public getCurrencySelected(): string{
         //default to EUR if nothing selected
         this.currencySelected = localStorage.getItem("currencySelected");
@@ -28,6 +39,6 @@ export class CurrencyServiceComponent {
         //sum purchase price for each holding
         //sum current value for each holding
         //return value - purchase price
-        return 0;
+        return 12345.6789;
     }
 }

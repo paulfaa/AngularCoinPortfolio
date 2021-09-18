@@ -11,7 +11,13 @@ export class CoinServiceComponent{
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
     new Coin("Cardano","ADA"),
-    new Coin("Litecoin","LTE")
+    new Coin("Litecoin","LTE"),
+    new Coin("Ethereum","ETH"),
+    new Coin("Polkadot","DOT"),
+    new Coin("Stella","XLM"),
+    new Coin("Tether","USDT"),
+    new Coin("XRP","XRP"),
+    new Coin("Solana","SOL")
   ]
 
   private coinNamesTest: CoinName[] = [
@@ -79,7 +85,13 @@ export class CoinServiceComponent{
     if(this.heldCoins == null){
       this.heldCoins = JSON.parse(localStorage.getItem('savedCoins'));
     }
+    this.sortAllHeldCoins();
     return this.heldCoins;
+  }
+
+  //sort list alphabetically by ticker then by purchase date
+  private sortAllHeldCoins(){
+    this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
   }
 
   private filterCoins(coins: Coin[], text: string): Coin[] {

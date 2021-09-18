@@ -14,13 +14,15 @@
     <ion-card-header>
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
       <!-- need to figure out binding here --->
-      <ion-card-title>12345 {{currencyService.currencySelected | number : '1.2-2'}}</ion-card-title>
+      <!-- <ion-card-title>{{currencyService.currencySelected}} {{currencyService.calculateTotalProfit | number : '1.2-2'}}</ion-card-title> -->
+      <ion-card-title>{{currencyService.getCurrencySymbol()}} {{currencyService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
       <!-- <ion-card-content>Total spend: {{ callGetTotalExpenditure() | number : '1.2-2'}} </ion-card-content> -->
       <!-- <ion-card-title>12345 {{settings.getCurrency | number : '1.2-2'}}</ion-card-title> -->
     </ion-card-header>
+    <ion-card-content>
+      Profit: {{ 10.24 | profitFormat}} (1.25%)
+    </ion-card-content>
   </ion-card>
-  
-  <p>Profit: {{ 5 | profitFormat}} </p>
   
   <ion-item-sliding ngFor *ngFor="let coin of heldCoins">
     <ion-item>
