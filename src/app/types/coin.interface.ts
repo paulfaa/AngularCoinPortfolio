@@ -11,7 +11,8 @@ export class Coin {
     quantity: number;
     purchaseDate: Date;
     purchaseCurrency: string;
-
+    //currencyServiceComponent: CurrencyServiceComponent;
+    
     constructor(cName: string, cTicker?: string, cPurchasePrice?: number, cQuantity?: number, cValue?: number){
         this.name = cName;
         this.ticker = cTicker;
@@ -20,7 +21,7 @@ export class Coin {
         this.quantity = cQuantity;
         this.currentValue = cValue;
         this.purchaseDate = new Date();
-        //this.purchaseCurrency = currencyServiceComponent.getCurrencySelected();
+        //this.purchaseCurrency = this.currencyServiceComponent.getCurrencySelected();
     }
 }
   

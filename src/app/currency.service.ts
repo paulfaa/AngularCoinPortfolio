@@ -6,7 +6,8 @@ import { IValue } from './types/value.interface';
 @Injectable({providedIn: 'root'})
 export class CurrencyServiceComponent {
 
-    private currencySelected: string;
+    //not sure should be public or private
+    public currencySelected: string;
     private lastUpdate: Date;
 
     public setCurrencySelected(currency: string){

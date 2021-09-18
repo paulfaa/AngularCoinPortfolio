@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Coin } from '@types';
 import { CoinServiceComponent } from '../coin.service';
+import { CurrencyServiceComponent } from '../currency.service';
 
 @Component({
   selector: 'app-portfolio',
@@ -13,7 +14,8 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   heldCoins: Coin[];
   
   constructor(public alertController: AlertController,
-    private coinService: CoinServiceComponent) {}
+    private coinService: CoinServiceComponent,
+    private currencyService: CurrencyServiceComponent) {}
     
     ngOnInit() {
       this.showEmptyPortfolioAlert();

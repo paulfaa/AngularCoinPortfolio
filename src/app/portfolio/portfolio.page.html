@@ -13,9 +13,10 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
-      <ion-card-title>{{ 12345 | number : '1.2-2'}}</ion-card-title>
+      <!-- need to figure out binding here --->
+      <ion-card-title>12345 {{currencyService.currencySelected | number : '1.2-2'}}</ion-card-title>
       <!-- <ion-card-content>Total spend: {{ callGetTotalExpenditure() | number : '1.2-2'}} </ion-card-content> -->
-      <!-- <ion-card-title>12345 {{settings.getCurrency }}</ion-card-title> -->
+      <!-- <ion-card-title>12345 {{settings.getCurrency | number : '1.2-2'}}</ion-card-title> -->
     </ion-card-header>
   </ion-card>
   
