@@ -44,6 +44,7 @@ export class CoinServiceComponent{
     this.checkListState();
     console.log(this.heldCoins);
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
+    this.sortAllHeldCoins();
     this.saveStorage();
   }
 
