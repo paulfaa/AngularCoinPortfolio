@@ -12,6 +12,7 @@ import { CurrencyServiceComponent } from '../currency.service';
 export class PortfolioPage implements OnInit, AfterViewInit {
   
   heldCoins: Coin[];
+  htmlName = '';
   
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
@@ -34,6 +35,16 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     public callGetTotalExpenditure(){
       this.coinService.getTotalExpenditure();
     }
+
+    public displayName(coin: Coin): boolean {
+      if (coin.name !== this.htmlName) {
+        this.htmlName = coin.name;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({

@@ -25,6 +25,7 @@
   </ion-card>
   
   <ion-item-sliding ngFor *ngFor="let coin of heldCoins">
+    <p *ngIf="displayName(coin)">{{ coin.name }}</p>
     <ion-item>
       <h3>Holding: {{coin.ticker}}</h3>
       <h6>Amount: {{coin.quantity}}</h6>
