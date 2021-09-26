@@ -106,7 +106,6 @@ export class CoinServiceComponent{
     this.heldCoins.forEach(heldCoin => {
       counter = counter + heldCoin.purchasePrice;
     });
-    console.log("Total spend: ", counter);
     return counter;
   }
 

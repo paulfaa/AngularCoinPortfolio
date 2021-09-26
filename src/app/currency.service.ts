@@ -22,6 +22,8 @@ export class CurrencyServiceComponent {
             case null:
                 return "€";
             case 'USD':
+            case 'AUD':
+            case 'NZD':
                 return "$";
         }
     }

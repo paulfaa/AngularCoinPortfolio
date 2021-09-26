@@ -45,6 +45,15 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       }
     }
 
+    public getIconFromCoinName(coin: Coin): string {
+      const filePath = "/assets/icon/";
+      if(coin.name != null){
+        return filePath + coin.name.toLowerCase() + ".svg"
+      }
+      else{
+        return "";
+      }
+    }
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
