@@ -34,6 +34,9 @@ export class CoinServiceComponent{
     if(this.heldCoins == null){
       this.heldCoins = [];
     }
+    if(this.uniqueTickers == null){
+      this.uniqueTickers = [];
+    }
   }
 
   private addCoin(c: Coin){
@@ -99,7 +102,15 @@ export class CoinServiceComponent{
   }
 
   public getAllUniqueTickers(): string[]{
-    return this.uniqueTickers;
+    return ['BTC', 'ADA']; 
+    //returning undefined when called in valueService
+    console.log("Result of getAllUniqueTickers(): " + this.uniqueTickers);
+    if (this.uniqueTickers == undefined) {
+      return this.uniqueTickers;
+    }
+    else{
+      return ['BTC', 'ADA'];
+    }
   }
 
   //sort list alphabetically by ticker then by purchase date

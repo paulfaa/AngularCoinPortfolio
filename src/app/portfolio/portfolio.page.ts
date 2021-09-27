@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { Coin } from '@types';
 import { CoinServiceComponent } from '../coin.service';
 import { CurrencyServiceComponent } from '../currency.service';
+import { ValueServiceComponent } from '../value.service';
 
 @Component({
   selector: 'app-portfolio',
@@ -18,6 +19,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
+    private valueService: ValueServiceComponent,
     private currencyService: CurrencyServiceComponent) {}
     
     ngOnInit() {
