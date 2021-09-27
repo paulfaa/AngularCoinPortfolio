@@ -13,21 +13,18 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
-      <!-- need to figure out binding here --->
-      <!-- <ion-card-title>{{currencyService.currencySelected}} {{currencyService.calculateTotalProfit | number : '1.2-2'}}</ion-card-title> -->
       <ion-card-title>{{currencySymbol}} {{currencyService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
-      <!-- <ion-card-content>Total spend: {{ callGetTotalExpenditure() | number : '1.2-2'}} </ion-card-content> -->
-      <!-- <ion-card-title>12345 {{settings.getCurrency | number : '1.2-2'}}</ion-card-title> -->
     </ion-card-header>
     <ion-card-content>
       Profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total expenditure: {{currencySymbol}} {{coinService.getTotalExpenditure() | number : '1.2-2'}}
+      Total value: {{currencySymbol}} {{coinService.getTotalExpenditure() | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   
   <div ngFor *ngFor="let coin of heldCoins">
-    <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon size=large [src]=getIconFromCoinName(coin)></ion-icon></p>
+    <!-- might look better putting icon before text -->
+    <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p>
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{coin.quantity}}</p>
@@ -38,6 +35,7 @@
         <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
+    <!-- need footer beneath each group of coins with total profit and value -->
     <!-- <p *ngIf="displayFooter(coin)">Total profit for {{ coin.name }}: 123</p> -->
   </div>
   

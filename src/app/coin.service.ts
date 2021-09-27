@@ -1,4 +1,5 @@
 import { Component, Injectable, OnInit } from '@angular/core';
+import StorageUtils from './storage.utils';
 import { Coin } from './types/coin.interface';
 import { CoinName } from './types/coinName.type';
 import { IValue } from './types/value.interface';
@@ -6,7 +7,8 @@ import { IValue } from './types/value.interface';
 @Injectable({providedIn: 'root'})
 export class CoinServiceComponent{
 
-  private ratesMap = new Map();
+  private heldCoins: Coin[];
+  private lastAddedCoinDate: string;
 
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
@@ -26,8 +28,6 @@ export class CoinServiceComponent{
     new CoinName("Litecoin","LTE"),
     new CoinName("Tron","TRX")
   ]
-
-  private heldCoins: Coin[];
 
   public checkListState(): void {
     if(this.heldCoins == null){
@@ -49,7 +49,7 @@ export class CoinServiceComponent{
   }
 
   public saveStorage(){
-    localStorage.setItem('savedCoins', JSON.stringify(this.heldCoins));
+    StorageUtils.writeToStorage('savedCoins', this.heldCoins)
   }
 
   public removeFromHeldCoins(coinToDelete: Coin) {
@@ -65,13 +65,6 @@ export class CoinServiceComponent{
     this.saveStorage();
   }
 
-  public updateAllExchangeRates(){
-    //first check age of exchange rates, if not too recent then...
-    //clear entire map
-    //for each unique ticker in heldcoins
-    //ratesMap.set
-  }
-
   public getAllCoinNames(): CoinName[] {
     let names = [];
     this.coinNames.forEach(Coin => {
@@ -84,7 +77,7 @@ export class CoinServiceComponent{
   public getAllHeldCoins(){
     //should only have to load this once on app start, rewrite this
     if(this.heldCoins == null){
-      this.heldCoins = JSON.parse(localStorage.getItem('savedCoins'));
+      this.heldCoins = StorageUtils.readFromStorage('savedCoins');
     }
     this.sortAllHeldCoins();
     return this.heldCoins;
@@ -118,13 +111,12 @@ export class CoinServiceComponent{
     return counter;
   }
 
-  public getLastUpdatedDate(): string{
-    var minDate = new Date;
-    this.heldCoins.forEach(heldCoin => {
-      if (heldCoin.purchaseDate < minDate){
-        minDate = heldCoin.purchaseDate;
-      }
-    });
-    return minDate.toLocaleString();
+  public getLastAddedDate(): string{
+    if (this.lastAddedCoinDate != null || ""){
+      return this.lastAddedCoinDate;
+    }
+    else{
+      return ""
+    }
   }
 }

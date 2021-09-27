@@ -60,6 +60,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
 
     public getIconFromCoinName(coin: Coin): string {
       const filePath = "/assets/icon/";
+      //can add check here, if file does not exist, return circle.svg
       if(coin.name != null){
         return filePath + coin.name.toLowerCase() + ".svg"
       }
@@ -71,7 +72,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
         header: 'Nothing here...',
-        message: 'Looks like your portfolio is empty. Click the + symbol below to add something',
+        message: 'Looks like your portfolio is empty. Click the + symbol below to add something.',
         buttons: [
           {text: 'OK'}
         ]

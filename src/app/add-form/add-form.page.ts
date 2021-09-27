@@ -69,7 +69,7 @@ export class AddFormPage implements OnInit {
     //console.log('value: ', this.coinForm.controls['amount'].value);
 
     this.coinService.addToHeldCoins(json.name, json.ticker, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
-    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name);
+    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name + " @ " + this.coinForm.controls['purchasePrice'].value+ " per coin.");
     this.clearAllInputs();
 
     //console.log(this.coinService.getAllHeldCoins());
