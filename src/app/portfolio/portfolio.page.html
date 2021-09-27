@@ -15,33 +15,36 @@
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
       <!-- need to figure out binding here --->
       <!-- <ion-card-title>{{currencyService.currencySelected}} {{currencyService.calculateTotalProfit | number : '1.2-2'}}</ion-card-title> -->
-      <ion-card-title>{{currencyService.getCurrencySymbol()}} {{currencyService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
+      <ion-card-title>{{currencySymbol}} {{currencyService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
       <!-- <ion-card-content>Total spend: {{ callGetTotalExpenditure() | number : '1.2-2'}} </ion-card-content> -->
       <!-- <ion-card-title>12345 {{settings.getCurrency | number : '1.2-2'}}</ion-card-title> -->
     </ion-card-header>
     <ion-card-content>
       Profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total expenditure: {{coinService.getTotalExpenditure() | number : '1.2-2'}}
+      Total expenditure: {{currencySymbol}} {{coinService.getTotalExpenditure() | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   
-  <ion-item-sliding ngFor *ngFor="let coin of heldCoins">
-    <p *ngIf="displayName(coin)">{{ coin.name }} <ion-icon [src]=getIconFromCoinName(coin)></ion-icon></p>
-    <ion-item>
-      <h6>Amount: {{coin.quantity}}</h6>
-      <h6>Added: {{coin.purchaseDate | date:'shortDate'}}</h6>
-      <h6>Value: {{0.6354| number : '1.2-2'}}</h6>
-    </ion-item>
-    <ion-item-options side="end">
-      <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
-    </ion-item-options>
-  </ion-item-sliding>
+  <div ngFor *ngFor="let coin of heldCoins">
+    <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon size=large [src]=getIconFromCoinName(coin)></ion-icon></p>
+    <ion-item-sliding>
+      <ion-item>
+        <p id="quantity">{{coin.quantity}}</p>
+        <h6>Added: {{coin.purchaseDate | date:'shortDate'}}</h6>
+        <h6>Value: {{0.6354| number : '1.2-2'}}</h6>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    <!-- <p *ngIf="displayFooter(coin)">Total profit for {{ coin.name }}: 123</p> -->
+  </div>
   
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-fab-button [routerLink]="['/add-coin']">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
   
 </ion-content>

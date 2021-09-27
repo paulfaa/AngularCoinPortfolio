@@ -19,7 +19,25 @@ export class SettingsPage {
       buttons: [
         {text: 'OK',
         handler: () => {
-          this.coinService.clearAllHeldCoins();
+          this.confirmDeleteAlert();
+        }}, 
+        {text: 'Cancel',
+        cssClass: 'modal-button-cancel'}
+      ]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+  }
+
+  async confirmDeleteAlert() {
+    const alert = await this.alertController.create({
+      header: 'Warning',
+      message: 'Are you really sure? This cannot be undone.',
+      buttons: [
+        {text: 'OK',
+        handler: () => {
+          //this.coinService.clearAllHeldCoins();
+          console.log("call deleteall coins")
         }}, 
         {text: 'Cancel',
         cssClass: 'modal-button-cancel'}
