@@ -8,6 +8,7 @@ import { IValue } from './types/value.interface';
 export class CoinServiceComponent{
 
   private heldCoins: Coin[];
+  private uniqueTickers: string[];
   private lastAddedCoinDate: string;
 
   private coinNames: Coin[] = [
@@ -43,6 +44,9 @@ export class CoinServiceComponent{
   public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
     this.checkListState();
     console.log(this.heldCoins);
+    if(this.uniqueTickers.includes(ticker) == false){
+      this.uniqueTickers.push(ticker);
+    }
     this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
     this.sortAllHeldCoins();
     this.saveStorage();
@@ -50,6 +54,7 @@ export class CoinServiceComponent{
 
   public saveStorage(){
     StorageUtils.writeToStorage('savedCoins', this.heldCoins)
+    StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
 
   public removeFromHeldCoins(coinToDelete: Coin) {
@@ -59,9 +64,19 @@ export class CoinServiceComponent{
     this.saveStorage();
   }
 
+  public getAmountHeld(ticker: string): number{
+    var counter = 0;
+    this.heldCoins.forEach(coin => {
+      if(coin.ticker == ticker){
+        counter = counter + coin.quantity
+      }
+    });
+    return counter;
+  }
+
   public clearAllHeldCoins(){
     console.log("clearing all coins");
-    this.heldCoins = [];
+    this.heldCoins, this.uniqueTickers = [];
     this.saveStorage();
   }
 
@@ -81,6 +96,10 @@ export class CoinServiceComponent{
     }
     this.sortAllHeldCoins();
     return this.heldCoins;
+  }
+
+  public getAllUniqueTickers(): string[]{
+    return this.uniqueTickers;
   }
 
   //sort list alphabetically by ticker then by purchase date
