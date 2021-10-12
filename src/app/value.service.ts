@@ -13,7 +13,7 @@ import { IValue } from './types/value.interface';
 export class ValueServiceComponent {
 
     constructor(private coinService: CoinServiceComponent,
-        private currencyService: CurrencyServiceComponent
+        private currencyService: CurrencyServiceComponent,
         ) { }
 
     private rates: Rate[];
@@ -23,7 +23,7 @@ export class ValueServiceComponent {
 
     public calculateTotalProfit(): number{
         var totalProfit = this.calculateTotalValue();
-        var purchasePrice = Math.random() * (30 - 1) + 1;
+        var purchasePrice = 4;
         return totalProfit - purchasePrice;
     }
 
@@ -37,8 +37,18 @@ export class ValueServiceComponent {
         return totalValue;
     }
 
+    public calculateValueForTicker(ticker: string): number{
+        this.rates = StorageUtils.readFromStorage('rates');
+        //console.log("rates: ", this.rates);
+        this.updateAllExchangeRates();
+        return this.getRateForTicker(ticker) * this.coinService.getAmountHeld(ticker);
+    }
+
     public getRateForTicker(ticker: string){
-        return this.rates.find(i => i.ticker === ticker).value;
+        //search works fine but cant access value property
+        var c = this.rates.find(i => i.ticker === ticker);
+        console.log("c: ", c);
+        return this.rates.find(i => i.ticker === ticker).getValue();
     }
 
     private nullCheckRatesList(){
@@ -47,15 +57,20 @@ export class ValueServiceComponent {
         }
     }
 
+    //need to rewrite this to replace outdated rates and leave inactive ones
     public updateAllExchangeRates(){
         var now = moment();
+        this.rates = [];
         var userCurrency = this.currencyService.getCurrencySelected();
         //if rates are more than 1 hour old update, otherwise nothing
         if(moment().subtract(1, 'hour') < now){
             //console.log(this.coinService.getAllUniqueTickers());
             this.coinService.getAllUniqueTickers().forEach(ticker => {
                 //var rate = backend.getRate(ticker, userCurrency);
-                var rate = Math.random() * (30 - 1) + 1; //just for testing
+                var rate = 5; //just for testing
+                if (rate == null || rate == 0){
+                    return;
+                }
                 this.nullCheckRatesList();
                 this.rates.push(new Rate(ticker, rate, userCurrency, new Date))
             });
