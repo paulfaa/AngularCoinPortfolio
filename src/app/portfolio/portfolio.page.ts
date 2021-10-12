@@ -4,6 +4,7 @@ import { Coin } from '@types';
 import { CoinServiceComponent } from '../coin.service';
 import { CurrencyServiceComponent } from '../currency.service';
 import { ValueServiceComponent } from '../value.service';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-portfolio',
@@ -17,9 +18,11 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   footer = '';
   currencySymbol = '';
   
+  
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
     private valueService: ValueServiceComponent,
+    //private httpClient: HttpClient,
     private currencyService: CurrencyServiceComponent) {}
     
     ngOnInit() {
@@ -32,6 +35,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       console.log("ngAfterViewInit All held coins: ", this.coinService.getAllHeldCoins());
       this.heldCoins = this.coinService.getAllHeldCoins();
       this.currencySymbol = this.currencyService.getCurrencySymbol();
+    }
+
+    public callCalculateValueForTicker(ticker: string){
+      this.valueService.calculateValueForTicker(ticker);
     }
 
     public callDeleteMethod(coin: Coin){
@@ -60,16 +67,19 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       }
     }
 
-    public getIconFromCoinName(coin: Coin): string {
+    /* public getIconFromCoinName(coin: Coin): string {
       const filePath = "/assets/icon/";
-      //can add check here, if file does not exist, return circle.svg
-      if(coin.name != null){
-        return filePath + coin.name.toLowerCase() + ".svg"
-      }
-      else{
-        return "";
-      }
-    }
+      var filename;
+      this.httpClient.get(filePath + coin.name.toLowerCase() + ".svg").subscribe(() => {
+        filename = filePath + coin.name.toLowerCase() + ".svg"
+      }, (err) => {
+        // HANDLE file not found
+        if (err.status === 404) {
+          filename = "circle.svg";
+        }
+      });
+      return filename
+    } */
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
@@ -79,7 +89,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
           {text: 'OK'}
         ]
       });
-      if(this.coinService.getAllHeldCoins().length == 0){
+      if(this.coinService.getAllHeldCoins() == null){
         await alert.present();
         let result = await alert.onDidDismiss();
         console.log(result);

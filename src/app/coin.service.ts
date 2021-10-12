@@ -69,11 +69,13 @@ export class CoinServiceComponent{
 
   public getAmountHeld(ticker: string): number{
     var counter = 0;
-    this.heldCoins.forEach(coin => {
-      if(coin.ticker == ticker){
-        counter = counter + coin.quantity
-      }
-    });
+    if(this.heldCoins != null && this.heldCoins.length >= 1){
+      this.heldCoins.forEach(coin => {
+        if(coin.ticker == ticker){
+          counter = counter + coin.quantity
+        }
+      });
+    }
     return counter;
   }
 
@@ -98,6 +100,7 @@ export class CoinServiceComponent{
       this.heldCoins = StorageUtils.readFromStorage('savedCoins');
     }
     this.sortAllHeldCoins();
+    console.log(this.heldCoins);
     return this.heldCoins;
   }
 
@@ -115,7 +118,9 @@ export class CoinServiceComponent{
 
   //sort list alphabetically by ticker then by purchase date
   private sortAllHeldCoins(){
-    this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
+    if(this.heldCoins != null && this.heldCoins.length >= 1){
+      this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
+    }
   }
 
   private filterCoins(coins: Coin[], text: string): Coin[] {

@@ -4,9 +4,9 @@ export default class StorageUtils {
     }
 
     static readFromStorage(keyName: string): any{
-        var data = JSON.parse(localStorage.getItem(keyName));
-        if(data != undefined){
-            return data;
+        var data = localStorage.getItem(keyName);
+        if(data != undefined || "undefined"){
+            return JSON.parse(data);
         }
         else{
             console.log("Nothing in local storage with key " + keyName);

@@ -10,4 +10,8 @@ export class Rate {
       this.currencyCode = rCurrencyCode;
       this.priceUpdated = rPriceUpdated;
   }
+
+  public getValue(): number{
+    return this.value;
+  }
 }

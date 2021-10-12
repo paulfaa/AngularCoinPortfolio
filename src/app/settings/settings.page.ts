@@ -36,7 +36,7 @@ export class SettingsPage {
       buttons: [
         {text: 'OK',
         handler: () => {
-          //this.coinService.clearAllHeldCoins();
+          this.coinService.clearAllHeldCoins();
           console.log("call deleteall coins")
         }}, 
         {text: 'Cancel',

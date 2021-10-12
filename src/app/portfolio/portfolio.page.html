@@ -25,12 +25,13 @@
   
   <div ngFor *ngFor="let coin of heldCoins">
     <!-- might look better putting icon before text -->
-    <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p>
+    <p id="header" *ngIf="displayName(coin)">{{ coin.name }}</p>
+    <!-- <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p> -->
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{coin.quantity}}</p>
         <h6>Added: {{coin.purchaseDate | date:'shortDate'}}</h6>
-        <h6>Value: {{0.6354| number : '1.2-2'}}</h6>
+        <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
