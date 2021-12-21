@@ -8,18 +8,52 @@ import { CoinName } from './types/coinName.type';
 import { Rate } from './types/rate.type';
 import { IValue } from './types/value.interface';
 
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+
+export interface RatesResponse {
+    coinId: number;
+    coinValue: number;
+    currency: string;
+    date: Date
+}
+
 //shoul probably be injected somewhere else
 @Injectable({providedIn: 'root'})
 export class ValueServiceComponent {
 
-    constructor(private coinService: CoinServiceComponent,
+    constructor(
+        private coinService: CoinServiceComponent,
         private currencyService: CurrencyServiceComponent,
+        private http: HttpClient
         ) { }
 
     private rates: Rate[];
     private ratesLastUpdated: Date;
+    private requestUrl = 'http://localhost:8009/';
     //coinService: CoinServiceComponent;
     //currencyService: CurrencyServiceComponent;
+
+    getConfigResponse(currency: string, coinId: number): Observable<HttpResponse<RatesResponse>> {
+        return this.http.get<RatesResponse>(
+            this.requestUrl + "?currency=" + currency + "?id=" + coinId, { observe: 'response' });
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        if (error.status === 0) {
+          // A client-side or network error occurred. Handle it accordingly.
+          console.error('An error occurred:', error.error);
+        } else {
+          // The backend returned an unsuccessful response code.
+          // The response body may contain clues as to what went wrong.
+          console.error(
+            `Backend returned code ${error.status}, body was: `, error.error);
+        }
+        // Return an observable with a user-facing error message.
+        return throwError(
+          'Something bad happened; please try again later.');
+      }
 
     public calculateTotalProfit(): number{
         var totalProfit = this.calculateTotalValue();

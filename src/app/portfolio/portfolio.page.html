@@ -12,14 +12,14 @@
   
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Total profit:</ion-card-subtitle>
+      <ion-card-subtitle>Total value:</ion-card-subtitle>
       <!-- conditional not working properly -->
       <ion-card-title [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">{{currencySymbol}} {{valueService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      Profit: {{ 10.24 | profitFormat}} (1.25%)
+      Total profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total value: {{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}
+      Total profit: {{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   
