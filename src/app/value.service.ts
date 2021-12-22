@@ -56,9 +56,13 @@ export class ValueServiceComponent {
       }
 
     public calculateTotalProfit(): number{
-        var totalProfit = this.calculateTotalValue();
-        var purchasePrice = 4;
-        return totalProfit - purchasePrice;
+        var totalExpendature = 0;
+        var totalValue = this.calculateTotalValue();
+        var allCoins = this.coinService.getAllHeldCoins();
+        allCoins.forEach(c => {
+            totalExpendature = totalExpendature + c.purchasePrice
+        });
+        return totalValue - totalExpendature;
     }
 
     public calculateTotalValue(): number{
@@ -66,7 +70,7 @@ export class ValueServiceComponent {
         var totalValue = 0;
         this.updateAllExchangeRates();
         this.coinService.getAllUniqueTickers().forEach(ticker => {
-            totalValue = totalValue + this.coinService.getAmountHeld(ticker) * this.getRateForTicker(ticker);
+            totalValue = totalValue + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
         });
         return totalValue;
     }
@@ -74,9 +78,11 @@ export class ValueServiceComponent {
     public calculateValueForTicker(ticker: string): number{
         this.rates = StorageUtils.readFromStorage('rates');
         this.updateAllExchangeRates();
-        return this.getRateForTicker(ticker) * this.coinService.getAmountHeld(ticker);
+        console.log("value: " + this.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker));
+        return this.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker);
     }
 
+    //need to fix this
     public getRateForTicker(ticker: string): number{
         try {
             var c = this.rates.find(i => i.ticker === ticker).getValue();
@@ -85,7 +91,7 @@ export class ValueServiceComponent {
                 return c;
             }
         } catch (error) {
-            //console.log("Error calling getRateForTicker: " + error);
+            console.log("Error calling getRateForTicker: " + error);
             return 0;
         }
     }

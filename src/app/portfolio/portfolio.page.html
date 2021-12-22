@@ -19,7 +19,7 @@
     <ion-card-content [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">
       Total profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total profit: {{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}
+      Total profit: {{currencySymbol}} {{valueService.calculateTotalProfit() | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   

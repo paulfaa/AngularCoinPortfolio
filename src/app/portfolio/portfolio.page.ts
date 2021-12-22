@@ -89,7 +89,8 @@ export class PortfolioPage implements OnInit, AfterViewInit {
           {text: 'OK'}
         ]
       });
-      if(this.coinService.getAllHeldCoins() == null){
+      //if(this.coinService.getLengthOfAllHeldCoins() == 0){
+      if(this.coinService.getAllHeldCoins == null){
         await alert.present();
         let result = await alert.onDidDismiss();
         console.log(result);

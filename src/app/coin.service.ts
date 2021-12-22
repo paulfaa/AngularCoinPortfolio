@@ -67,7 +67,7 @@ export class CoinServiceComponent{
     this.saveStorage();
   }
 
-  public getAmountHeld(ticker: string): number{
+  public getAmountHeldOfTicker(ticker: string): number{
     var counter = 0;
     if(this.heldCoins != null && this.heldCoins.length >= 1){
       this.heldCoins.forEach(coin => {
@@ -77,6 +77,15 @@ export class CoinServiceComponent{
       });
     }
     return counter;
+  }
+
+  public getLengthOfAllHeldCoins(): number{
+    if(this.getAllHeldCoins() != null){
+      return this.getAllHeldCoins.length;
+    }
+    else{
+      return 0;
+    }
   }
 
   public clearAllHeldCoins(){
