@@ -50,7 +50,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     }
 
     public displayName(coin: Coin): boolean {
-      if (coin.name !== this.htmlName) {
+      if (this.htmlName !== coin.name || this.htmlName == undefined) {
         this.htmlName = coin.name;
         return true;
       } else {

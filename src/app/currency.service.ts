@@ -6,8 +6,7 @@ import { IValue } from './types/value.interface';
 @Injectable({providedIn: 'root'})
 export class CurrencyServiceComponent {
 
-    //not sure should be public or private
-    public currencySelected: string;
+    private currencySelected: string; //should use enum here
     private lastUpdate: Date;
 
     public setCurrencySelected(currency: string){

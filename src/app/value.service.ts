@@ -63,26 +63,31 @@ export class ValueServiceComponent {
 
     public calculateTotalValue(): number{
         this.rates = StorageUtils.readFromStorage('rates');
-        var totalValue;
+        var totalValue = 0;
         this.updateAllExchangeRates();
         this.coinService.getAllUniqueTickers().forEach(ticker => {
-            totalValue = this.coinService.getAmountHeld(ticker) * this.getRateForTicker(ticker);
+            totalValue = totalValue + this.coinService.getAmountHeld(ticker) * this.getRateForTicker(ticker);
         });
         return totalValue;
     }
 
     public calculateValueForTicker(ticker: string): number{
         this.rates = StorageUtils.readFromStorage('rates');
-        //console.log("rates: ", this.rates);
         this.updateAllExchangeRates();
         return this.getRateForTicker(ticker) * this.coinService.getAmountHeld(ticker);
     }
 
-    public getRateForTicker(ticker: string){
-        //search works fine but cant access value property
-        var c = this.rates.find(i => i.ticker === ticker);
-        console.log("c: ", c);
-        return this.rates.find(i => i.ticker === ticker).getValue();
+    public getRateForTicker(ticker: string): number{
+        try {
+            var c = this.rates.find(i => i.ticker === ticker).getValue();
+            //console.log("c: ", c);
+            if(c != undefined){
+                return c;
+            }
+        } catch (error) {
+            //console.log("Error calling getRateForTicker: " + error);
+            return 0;
+        }
     }
 
     private nullCheckRatesList(){

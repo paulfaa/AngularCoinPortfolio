@@ -14,9 +14,9 @@
     <ion-card-header>
       <ion-card-subtitle>Total value:</ion-card-subtitle>
       <!-- conditional not working properly -->
-      <ion-card-title [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">{{currencySymbol}} {{valueService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
+      <ion-card-title>{{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}</ion-card-title>
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">
       Total profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
       Total profit: {{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}
@@ -30,7 +30,7 @@
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{coin.quantity}}</p>
-        <h6>Added: {{coin.purchaseDate | date:'shortDate'}}</h6>
+        <h6>{{coin.purchaseDate | date:'shortDate'}}</h6>
         <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6>
       </ion-item>
       <ion-item-options side="end">

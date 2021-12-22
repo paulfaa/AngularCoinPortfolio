@@ -80,4 +80,8 @@ export class SettingsPage {
   public callGetCurrency(): string{
     return this.currencyService.getCurrencySelected();
   }
+
+  public getDateLastUpdated(){
+    //need to get date last time backend was called
+  }
 }
