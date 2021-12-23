@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Coin } from '@types';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { CoinServiceComponent } from '../coin.service';
+import { CoinServiceComponent } from '../service/coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
 

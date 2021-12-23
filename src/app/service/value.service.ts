@@ -2,11 +2,11 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { CoinServiceComponent } from './coin.service';
 import { CurrencyServiceComponent } from './currency.service';
-import StorageUtils from './storage.utils';
-import { Coin } from './types/coin.interface';
-import { CoinName } from './types/coinName.type';
-import { Rate } from './types/rate.type';
-import { IValue } from './types/value.interface';
+import StorageUtils from '../storage.utils';
+import { Coin } from '../types/coin.interface';
+import { CoinName } from '../types/coinName.type';
+import { Rate } from '../types/rate.type';
+import { IValue } from '../types/value.interface';
 
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -29,9 +29,12 @@ export class ValueServiceComponent {
         private http: HttpClient
         ) { }
 
-    private rates: Rate[];
+    r: Rate = new Rate("BTC", 17.5, "EUR", new Date); 
+    rates: Rate[] = []; //move to ratesService
+    //private rates: Rate[];
     private ratesLastUpdated: Date;
     private requestUrl = 'http://localhost:8009/';
+
     //coinService: CoinServiceComponent;
     //currencyService: CurrencyServiceComponent;
 
@@ -62,38 +65,41 @@ export class ValueServiceComponent {
         allCoins.forEach(c => {
             totalExpendature = totalExpendature + c.purchasePrice
         });
-        return totalValue - totalExpendature;
+        var total = totalValue - totalExpendature;
+        //this.totalProfit = total;
+        return total;
     }
 
     public calculateTotalValue(): number{
         this.rates = StorageUtils.readFromStorage('rates');
-        var totalValue = 0;
-        this.updateAllExchangeRates();
+        var total = 0;
+        //this.updateAllExchangeRates();
         this.coinService.getAllUniqueTickers().forEach(ticker => {
-            totalValue = totalValue + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
+            total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
         });
-        return totalValue;
+        //this.totalValue = total;
+        return total;
     }
 
     public calculateValueForTicker(ticker: string): number{
         this.rates = StorageUtils.readFromStorage('rates');
-        this.updateAllExchangeRates();
+        //this.updateAllExchangeRates();
         console.log("value: " + this.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker));
+        var rate = this.getRateForTicker(ticker); //always returning 0
         return this.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker);
     }
 
-    //need to fix this
     public getRateForTicker(ticker: string): number{
-        try {
-            var c = this.rates.find(i => i.ticker === ticker).getValue();
-            //console.log("c: ", c);
-            if(c != undefined){
-                return c;
-            }
-        } catch (error) {
-            console.log("Error calling getRateForTicker: " + error);
-            return 0;
+        this.rates = [];  //need to create rateService and implement here
+        this.rates.push(this.r);
+        //this.rates = StorageUtils.readFromStorage('rates');
+        console.log("rates: " + this.rates); //rates is null
+        var c = this.rates.find(i => i.ticker === ticker)
+        console.log("c: ", c);
+        if(c != undefined){
+            return c.getValue();
         }
+        return 0;
     }
 
     private nullCheckRatesList(){

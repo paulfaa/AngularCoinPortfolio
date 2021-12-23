@@ -1,5 +1,5 @@
 import { IValue } from './value.interface';
-import { CurrencyServiceComponent } from '../currency.service';
+import { CurrencyServiceComponent } from '../service/currency.service';
 
 export class Coin {
     name: string;

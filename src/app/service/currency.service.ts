@@ -1,13 +1,12 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { Coin } from './types/coin.interface';
-import { CoinName } from './types/coinName.type';
-import { IValue } from './types/value.interface';
+import { Coin } from '../types/coin.interface';
+import { CoinName } from '../types/coinName.type';
+import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CurrencyServiceComponent {
 
     private currencySelected: string; //should use enum here
-    private lastUpdate: Date;
 
     public setCurrencySelected(currency: string){
         this.currencySelected = currency;

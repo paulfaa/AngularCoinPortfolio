@@ -14,12 +14,12 @@
     <ion-card-header>
       <ion-card-subtitle>Total value:</ion-card-subtitle>
       <!-- conditional not working properly -->
-      <ion-card-title>{{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}</ion-card-title>
+      <ion-card-title>{{currencySymbol}} {{totalValue | number : '1.2-2'}}</ion-card-title>
     </ion-card-header>
-    <ion-card-content [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">
+    <ion-card-content [ngStyle]="{'color':totalProfit > '0' ? 'green' : 'red' }">
       Total profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total profit: {{currencySymbol}} {{valueService.calculateTotalProfit() | number : '1.2-2'}}
+      Total profit: {{currencySymbol}} {{totalProfit | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   
@@ -31,7 +31,7 @@
       <ion-item>
         <p id="quantity">{{coin.quantity}}</p>
         <h6>{{coin.purchaseDate | date:'shortDate'}}</h6>
-        <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6>
+        <!-- <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6> -->
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>

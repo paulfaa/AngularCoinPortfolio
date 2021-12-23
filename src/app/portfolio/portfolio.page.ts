@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Coin } from '@types';
-import { CoinServiceComponent } from '../coin.service';
-import { CurrencyServiceComponent } from '../currency.service';
-import { ValueServiceComponent } from '../value.service';
+import { CoinServiceComponent } from '../service/coin.service';
+import { CurrencyServiceComponent } from '../service/currency.service';
+import { ValueServiceComponent } from '../service/value.service';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -16,8 +16,9 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   heldCoins: Coin[];
   htmlName = '';
   footer = '';
-  currencySymbol = '';
-  
+  private currencySymbol = '';
+  private totalValue = 0;
+  private totalProfit = 0;
   
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
@@ -29,6 +30,16 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       this.showEmptyPortfolioAlert();
       this.heldCoins = this.coinService.getAllHeldCoins();
       this.currencySymbol = this.currencyService.getCurrencySymbol();
+      this.totalValue = this.valueService.calculateTotalValue();
+      this.totalProfit = this.valueService.calculateTotalProfit();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+      if (changes.heldCoins) {
+        console.log("ngOnChanges");
+        this.totalValue = this.valueService.calculateTotalValue();
+        this.totalProfit = this.valueService.calculateTotalProfit();
+      }
     }
     
     ngAfterViewInit() {

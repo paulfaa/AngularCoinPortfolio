@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { CoinServiceComponent } from '../coin.service';
-import { CurrencyServiceComponent } from '../currency.service';
+import { CoinServiceComponent } from '../service/coin.service';
+import { CurrencyServiceComponent } from '../service/currency.service';
 
 @Component({
   selector: 'app-settings',
