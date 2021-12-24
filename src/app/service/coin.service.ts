@@ -114,15 +114,18 @@ export class CoinServiceComponent{
   }
 
   public getAllUniqueTickers(): string[]{
-    return ['BTC', 'ADA']; 
-    //returning undefined when called in valueService
-    console.log("Result of getAllUniqueTickers(): " + this.uniqueTickers);
-    if (this.uniqueTickers == undefined) {
-      return this.uniqueTickers;
+    var tickers:string[] = [];
+    if(this.heldCoins != null && this.heldCoins.length >= 1){
+      //can optimise here
+      this.heldCoins.forEach(coin => {
+        if(tickers.includes(coin.ticker) == false){
+          tickers.push(coin.ticker);
+        }
+      });
     }
-    else{
-      return ['BTC', 'ADA'];
-    }
+    console.log("All unique tickers: " + tickers);
+    this.uniqueTickers = tickers;
+    return tickers;
   }
 
   //sort list alphabetically by ticker then by purchase date

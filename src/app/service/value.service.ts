@@ -31,7 +31,6 @@ export class ValueServiceComponent {
 
     r: Rate = new Rate("BTC", 17.5, "EUR", new Date); 
     rates: Rate[] = []; //move to ratesService
-    //private rates: Rate[];
     private ratesLastUpdated: Date;
     private requestUrl = 'http://localhost:8009/';
 
@@ -74,11 +73,15 @@ export class ValueServiceComponent {
         this.rates = StorageUtils.readFromStorage('rates');
         var total = 0;
         //this.updateAllExchangeRates();
-        this.coinService.getAllUniqueTickers().forEach(ticker => {
-            total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
+        var allTickers = this.coinService.getAllUniqueTickers();
+        if(allTickers != null){
+            allTickers.forEach(ticker => {
+                total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
+                return total;
         });
         //this.totalValue = total;
         return total;
+        }
     }
 
     public calculateValueForTicker(ticker: string): number{
