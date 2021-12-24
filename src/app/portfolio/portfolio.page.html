@@ -30,11 +30,15 @@
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{coin.quantity}}</p>
-        <h6>{{coin.purchaseDate | date:'shortDate'}}</h6>
+        <p>{{coin.currentValue}}</p>
+        <!-- <h6>{{coin.purchaseDate | date:'shortDate'}}</h6> -->
         <!-- <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6> -->
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="start">
+        <ion-item-option color="primary" (click)="infoPopup(coin)">Info</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
     <!-- need footer beneath each group of coins with total profit and value -->

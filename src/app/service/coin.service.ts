@@ -79,9 +79,9 @@ export class CoinServiceComponent{
     return counter;
   }
 
-  public getLengthOfAllHeldCoins(): number{
-    if(this.getAllHeldCoins() != null){
-      return this.getAllHeldCoins.length;
+  public getLengthOfHeldCoins(): number{
+    if(this.heldCoins != null){
+      return this.heldCoins.length;
     }
     else{
       return 0;
@@ -109,7 +109,7 @@ export class CoinServiceComponent{
       this.heldCoins = StorageUtils.readFromStorage('savedCoins');
     }
     this.sortAllHeldCoins();
-    console.log(this.heldCoins);
+    //console.log(this.heldCoins);
     return this.heldCoins;
   }
 

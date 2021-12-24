@@ -91,6 +91,19 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       });
       return filename
     } */
+
+    async infoPopup(coin: Coin) {
+      const alert = await this.alertController.create({
+        header: coin.quantity + " " + coin.name,
+        message: coin.purchaseDate.toString() + "<br>" + "\n" + coin.purchasePrice,
+        buttons: [
+          {text: 'OK'}
+        ]
+      });
+      await alert.present();
+      let result = await alert.onDidDismiss();
+      console.log(result);
+  }
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
@@ -101,10 +114,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
         ]
       });
       //if(this.coinService.getLengthOfAllHeldCoins() == 0){
-      if(this.coinService.getAllHeldCoins == null){
+      if(this.coinService.getLengthOfHeldCoins() == 0){
         await alert.present();
         let result = await alert.onDidDismiss();
         console.log(result);
       }
-    }
+  }
 }
