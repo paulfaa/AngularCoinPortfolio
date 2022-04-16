@@ -1,14 +1,12 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { Coin } from './types/coin.interface';
-import { CoinName } from './types/coinName.type';
-import { IValue } from './types/value.interface';
+import { Coin } from '../types/coin.interface';
+import { CoinName } from '../types/coinName.type';
+import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CurrencyServiceComponent {
 
-    //not sure should be public or private
-    public currencySelected: string;
-    private lastUpdate: Date;
+    private currencySelected: string; //should use enum here
 
     public setCurrencySelected(currency: string){
         this.currencySelected = currency;
@@ -35,12 +33,5 @@ export class CurrencyServiceComponent {
             this.currencySelected = "EUR"
         }
         return this.currencySelected;
-    }
-
-    public calculateTotalProfit(): number{
-        //sum purchase price for each holding
-        //sum current value for each holding
-        //return value - purchase price
-        return 12345.6789;
     }
 }

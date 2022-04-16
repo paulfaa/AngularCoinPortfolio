@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Coin } from '@types';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { CoinServiceComponent } from '../coin.service';
+import { CoinServiceComponent } from '../service/coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
 
@@ -69,7 +69,7 @@ export class AddFormPage implements OnInit {
     //console.log('value: ', this.coinForm.controls['amount'].value);
 
     this.coinService.addToHeldCoins(json.name, json.ticker, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
-    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name + " @ " + this.coinForm.controls['purchasePrice'].value+ " per coin.");
+    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name + " @ " + this.coinForm.controls['purchasePrice'].value);
     this.clearAllInputs();
 
     //console.log(this.coinService.getAllHeldCoins());

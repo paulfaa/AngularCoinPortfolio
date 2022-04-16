@@ -1,8 +1,8 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import StorageUtils from './storage.utils';
-import { Coin } from './types/coin.interface';
-import { CoinName } from './types/coinName.type';
-import { IValue } from './types/value.interface';
+import StorageUtils from '../storage.utils';
+import { Coin } from '../types/coin.interface';
+import { CoinName } from '../types/coinName.type';
+import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CoinServiceComponent{
@@ -67,7 +67,7 @@ export class CoinServiceComponent{
     this.saveStorage();
   }
 
-  public getAmountHeld(ticker: string): number{
+  public getAmountHeldOfTicker(ticker: string): number{
     var counter = 0;
     if(this.heldCoins != null && this.heldCoins.length >= 1){
       this.heldCoins.forEach(coin => {
@@ -77,6 +77,15 @@ export class CoinServiceComponent{
       });
     }
     return counter;
+  }
+
+  public getLengthOfHeldCoins(): number{
+    if(this.heldCoins != null){
+      return this.heldCoins.length;
+    }
+    else{
+      return 0;
+    }
   }
 
   public clearAllHeldCoins(){
@@ -100,20 +109,23 @@ export class CoinServiceComponent{
       this.heldCoins = StorageUtils.readFromStorage('savedCoins');
     }
     this.sortAllHeldCoins();
-    console.log(this.heldCoins);
+    //console.log(this.heldCoins);
     return this.heldCoins;
   }
 
   public getAllUniqueTickers(): string[]{
-    return ['BTC', 'ADA']; 
-    //returning undefined when called in valueService
-    console.log("Result of getAllUniqueTickers(): " + this.uniqueTickers);
-    if (this.uniqueTickers == undefined) {
-      return this.uniqueTickers;
+    var tickers:string[] = [];
+    if(this.heldCoins != null && this.heldCoins.length >= 1){
+      //can optimise here
+      this.heldCoins.forEach(coin => {
+        if(tickers.includes(coin.ticker) == false){
+          tickers.push(coin.ticker);
+        }
+      });
     }
-    else{
-      return ['BTC', 'ADA'];
-    }
+    console.log("All unique tickers: " + tickers);
+    this.uniqueTickers = tickers;
+    return tickers;
   }
 
   //sort list alphabetically by ticker then by purchase date

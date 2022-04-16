@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Coin } from '@types';
-import { CoinServiceComponent } from '../coin.service';
-import { CurrencyServiceComponent } from '../currency.service';
-import { ValueServiceComponent } from '../value.service';
+import { CoinServiceComponent } from '../service/coin.service';
+import { CurrencyServiceComponent } from '../service/currency.service';
+import { ValueServiceComponent } from '../service/value.service';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -16,8 +16,9 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   heldCoins: Coin[];
   htmlName = '';
   footer = '';
-  currencySymbol = '';
-  
+  private currencySymbol = '';
+  private totalValue = 0;
+  private totalProfit = 0;
   
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
@@ -28,8 +29,16 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       this.showEmptyPortfolioAlert();
       this.heldCoins = this.coinService.getAllHeldCoins();
       this.currencySymbol = this.currencyService.getCurrencySymbol();
-      this.heldCoins = this.coinService.getAllHeldCoins();
-      this.currencySymbol = this.currencyService.getCurrencySymbol();
+      this.totalValue = this.valueService.calculateTotalValue();
+      this.totalProfit = this.valueService.calculateTotalProfit();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+      if (changes.heldCoins) {
+        console.log("ngOnChanges");
+        this.totalValue = this.valueService.calculateTotalValue();
+        this.totalProfit = this.valueService.calculateTotalProfit();
+      }
     }
     
     ngAfterViewInit() {
@@ -47,15 +56,6 @@ export class PortfolioPage implements OnInit, AfterViewInit {
 
     public callGetTotalExpenditure(){
       this.coinService.getTotalExpenditure();
-    }
-
-    public displayName(coin: Coin): boolean {
-      if (coin.name !== this.htmlName || this.htmlName === '') {
-        this.htmlName = coin.name;
-        return true;
-      } else {
-        return false;
-      }
     }
 
     public displayFooter(coin: Coin): boolean {
@@ -80,6 +80,19 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       });
       return filename
     } */
+
+    async infoPopup(coin: Coin) {
+      const alert = await this.alertController.create({
+        header: coin.quantity + " " + coin.name,
+        message: coin.purchaseDate.toString() + "<br>" + "\n" + coin.purchasePrice,
+        buttons: [
+          {text: 'OK'}
+        ]
+      });
+      await alert.present();
+      let result = await alert.onDidDismiss();
+      console.log(result);
+  }
     
     async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
@@ -89,10 +102,11 @@ export class PortfolioPage implements OnInit, AfterViewInit {
           {text: 'OK'}
         ]
       });
-      if(this.coinService.getAllHeldCoins() == null){
+      //if(this.coinService.getLengthOfAllHeldCoins() == 0){
+      if(this.coinService.getLengthOfHeldCoins() == 0){
         await alert.present();
         let result = await alert.onDidDismiss();
         console.log(result);
       }
-    }
+  }
 }

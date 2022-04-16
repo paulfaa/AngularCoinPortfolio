@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { CoinServiceComponent } from './coin.service';
+import { CoinServiceComponent } from '/coin.service';
 import { CurrencyServiceComponent } from './currency.service';
 import StorageUtils from './storage.utils';
 import { Coin } from './types/coin.interface';
