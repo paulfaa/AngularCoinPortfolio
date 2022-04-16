@@ -12,29 +12,31 @@ import { IValue } from './types/value.interface';
 @Injectable({providedIn: 'root'})
 export class ValueServiceComponent {
 
-    constructor(private coinService: CoinServiceComponent,
+    constructor(
+        private coinService: CoinServiceComponent,
         private currencyService: CurrencyServiceComponent,
         ) { }
 
     private rates: Rate[];
     private ratesLastUpdated: Date;
+    public totalProfit: number;
+    public totalValue: number;
     //coinService: CoinServiceComponent;
     //currencyService: CurrencyServiceComponent;
 
-    public calculateTotalProfit(): number{
-        var totalProfit = this.calculateTotalValue();
-        var purchasePrice = 4;
-        return totalProfit - purchasePrice;
+    public calculateTotalProfit(): void{
+        var purchasePrice = this.coinService.getTotalExpenditure();
+        this.totalProfit = this.totalValue - purchasePrice;
     }
 
-    public calculateTotalValue(): number{
+    public calculateTotalValue(): void{
         this.rates = StorageUtils.readFromStorage('rates');
         var totalValue;
         this.updateAllExchangeRates();
         this.coinService.getAllUniqueTickers().forEach(ticker => {
             totalValue = this.coinService.getAmountHeld(ticker) * this.getRateForTicker(ticker);
         });
-        return totalValue;
+        this.totalValue = totalValue;
     }
 
     public calculateValueForTicker(ticker: string): number{

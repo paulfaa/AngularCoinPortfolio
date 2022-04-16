@@ -22,19 +22,19 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
     private valueService: ValueServiceComponent,
-    //private httpClient: HttpClient,
     private currencyService: CurrencyServiceComponent) {}
     
     ngOnInit() {
       this.showEmptyPortfolioAlert();
       this.heldCoins = this.coinService.getAllHeldCoins();
       this.currencySymbol = this.currencyService.getCurrencySymbol();
+      this.heldCoins = this.coinService.getAllHeldCoins();
+      this.currencySymbol = this.currencyService.getCurrencySymbol();
     }
     
     ngAfterViewInit() {
       console.log("ngAfterViewInit All held coins: ", this.coinService.getAllHeldCoins());
-      this.heldCoins = this.coinService.getAllHeldCoins();
-      this.currencySymbol = this.currencyService.getCurrencySymbol();
+      
     }
 
     public callCalculateValueForTicker(ticker: string){
@@ -50,7 +50,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     }
 
     public displayName(coin: Coin): boolean {
-      if (coin.name !== this.htmlName) {
+      if (coin.name !== this.htmlName || this.htmlName === '') {
         this.htmlName = coin.name;
         return true;
       } else {

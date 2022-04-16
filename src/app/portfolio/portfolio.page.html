@@ -14,18 +14,18 @@
     <ion-card-header>
       <ion-card-subtitle>Total profit:</ion-card-subtitle>
       <!-- conditional not working properly -->
-      <ion-card-title [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">{{currencySymbol}} {{valueService.calculateTotalProfit() | number : '1.2-2'}}</ion-card-title>
+      <ion-card-title [ngStyle]="{'color':$value > '0' ? 'green' : 'red' }">{{currencySymbol}} {{valueService.totalProfit | number : '1.2-2'}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       Profit: {{ 10.24 | profitFormat}} (1.25%)
       <br>
-      Total value: {{currencySymbol}} {{valueService.calculateTotalValue() | number : '1.2-2'}}
+      Total value: {{currencySymbol}} {{valueService.totalValue | number : '1.2-2'}}
     </ion-card-content>
   </ion-card>
   
-  <div ngFor *ngFor="let coin of heldCoins">
+  <div ngFor *ngFor="let coin of heldCoins; let index = index">
     <!-- might look better putting icon before text -->
-    <p id="header" *ngIf="displayName(coin)">{{ coin.name }}</p>
+    <p id="header" *ngIf="!heldCoins[index-1] || coin.name !== heldCoins[index-1].name">{{ coin.name }}</p>
     <!-- <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p> -->
     <ion-item-sliding>
       <ion-item>
