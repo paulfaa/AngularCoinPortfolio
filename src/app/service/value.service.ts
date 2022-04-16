@@ -3,8 +3,6 @@ import * as moment from 'moment';
 import { CoinServiceComponent } from './coin.service';
 import { CurrencyServiceComponent } from './currency.service';
 import StorageUtils from '../storage.utils';
-import { Coin } from '../types/coin.interface';
-import { CoinName } from '../types/coinName.type';
 import { Rate } from '../types/rate.type';
 import { IValue } from '../types/value.interface';
 
@@ -33,6 +31,8 @@ export class ValueServiceComponent {
     rates: Rate[] = []; //move to ratesService
     private ratesLastUpdated: Date;
     private requestUrl = 'http://localhost:8009/';
+    public totalValue: number;
+    public totalProfit: number;
 
     //coinService: CoinServiceComponent;
     //currencyService: CurrencyServiceComponent;
@@ -59,27 +59,27 @@ export class ValueServiceComponent {
 
     public calculateTotalProfit(): number{
         var totalExpendature = 0;
-        var totalValue = this.calculateTotalValue();
+        //var totalValue = this.calculateTotalValue();
+        var totalValue = this.totalValue;
         var allCoins = this.coinService.getAllHeldCoins();
         allCoins.forEach(c => {
             totalExpendature = totalExpendature + c.purchasePrice
         });
         var total = totalValue - totalExpendature;
-        //this.totalProfit = total;
+        this.totalProfit = total;
         return total;
     }
 
     public calculateTotalValue(): number{
         this.rates = StorageUtils.readFromStorage('rates');
         var total = 0;
-        //this.updateAllExchangeRates();
+        this.updateAllExchangeRates();
         var allTickers = this.coinService.getAllUniqueTickers();
         if(allTickers != null){
             allTickers.forEach(ticker => {
                 total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.getRateForTicker(ticker);
-                return total;
         });
-        //this.totalValue = total;
+        this.totalValue = total;
         return total;
         }
     }

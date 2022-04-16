@@ -25,7 +25,10 @@
   
   <div ngFor *ngFor="let coin of heldCoins; let index = index">
     <!-- might look better putting icon before text -->
-    <p id="header" *ngIf="!heldCoins[index-1] || coin.name !== heldCoins[index-1].name">{{ coin.name }}</p>
+    <p id="header" *ngIf="!heldCoins[index-1] || coin.name !== heldCoins[index-1].name">
+      <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
+      {{ coin.name }}
+    </p>
     <!-- <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p> -->
     <ion-item-sliding>
       <ion-item>
