@@ -128,7 +128,7 @@ export class CoinServiceComponent{
     return tickers;
   }
 
-  //sort list alphabetically by ticker then by purchase date
+  //sorts list alphabetically by ticker then by purchase date
   private sortAllHeldCoins(){
     if(this.heldCoins != null && this.heldCoins.length >= 1){
       this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
@@ -139,23 +139,6 @@ export class CoinServiceComponent{
     return coins.filter(coin => {
       return coin.name.toLowerCase().indexOf(text) !== -1;
     });
-  }
-
-  public getTotalExpenditure(): number{
-    var counter = 0;
-    this.heldCoins.forEach(heldCoin => {
-      counter = counter + heldCoin.purchasePrice;
-    });
-    return counter;
-  }
-
-  public getGrossHoldingsValue(): number {
-    var counter = 0;
-    this.heldCoins.forEach(heldCoin => {
-      //need to create other component to get exchange rate based on ticker and user currecny selected
-      counter = counter + (heldCoin.quantity * 1);
-    });
-    return counter;
   }
 
   public getLastAddedDate(): string{

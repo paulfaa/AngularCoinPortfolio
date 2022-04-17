@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import * as moment from 'moment';
 import { CoinServiceComponent } from '../service/coin.service';
 import { CurrencyServiceComponent } from '../service/currency.service';
+import { ValueServiceComponent } from '../service/value.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,7 +12,18 @@ import { CurrencyServiceComponent } from '../service/currency.service';
 })
 export class SettingsPage {
 
-  constructor(public alertController: AlertController, private currencyService: CurrencyServiceComponent, private coinService: CoinServiceComponent) {}
+  public lastUpdateDate: Date;
+
+  constructor(public alertController: AlertController,
+              private currencyService: CurrencyServiceComponent,
+              private coinService: CoinServiceComponent,
+              private valueService: ValueServiceComponent
+  ){}
+
+  ngOnInit() {
+    //this.lastUpdateDate = this.valueService.dateLastUpdated;
+    this.lastUpdateDate = moment().toDate();
+  }
 
   async showDeleteAlert() {
     const alert = await this.alertController.create({

@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { SettingsPageRoutingModule } from './settings-routing.module';
 import { SettingsPage } from './settings.page';
-import { DateUpdatedComponent } from '../date-updated/date-updated.component'
 
 @NgModule({
   imports: [
@@ -17,7 +16,6 @@ import { DateUpdatedComponent } from '../date-updated/date-updated.component'
   ],
   declarations: [
     SettingsPage,
-    DateUpdatedComponent
   ]
 })
 

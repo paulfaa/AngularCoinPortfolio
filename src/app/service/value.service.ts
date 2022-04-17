@@ -29,7 +29,7 @@ export class ValueServiceComponent {
 
     r: Rate = new Rate("BTC", 17.5, "EUR", new Date); 
     rates: Rate[] = []; //move to ratesService
-    private ratesLastUpdated: Date;
+    private dateLastUpdated: Date;
     private requestUrl = 'http://localhost:8009/';
     public totalValue: number;
     public totalProfit: number;
@@ -84,6 +84,14 @@ export class ValueServiceComponent {
         }
     }
 
+    public getTotalExpenditure(): number{
+        var counter = 0;
+        this.coinService.getAllHeldCoins().forEach(heldCoin => {
+          counter = counter + heldCoin.purchasePrice;
+        });
+        return counter;
+      }
+
     public calculateValueForTicker(ticker: string): number{
         this.rates = StorageUtils.readFromStorage('rates');
         //this.updateAllExchangeRates();
@@ -129,7 +137,7 @@ export class ValueServiceComponent {
                 this.rates.push(new Rate(ticker, rate, userCurrency, new Date))
             });
         }
-        this.ratesLastUpdated = now.toDate();
+        this.dateLastUpdated = now.toDate(); //should be on a per coin basis and not global
         StorageUtils.writeToStorage("rates", this.rates);
     }
 }

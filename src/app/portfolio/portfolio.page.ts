@@ -54,10 +54,6 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       this.coinService.removeFromHeldCoins(coin);
     }
 
-    public callGetTotalExpenditure(){
-      this.coinService.getTotalExpenditure();
-    }
-
     public displayFooter(coin: Coin): boolean {
       if (coin.name !== this.footer) {
         this.footer = coin.name;
