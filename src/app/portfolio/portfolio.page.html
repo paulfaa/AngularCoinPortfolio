@@ -7,7 +7,7 @@
 <ion-content>
   
   <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
-    <ion-refresher-content></ion-refresher-content>
+    <ion-refresher-content>Updating rates...</ion-refresher-content>
   </ion-refresher>
   
   <ion-card>
@@ -29,12 +29,12 @@
       <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
       {{ coin.name }}
     </p>
-    <!-- <p id="header" *ngIf="displayName(coin)">{{ coin.name }} <ion-icon id="icon" size=large [src]=getIconFromCoinName(coin)></ion-icon></p> -->
+    
     <ion-item-sliding>
       <ion-item>
-        <p id="quantity">{{coin.quantity}}</p>
-        <p>{{coin.currentValue}}</p>
-        <!-- <h6>{{coin.purchaseDate | date:'shortDate'}}</h6> -->
+        <p id="quantity">{{ coin.quantity }}</p>
+        <p>{{ currencySymbol }}{{ coin.purchasePrice }}</p>
+        <p>{{ coin.currentValue }}</p>
         <!-- <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6> -->
       </ion-item>
       <ion-item-options side="end">
@@ -44,14 +44,10 @@
         <ion-item-option color="primary" (click)="infoPopup(coin)">Info</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-    <!-- need footer beneath each group of coins with total profit and value -->
-    <!-- <p *ngIf="displayFooter(coin)">Total profit for {{ coin.name }}: 123</p> -->
+
+    <footer *ngIf="!heldCoins[index+1] || coin.name !== heldCoins[index+1].name">
+      Total {{coin.name}} profit:
+    </footer>
   </div>
-  
-  <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-    <ion-fab-button [routerLink]="['/add-coin']">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab> -->
-  
+
 </ion-content>
