@@ -1,4 +1,5 @@
 import { Component, Injectable, OnInit } from '@angular/core';
+import { nameEnum } from '../nameEnum';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.interface';
 import { CoinName } from '../types/coinName.type';
@@ -9,7 +10,7 @@ export class CoinServiceComponent{
 
   private heldCoins: Coin[];
   private uniqueTickers: string[];
-  private lastAddedCoinDate: string;
+  private lastAddedCoinDate: Date;
 
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
@@ -43,14 +44,14 @@ export class CoinServiceComponent{
     this.heldCoins.push(c);
   }
 
-  //change this constructor to only require ticker and set name automatically based on lookup
-  public addToHeldCoins(name: string, ticker: string, purchasePrice: number, quantity: number){
+  public addToHeldCoins(ticker: string, purchasePrice: number, quantity: number){
+    var fullName = nameEnum[ticker];
     this.checkListState();
     console.log(this.heldCoins);
     if(this.uniqueTickers.includes(ticker) == false){
       this.uniqueTickers.push(ticker);
     }
-    this.heldCoins.push(new Coin(name, ticker, purchasePrice, quantity));
+    this.heldCoins.push(new Coin(fullName, ticker, purchasePrice, quantity));
     this.sortAllHeldCoins();
     this.saveStorage();
   }
@@ -141,12 +142,15 @@ export class CoinServiceComponent{
     });
   }
 
-  public getLastAddedDate(): string{
-    if (this.lastAddedCoinDate != null || ""){
-      return this.lastAddedCoinDate;
-    }
-    else{
-      return ""
-    }
+  public getLastAddedDate(): Date{
+    var date;
+    this.heldCoins.forEach(coin => {
+      var purchaseDate = coin.purchaseDate;
+      if ( date===undefined || date < purchaseDate){
+        date = purchaseDate;
+      }
+    })
+    this.lastAddedCoinDate = date;
+    return date;
   }
 }

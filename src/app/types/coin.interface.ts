@@ -1,5 +1,5 @@
+import { CurrencyEnum } from '../currencyEnum';
 import { IValue } from './value.interface';
-import { CurrencyServiceComponent } from '../service/currency.service';
 
 export class Coin {
     name: string;
@@ -10,8 +10,7 @@ export class Coin {
     //value?: IValue;
     quantity: number;
     purchaseDate: Date;
-    purchaseCurrency: string;
-    //currencyServiceComponent: CurrencyServiceComponent;
+    purchaseCurrency: CurrencyEnum;
     
     constructor(cName: string, cTicker?: string, cPurchasePrice?: number, cQuantity?: number, cValue?: number){
         this.name = cName;
@@ -21,7 +20,6 @@ export class Coin {
         this.quantity = cQuantity;
         this.currentValue = cValue;
         this.purchaseDate = new Date();
-        //this.purchaseCurrency = this.currencyServiceComponent.getCurrencySelected();
     }
 }
   
