@@ -15,6 +15,10 @@ describe('CurrencyService', () => {
         }).compileComponents();
     }));
 
+    afterEach(() => {
+        service = null;
+      });
+
     describe('getCurrencySelected()', () => {
         it('should return EUR as default value', () => {
             // Act
