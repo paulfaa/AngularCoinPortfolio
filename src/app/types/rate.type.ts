@@ -2,13 +2,13 @@ export class Rate {
     ticker: string;
     value: number;
     currencyCode: string;
-    priceUpdated: Date;
+    updated: Date;
 
-  constructor(rTicker: string, rValue: number, rCurrencyCode: string, rPriceUpdated: Date) {
+  constructor(rTicker: string, rValue: number, rCurrencyCode: string, rUpdated: Date) {
       this.ticker = rTicker;
       this.value = rValue;
       this.currencyCode = rCurrencyCode;
-      this.priceUpdated = rPriceUpdated;
+      this.updated = rUpdated;
   }
 
   public getValue(): number{

@@ -16,7 +16,7 @@ describe('CurrencyService', () => {
     }));
 
     afterEach(() => {
-        service = null;
+        service.setCurrencySelected("EUR");
       });
 
     describe('getCurrencySelected()', () => {
