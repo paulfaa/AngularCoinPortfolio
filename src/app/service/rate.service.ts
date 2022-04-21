@@ -23,6 +23,7 @@ export class RateService {
     ) {}
 
     private rates: Rate[];
+    //this.rates = StorageUtils.readFromStorage('rates');
     private lastUpdateDate: Date;
     private requestUrl = 'http://localhost:8009/';
 
@@ -51,15 +52,25 @@ export class RateService {
         StorageUtils.writeToStorage("rates", this.rates);
     }
 
-    public getRateForTicker(ticker: string): number{
+    public getLastUpdateDate(): Date {
+        var d = new Date();
+        this.rates.forEach(rate => {
+            if (rate.updated > d){
+                d = rate.updated;
+            }
+        });
+        return d;
+    }
+
+    public getRateForTicker(tickerToLookup: string): number{
         this.rates = [];
-        //this.rates.push(this.r);
+        var userCurrency = this.currencyService.getCurrencySelected();
         //this.rates = StorageUtils.readFromStorage('rates');
         console.log("rates: " + this.rates); //rates is null
-        var c = this.rates.find(i => i.ticker === ticker)
-        console.log("c: ", c);
-        if(c != undefined){
-            return c.getValue();
+        var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === userCurrency )
+        console.log("found rate: ", foundRate);
+        if(foundRate != undefined){
+            return foundRate.getValue();
         }
         return 0;
     }
