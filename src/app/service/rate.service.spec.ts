@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { Rate } from '../types/rate.type';
 import { CoinServiceComponent } from './coin.service';
 import { CurrencyServiceComponent } from './currency.service';
+import { LoggingService } from './logging.service';
 
 import { RateService } from './rate.service';
 
@@ -13,13 +14,14 @@ describe('RateService', () => {
 
     let serviceUnderTest: RateService;
     let coinService: CoinServiceComponent;
-    let CurrencyService: CurrencyServiceComponent;
+    let currencyService: CurrencyServiceComponent;
     let httpClient: HttpClient;
+    let loggingService: LoggingService;
     const btcRateEur = new Rate("BTC", 500.25, "EUR", moment().toDate());
     const btcRateUsd = new Rate("BTC", 500.25, "EUR", moment().toDate());
 
     beforeEach(waitForAsync(() => {
-        serviceUnderTest = new RateService(coinService, CurrencyService, httpClient);
+        serviceUnderTest = new RateService(coinService, currencyService, loggingService, httpClient);
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();

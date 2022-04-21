@@ -6,6 +6,7 @@ import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
 import { CoinServiceComponent } from "./coin.service";
 import { CurrencyServiceComponent } from "./currency.service";
+import { LoggingService } from "./logging.service";
 
 export interface RatesResponse {
     coinId: number;
@@ -19,6 +20,7 @@ export class RateService {
     constructor(
         private coinService: CoinServiceComponent,
         private currencyService: CurrencyServiceComponent,
+        private loggingService: LoggingService,
         private http: HttpClient
     ) {}
 
@@ -49,6 +51,7 @@ export class RateService {
             r.updated = now.toDate();
             this.rates.push(r);
         });
+        this.loggingService.info("RateSerive updated " + tickersToUpdate.length + "rates.")
         StorageUtils.writeToStorage("rates", this.rates);
     }
 
@@ -72,7 +75,11 @@ export class RateService {
         if(foundRate != undefined){
             return foundRate.getValue();
         }
-        return 0;
+        else{
+            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + ".")
+            return 0;
+        }
+        
     }
 
     private handleError(error: HttpErrorResponse) {
