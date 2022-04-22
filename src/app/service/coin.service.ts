@@ -25,7 +25,8 @@ export class CoinServiceComponent{
     }
     else {
       console.log('setting this.heldcoins to ' + storedCoins)
-        this.heldCoins = storedCoins;
+      this.heldCoins = storedCoins;
+      this.uniqueTickers = this.getAllUniqueTickers();
     }
 }
 
@@ -56,7 +57,7 @@ export class CoinServiceComponent{
       this.uniqueTickers = [];
     }
   }
-
+  
   public addCoin(c: Coin){
     this.heldCoins.push(c);
   }

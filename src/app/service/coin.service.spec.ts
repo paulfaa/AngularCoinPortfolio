@@ -28,8 +28,7 @@ describe('CoinService', () => {
             expect(coinsLength).toEqual(0);
 
             // Act
-            //service.addToHeldCoins("BTC", 12.34, 0.004);  //missing purchasedate which is needed for compare
-            service.addCoin(testCoin);
+            service.addToHeldCoins("BTC", 12.34, 0.004); 
             var coinsLength = service.getAllHeldCoins().length;
 
             // Assert
