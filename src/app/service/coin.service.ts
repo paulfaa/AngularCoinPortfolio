@@ -19,7 +19,7 @@ export class CoinServiceComponent{
   private initService(): void{
     var storedCoins = StorageUtils.readFromStorage('savedCoins');
     var storedTickers = StorageUtils.readFromStorage('uniqueTickers');
-    if (storedCoins === undefined  || "undefined"){ //TODO fix
+    if (storedCoins === undefined){ 
       console.log('setting this.heldcoins to null')
         this.heldCoins = [];
     }

@@ -26,7 +26,7 @@ describe('RateService', () => {
     mockLoggingService.info.and.returnValue(null);
 
     const btcRateEur = new Rate("BTC", 500.25, "EUR", moment().toDate());
-    const btcRateUsd = new Rate("BTC", 500.25, "EUR", moment().toDate());
+    const btcRateUsd = new Rate("BTC", 500.25, "USD", moment().toDate());
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);

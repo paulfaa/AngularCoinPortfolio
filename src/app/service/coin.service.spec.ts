@@ -13,6 +13,7 @@ describe('CoinService', () => {
     beforeEach(waitForAsync(() => {
         service = new CoinServiceComponent();
         service['currencySelected'] = 'EUR';
+        service['heldCoins'] = null;
         service.checkListState();
         TestBed.configureTestingModule({
             declarations: [CoinServiceComponent],
@@ -89,7 +90,7 @@ describe('CoinService', () => {
     });
 
     describe('getAllUniqueTickers()', () => {
-        it('removes empty list when no coins owned', () => {
+        it('returns empty list when no coins owned', () => {
             // Act
             var names = service.getAllUniqueTickers();
 

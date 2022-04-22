@@ -1,7 +1,9 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { CoinServiceComponent } from '../service/coin.service';
 import { ValueServiceComponent } from '../service/value.service';
+import { ProfitFormatPipe } from '../shared/pipes/profit-format.pipe';
 
 import { PortfolioPage } from './portfolio.page';
 
@@ -10,16 +12,16 @@ describe('PortfolioPage', () => {
   let fixture: ComponentFixture<PortfolioPage>;
   let coinService: CoinServiceComponent;
   let valueService: ValueServiceComponent;
-  let coinServiceSpy: any;
+  let mockCoinService: jasmine.SpyObj<CoinServiceComponent>;
 
+  mockCoinService = jasmine.createSpyObj('mockCoinService', ['getLengthOfHeldCoins']);
+  
   beforeEach(waitForAsync(() => {
-    coinServiceSpy = jasmine.createSpyObj('coinService', 'getLengthOfHeldCoins');
-    coinServiceSpy.getLengthOfHeldCoins.returnValue(0);
     TestBed.configureTestingModule({
-      declarations: [ PortfolioPage ],
-      imports: [IonicModule.forRoot()],
+      declarations: [ PortfolioPage, ProfitFormatPipe ],
+      imports: [IonicModule.forRoot(), HttpClientModule],
       providers: [                   
-        { provide: coinService, useValue: coinServiceSpy},
+        { provide: coinService, useValue: mockCoinService},
     ]
     }).compileComponents();
 
@@ -31,12 +33,10 @@ describe('PortfolioPage', () => {
   describe("showEmptyPortfolioAlert()", () => {
     it("is called when the user portfolio is empty", () => {
       // Arrange
-
-      // Act
-      component.showEmptyPortfolioAlert()
+      mockCoinService.getLengthOfHeldCoins.and.returnValue(0);
 
       // Assert
-      expect()
+      expect(component.showEmptyPortfolioAlert).toHaveBeenCalled;
 
     });
   });

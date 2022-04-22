@@ -22,7 +22,7 @@ export class ValueServiceComponent {
         //var totalValue = this.calculateTotalValue();
         var totalValue = this.totalValue;
         var allCoins = this.coinService.getAllHeldCoins();
-        allCoins.forEach(c => {
+        allCoins?.forEach(c => {
             totalExpendature = totalExpendature + c.purchasePrice
         });
         var total = totalValue - totalExpendature;
