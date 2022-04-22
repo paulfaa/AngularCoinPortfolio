@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import * as moment from 'moment';
 import { CoinServiceComponent } from '../service/coin.service';
 import { Coin } from '../types/coin.interface';
 
@@ -7,6 +8,7 @@ describe('CoinService', () => {
 
     let service: CoinServiceComponent;
     const testCoin = new Coin("Bitcoin", "BTC", 250.55, 0.75, 299.54)
+    testCoin.purchaseDate = moment().toDate();
 
     beforeEach(waitForAsync(() => {
         service = new CoinServiceComponent();
@@ -25,7 +27,8 @@ describe('CoinService', () => {
             expect(coinsLength).toEqual(0);
 
             // Act
-            service.addToHeldCoins("BTC", 12.34, 0.004);
+            //service.addToHeldCoins("BTC", 12.34, 0.004);  //missing purchasedate which is needed for compare
+            service.addCoin(testCoin);
             var coinsLength = service.getAllHeldCoins().length;
 
             // Assert
@@ -46,7 +49,7 @@ describe('CoinService', () => {
 
             // Assert
             expect(coinsLength).toEqual(1);
-        });
+        }); 
     });
 
     describe('removeFromHeldCoins()', () => {

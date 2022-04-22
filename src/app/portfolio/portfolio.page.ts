@@ -28,11 +28,11 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     private loggingService: LoggingService) {}
     
     ngOnInit() {
-      this.showEmptyPortfolioAlert();
       this.heldCoins = this.coinService.getAllHeldCoins();
       this.currencySymbol = this.currencyService.getCurrencySymbol();
       this.totalValue = this.valueService.calculateTotalValue();
       this.totalProfit = this.valueService.calculateTotalProfit();
+      this.showEmptyPortfolioAlert();
     }
 
     ngOnChanges(changes: SimpleChanges) {

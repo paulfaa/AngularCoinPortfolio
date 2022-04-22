@@ -17,17 +17,29 @@ export interface RatesResponse {
 
 @Injectable({providedIn: 'root'})
 export class RateService {
+
+    private rates: Rate[];
+    private lastUpdateDate: Date;
+    private requestUrl = 'http://localhost:8009/';
+
     constructor(
         private coinService: CoinServiceComponent,
         private currencyService: CurrencyServiceComponent,
         private loggingService: LoggingService,
-        private http: HttpClient
-    ) {}
+        private http: HttpClient,
+    ) {
+        this.initService();
+    }
 
-    private rates: Rate[];
-    //this.rates = StorageUtils.readFromStorage('rates');
-    private lastUpdateDate: Date;
-    private requestUrl = 'http://localhost:8009/';
+    private initService(): void{
+        var storedRates = StorageUtils.readFromStorage('rates');
+        if (storedRates === undefined){
+            this.rates = [];
+        }
+        else {
+            this.rates = storedRates;
+        }
+    }
 
     public updateAllExchangeRates(){
         var now = moment();
@@ -41,9 +53,9 @@ export class RateService {
         });
         tickersToUpdate.forEach(ticker => {
             //var r = backend.getRate(ticker, userCurrency);
-            var r = new Rate("BTC", 2.457345, "EUR", now.toDate());
-            r.updated = now.toDate();
-            this.rates.push(r);
+            var rate = new Rate("BTC", 2.457345, "EUR", now.toDate());
+            rate.updated = now.toDate();
+            this.rates.push(rate);
         });
         this.loggingService.info("RateService updated " + tickersToUpdate.length + " rates.")
         StorageUtils.writeToStorage("rates", this.rates);

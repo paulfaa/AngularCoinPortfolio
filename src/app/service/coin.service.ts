@@ -12,6 +12,23 @@ export class CoinServiceComponent{
   private uniqueTickers: string[];
   private lastAddedCoinDate: Date;
 
+  constructor() {
+    this.initService();
+}
+
+  private initService(): void{
+    var storedCoins = StorageUtils.readFromStorage('savedCoins');
+    var storedTickers = StorageUtils.readFromStorage('uniqueTickers');
+    if (storedCoins === undefined  || "undefined"){ //TODO fix
+      console.log('setting this.heldcoins to null')
+        this.heldCoins = [];
+    }
+    else {
+      console.log('setting this.heldcoins to ' + storedCoins)
+        this.heldCoins = storedCoins;
+    }
+}
+
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
     new Coin("Cardano","ADA"),
@@ -40,13 +57,12 @@ export class CoinServiceComponent{
     }
   }
 
-  private addCoin(c: Coin){
+  public addCoin(c: Coin){
     this.heldCoins.push(c);
   }
 
   public addToHeldCoins(ticker: string, purchasePrice: number, quantity: number){
     var fullName = nameEnum[ticker];
-    this.checkListState();
     console.log(this.heldCoins);
     if(this.uniqueTickers.includes(ticker) == false){
       this.uniqueTickers.push(ticker);
@@ -131,7 +147,7 @@ export class CoinServiceComponent{
 
   //sorts list alphabetically by ticker then by purchase date
   private sortAllHeldCoins(){
-    if(this.heldCoins != null && this.heldCoins.length >= 1){
+    if(this.heldCoins != null && this.heldCoins.length >= 2){
       this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
     }
   }
