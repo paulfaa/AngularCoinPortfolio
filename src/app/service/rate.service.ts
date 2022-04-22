@@ -29,18 +29,12 @@ export class RateService {
     private lastUpdateDate: Date;
     private requestUrl = 'http://localhost:8009/';
 
-    private nullCheckRatesList(){
-        if (this.rates == null){
-            this.rates = [];;
-        }
-    }
-
     public updateAllExchangeRates(){
         var now = moment();
         var tickersToUpdate = [];
         var userCurrency = this.currencyService.getCurrencySelected();
         //if rates are more than 1 hour old update, otherwise nothing
-        this.rates.forEach(rate => {
+        this.rates?.forEach(rate => {
             if(moment().subtract(1, 'hour').toDate() < rate.updated){
                 tickersToUpdate.push(rate.ticker)
             }
@@ -51,35 +45,34 @@ export class RateService {
             r.updated = now.toDate();
             this.rates.push(r);
         });
-        this.loggingService.info("RateSerive updated " + tickersToUpdate.length + "rates.")
+        this.loggingService.info("RateService updated " + tickersToUpdate.length + " rates.")
         StorageUtils.writeToStorage("rates", this.rates);
     }
 
     public getLastUpdateDate(): Date {
-        var d = new Date();
-        this.rates.forEach(rate => {
-            if (rate.updated > d){
-                d = rate.updated;
+        var date = new Date();
+        this.rates?.forEach(rate => {
+            if (rate.updated > date){
+                date = rate.updated;
             }
         });
-        return d;
+        return date;
     }
 
     public getRateForTicker(tickerToLookup: string): number{
         this.rates = [];
         var userCurrency = this.currencyService.getCurrencySelected();
         //this.rates = StorageUtils.readFromStorage('rates');
-        console.log("rates: " + this.rates); //rates is null
+        //console.log("rates: " + this.rates); //rates is null
         var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === userCurrency )
-        console.log("found rate: ", foundRate);
         if(foundRate != undefined){
+            this.loggingService.info("RateService: found rate- ", foundRate);
             return foundRate.getValue();
         }
         else{
-            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + ".")
+            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + userCurrency + ".")
             return 0;
         }
-        
     }
 
     private handleError(error: HttpErrorResponse) {

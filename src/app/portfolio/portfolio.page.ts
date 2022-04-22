@@ -5,6 +5,7 @@ import { CoinServiceComponent } from '../service/coin.service';
 import { CurrencyServiceComponent } from '../service/currency.service';
 import { ValueServiceComponent } from '../service/value.service';
 import {HttpClient} from '@angular/common/http';
+import { LoggingService } from '../service/logging.service';
 
 @Component({
   selector: 'app-portfolio',
@@ -23,7 +24,8 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   constructor(public alertController: AlertController,
     private coinService: CoinServiceComponent,
     private valueService: ValueServiceComponent,
-    private currencyService: CurrencyServiceComponent) {}
+    private currencyService: CurrencyServiceComponent,
+    private loggingService: LoggingService) {}
     
     ngOnInit() {
       this.showEmptyPortfolioAlert();
@@ -100,8 +102,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       });
       if(this.coinService.getLengthOfHeldCoins() == 0){
         await alert.present();
-        let result = await alert.onDidDismiss();
-        console.log(result);
+        this.loggingService.info("Empty portfolio alert shown");
       }
   }
 }

@@ -1,7 +1,6 @@
 
 import { HttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { assert } from 'console';
 import * as moment from 'moment';
 import { Rate } from '../types/rate.type';
 import { CoinServiceComponent } from './coin.service';

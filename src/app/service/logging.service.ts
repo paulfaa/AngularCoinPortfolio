@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LogLevel } from '../logLevelEnum';
-@Injectable()
 
+@Injectable({providedIn: 'root'})
 export class LoggingService {
     level: LogLevel = LogLevel.All;
     logWithDate: boolean = true;

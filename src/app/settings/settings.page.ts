@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import * as moment from 'moment';
 import { CoinServiceComponent } from '../service/coin.service';
 import { CurrencyServiceComponent } from '../service/currency.service';
+import { RateService } from '../service/rate.service';
 import { ValueServiceComponent } from '../service/value.service';
 
 @Component({
@@ -17,13 +18,15 @@ export class SettingsPage {
   constructor(public alertController: AlertController,
               private currencyService: CurrencyServiceComponent,
               private coinService: CoinServiceComponent,
-              private valueService: ValueServiceComponent
+              private valueService: ValueServiceComponent,
+              private rateService: RateService
   ){}
 
   ngOnInit() {
     //this.lastUpdateDate = this.valueService.dateLastUpdated;
-    this.lastUpdateDate = moment().toDate();
+    this.lastUpdateDate = this.rateService.getLastUpdateDate();
   }
+
 
   async showDeleteAlert() {
     const alert = await this.alertController.create({
@@ -92,9 +95,5 @@ export class SettingsPage {
 
   public callGetCurrency(): string{
     return this.currencyService.getCurrencySelected();
-  }
-
-  public getDateLastUpdated(){
-    //need to get date last time backend was called
   }
 }
