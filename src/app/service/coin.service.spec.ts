@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
-import { CoinServiceComponent } from '../service/coin.service';
+import { CoinService } from '../service/coin.service';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.interface';
 
 describe('CoinService', () => {
 
-    let service: CoinServiceComponent;
+    let service: CoinService;
     const testCoin = new Coin("Bitcoin", "BTC", 250.55, 0.75, 299.54)
     testCoin.purchaseDate = moment().toDate();
 
     beforeEach(waitForAsync(() => {
-        service = new CoinServiceComponent();
+        service = new CoinService();
         service['currencySelected'] = 'EUR';
         service['initService']();
         TestBed.configureTestingModule({
-            declarations: [CoinServiceComponent],
+            declarations: [CoinService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));

@@ -4,8 +4,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
 import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
-import { CoinServiceComponent } from './coin.service';
-import { CurrencyServiceComponent } from './currency.service';
+import { CoinService } from './coin.service';
+import { CurrencyService } from './currency.service';
 import { LoggingService } from './logging.service';
 
 import { RateService } from './rate.service';
@@ -13,11 +13,11 @@ import { RateService } from './rate.service';
 describe('RateService', () => {
 
     let serviceUnderTest: RateService;
-    let coinService: CoinServiceComponent;
-    let currencyService: CurrencyServiceComponent;
+    let coinService: CoinService;
+    let currencyService: CurrencyService;
     let httpClient: HttpClient;
     let loggingService: LoggingService;
-    let mockCurrencyService: jasmine.SpyObj<CurrencyServiceComponent>;
+    let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
 
     mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);

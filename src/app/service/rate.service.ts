@@ -4,8 +4,8 @@ import * as moment from "moment";
 import { Observable, throwError } from "rxjs";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
-import { CoinServiceComponent } from "./coin.service";
-import { CurrencyServiceComponent } from "./currency.service";
+import { CoinService } from "./coin.service";
+import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 
 export interface RatesResponse {
@@ -23,8 +23,8 @@ export class RateService {
     private requestUrl = 'http://localhost:8009/';
 
     constructor(
-        private coinService: CoinServiceComponent,
-        private currencyService: CurrencyServiceComponent,
+        private coinService: CoinService,
+        private currencyService: CurrencyService,
         private loggingService: LoggingService,
         private http: HttpClient,
     ) {

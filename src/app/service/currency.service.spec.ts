@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { CurrencyServiceComponent } from '../service/currency.service';
+import { CurrencyService } from '../service/currency.service';
 
 describe('CurrencyService', () => {
 
-    let service: CurrencyServiceComponent;
+    let service: CurrencyService;
 
     beforeEach(waitForAsync(() => {
-        service = new CurrencyServiceComponent();
+        service = new CurrencyService();
         service['currencySelected'] = 'EUR';
         TestBed.configureTestingModule({
-            declarations: [CurrencyServiceComponent],
+            declarations: [CurrencyService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));

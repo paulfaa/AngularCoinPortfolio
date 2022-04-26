@@ -1,8 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { CoinServiceComponent } from '../service/coin.service';
-import { ValueServiceComponent } from '../service/value.service';
+import { CoinService } from '../service/coin.service';
+import { ValueService } from '../service/value.service';
 import { ProfitFormatPipe } from '../shared/pipes/profit-format.pipe';
 
 import { PortfolioPage } from './portfolio.page';
@@ -10,9 +10,9 @@ import { PortfolioPage } from './portfolio.page';
 describe('PortfolioPage', () => {
   let component: PortfolioPage;
   let fixture: ComponentFixture<PortfolioPage>;
-  let coinService: CoinServiceComponent;
-  let valueService: ValueServiceComponent;
-  let mockCoinService: jasmine.SpyObj<CoinServiceComponent>;
+  let coinService: CoinService;
+  let valueService: ValueService;
+  let mockCoinService: jasmine.SpyObj<CoinService>;
 
   mockCoinService = jasmine.createSpyObj('mockCoinService', ['getLengthOfHeldCoins']);
   

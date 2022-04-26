@@ -1,13 +1,13 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { CoinServiceComponent } from './coin.service';
+import { CoinService } from './coin.service';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { RateService } from './rate.service';
 
 @Injectable({providedIn: 'root'})
-export class ValueServiceComponent {
+export class ValueService {
 
     constructor(
-        private coinService: CoinServiceComponent,
+        private coinService: CoinService,
         private rateService: RateService,
     ) {}
 

@@ -4,7 +4,7 @@ import { CoinName } from '../types/coinName.type';
 import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
-export class CurrencyServiceComponent {
+export class CurrencyService {
 
     private currencySelected: string; //should use enum here
 

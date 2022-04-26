@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Coin } from '@types';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { CoinServiceComponent } from '../service/coin.service';
+import { CoinService } from '../service/coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
 
@@ -36,7 +36,7 @@ export class AddFormPage implements OnInit {
   })
 
   constructor(
-    private coinService: CoinServiceComponent,
+    private coinService: CoinService,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     //private coinName: String

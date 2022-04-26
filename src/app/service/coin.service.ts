@@ -6,7 +6,7 @@ import { CoinName } from '../types/coinName.type';
 import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
-export class CoinServiceComponent{
+export class CoinService{
 
   private heldCoins: Coin[];
   private uniqueTickers: string[];

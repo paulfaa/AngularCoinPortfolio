@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Coin } from '@types';
-import { CoinServiceComponent } from '../service/coin.service';
-import { CurrencyServiceComponent } from '../service/currency.service';
-import { ValueServiceComponent } from '../service/value.service';
+import { CoinService } from '../service/coin.service';
+import { CurrencyService } from '../service/currency.service';
+import { ValueService } from '../service/value.service';
 import {HttpClient} from '@angular/common/http';
 import { LoggingService } from '../service/logging.service';
 
@@ -22,9 +22,9 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   private totalProfit = 0;
   
   constructor(public alertController: AlertController,
-    private coinService: CoinServiceComponent,
-    private valueService: ValueServiceComponent,
-    private currencyService: CurrencyServiceComponent,
+    private coinService: CoinService,
+    private valueService: ValueService,
+    private currencyService: CurrencyService,
     private loggingService: LoggingService) {}
     
     ngOnInit() {

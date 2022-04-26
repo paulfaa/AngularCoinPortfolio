@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import * as moment from 'moment';
-import { CoinServiceComponent } from '../service/coin.service';
-import { CurrencyServiceComponent } from '../service/currency.service';
+import { CoinService } from '../service/coin.service';
+import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
-import { ValueServiceComponent } from '../service/value.service';
+import { ValueService } from '../service/value.service';
 
 @Component({
   selector: 'app-settings',
@@ -16,9 +16,9 @@ export class SettingsPage {
   public lastUpdateDate: Date;
 
   constructor(public alertController: AlertController,
-              private currencyService: CurrencyServiceComponent,
-              private coinService: CoinServiceComponent,
-              private valueService: ValueServiceComponent,
+              private currencyService: CurrencyService,
+              private coinService: CoinService,
+              private valueService: ValueService,
               private rateService: RateService
   ){}
 
