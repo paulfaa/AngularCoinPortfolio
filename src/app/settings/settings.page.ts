@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import * as moment from 'moment';
+import { CurrencyEnum } from '../currencyEnum';
 import { CoinService } from '../service/coin.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
@@ -91,11 +92,11 @@ export class SettingsPage {
     return str;
 }
 
-  public callSetCurrency(value: string){
+  public callSetCurrency(value: CurrencyEnum){
     this.currencyService.setCurrencySelected(value);
   }
 
-  public callGetCurrency(): string{
+  public callGetCurrency(): CurrencyEnum{
     return this.currencyService.getCurrencySelected();
   }
 }

@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
+import { CurrencyEnum } from '../currencyEnum';
 import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
 import { CoinService } from './coin.service';
@@ -21,13 +22,13 @@ describe('RateService', () => {
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
 
     mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
-    mockCurrencyService.getCurrencySelected.and.returnValue('EUR');
+    mockCurrencyService.getCurrencySelected.and.returnValue(CurrencyEnum.EUR);
     mockLoggingService = jasmine.createSpyObj('mockCurrencyService', ['warn', 'info']);
     mockLoggingService.warn.and.returnValue(null);
     mockLoggingService.info.and.returnValue(null);
 
-    const btcRateEur = new Rate("BTC", 500.25, "EUR", moment().toDate());
-    const btcRateUsd = new Rate("BTC", 500.25, "USD", moment().toDate());
+    const btcRateEur = new Rate("BTC", 500.25, CurrencyEnum.EUR, moment().toDate());
+    const btcRateUsd = new Rate("BTC", 500.25, CurrencyEnum.USD, moment().toDate());
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);

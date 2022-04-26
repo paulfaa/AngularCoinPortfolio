@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/htt
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { Observable, throwError } from "rxjs";
+import { CurrencyEnum } from "../currencyEnum";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
 import { CoinService } from "./coin.service";
@@ -54,7 +55,7 @@ export class RateService {
         });
         tickersToUpdate.forEach(ticker => {
             //var r = backend.getRate(ticker, userCurrency);
-            var rate = new Rate("BTC", 2.457345, "EUR", now.toDate());
+            var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
             rate.updated = now.toDate();
             this.rates.push(rate);
         });

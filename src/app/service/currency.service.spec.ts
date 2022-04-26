@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { CurrencyEnum } from '../currencyEnum';
 import { CurrencyService } from '../service/currency.service';
 
 describe('CurrencyService', () => {
@@ -8,7 +9,7 @@ describe('CurrencyService', () => {
 
     beforeEach(waitForAsync(() => {
         service = new CurrencyService();
-        service['currencySelected'] = 'EUR';
+        service['currencySelected'] = CurrencyEnum.EUR;
         TestBed.configureTestingModule({
             declarations: [CurrencyService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -16,7 +17,7 @@ describe('CurrencyService', () => {
     }));
 
     afterEach(() => {
-        service.setCurrencySelected("EUR");
+        service.setCurrencySelected(CurrencyEnum.EUR);
       });
 
     describe('getCurrencySelected()', () => {
@@ -25,22 +26,22 @@ describe('CurrencyService', () => {
             var currency = service.getCurrencySelected();
 
             // Assert
-            expect(currency).toEqual("EUR");
+            expect(currency.toString()).toEqual("EUR");
         });
         it('value returned corresponds to value from storage', () => {
             // Arrange
-            service.setCurrencySelected("USD")
+            service.setCurrencySelected(CurrencyEnum.USD)
 
             // Act
             var currency = service.getCurrencySelected();
 
             // Assert
-            expect(currency).toEqual("USD");
+            expect(currency.toString()).toEqual("USD");
         });
     });
 
     describe('getCurrencySymbol()', () => {
-        it('returns currency symbol corrensponing to string', () => {
+        it('returns currency symbol corresponding to string', () => {
             // Act
             var symbol = service.getCurrencySymbol();
 

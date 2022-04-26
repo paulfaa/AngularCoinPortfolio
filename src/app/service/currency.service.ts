@@ -1,13 +1,14 @@
 import { Component, Injectable, OnInit } from '@angular/core';
+import { CurrencyEnum } from '../currencyEnum';
 
 @Injectable({providedIn: 'root'})
 export class CurrencyService {
 
-    private currencySelected: string; //should use enum here
+    private currencySelected: CurrencyEnum;
 
-    public setCurrencySelected(currency: string){
+    public setCurrencySelected(currency: CurrencyEnum){
         this.currencySelected = currency;
-        localStorage.setItem("currencySelected", this.currencySelected);
+        localStorage.setItem("currencySelected", this.currencySelected.toString());
         //window.location.reload(); should restart app on change
     }
 
@@ -18,17 +19,16 @@ export class CurrencyService {
             case null:
                 return "€";
             case 'USD':
-            case 'AUD':
             case 'NZD':
                 return "$";
         }
     }
 
-    public getCurrencySelected(): string{
+    public getCurrencySelected(): CurrencyEnum{
         //default to EUR if nothing selected
-        this.currencySelected = localStorage.getItem("currencySelected");
+        this.currencySelected = CurrencyEnum[localStorage.getItem("currencySelected")];
         if(this.currencySelected == null){
-            this.currencySelected = "EUR"
+            this.currencySelected = CurrencyEnum.EUR;
         }
         return this.currencySelected;
     }
