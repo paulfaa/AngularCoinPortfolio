@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
+import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
 import { CoinServiceComponent } from './coin.service';
 import { CurrencyServiceComponent } from './currency.service';
@@ -30,10 +31,15 @@ describe('RateService', () => {
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);
+        serviceUnderTest['initService']();
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();
     }));
+    afterEach(() => {
+	    serviceUnderTest['rates'] = [];
+        StorageUtils.clearAllStorage();
+  	});
 
     describe('getRateForTicker()', () => {
         it('should return 0 if no data for ticker', () => {
@@ -55,6 +61,7 @@ describe('RateService', () => {
         });
         it('should return 0 for matching ticker and different currency', () => {
             // Arrange
+            expect(serviceUnderTest['rates'].length).toEqual(0);
             serviceUnderTest['rates'].push(btcRateUsd);
 
             // Act
@@ -82,6 +89,7 @@ describe('RateService', () => {
             // Arrange
             var threeHoursAgo = moment().subtract(3, 'hour').toDate();
             btcRateEur.updated = threeHoursAgo;
+            serviceUnderTest['rates'].push(btcRateEur);
 
             // Act
             serviceUnderTest.updateAllExchangeRates();

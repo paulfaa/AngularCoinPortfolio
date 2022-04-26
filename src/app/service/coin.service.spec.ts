@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
 import { CoinServiceComponent } from '../service/coin.service';
+import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.interface';
 
 describe('CoinService', () => {
@@ -13,18 +14,22 @@ describe('CoinService', () => {
     beforeEach(waitForAsync(() => {
         service = new CoinServiceComponent();
         service['currencySelected'] = 'EUR';
-        service['heldCoins'] = null;
-        service.checkListState();
+        service['initService']();
         TestBed.configureTestingModule({
             declarations: [CoinServiceComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
+    afterEach(() => {
+	    service['heldCoins'] = [];
+        service['uniqueTickers'] = [];
+        StorageUtils.clearAllStorage();
+  	});
 
     describe('addToHeldCoins()', () => {
         it('adds a coin with the passed parameters to the list', () => {
             // Arrange
-            var coinsLength = service.getAllHeldCoins().length;
+            var coinsLength = service['heldCoins'].length;
             expect(coinsLength).toEqual(0);
 
             // Act
@@ -40,15 +45,15 @@ describe('CoinService', () => {
         it('removes all coins from the list', () => {
             // Arrange
             service.addToHeldCoins("BTC", 12.34, 0.004);
-            var coinsLength = service.getAllHeldCoins().length;
+            var coinsLength = service['heldCoins'].length;
             expect(coinsLength).toEqual(1);
 
             // Act
             service.clearAllHeldCoins();
-            coinsLength = service.getAllHeldCoins().length;
+            coinsLength = service['heldCoins'].length;
 
             // Assert
-            expect(coinsLength).toEqual(1);
+            expect(coinsLength).toEqual(0);
         }); 
     });
 
@@ -56,11 +61,13 @@ describe('CoinService', () => {
         it('removes the passed value if it exists in held coins', () => {
             // Arrange
             service['heldCoins'].push(testCoin);
-            expect(service['heldCoins'])[0].toEqual(testCoin);
+            expect(service['heldCoins'].length).toEqual(1);
+            var addedCoins = service['heldCoins']
+            expect(addedCoins[0]).toEqual(testCoin);
 
             // Act
             service.removeFromHeldCoins(testCoin);
-            var coinsLength = service['heldCoins'].length.toFixed;
+            var coinsLength = service['heldCoins'].length;
 
             // Assert
             expect(coinsLength).toEqual(0);
@@ -70,6 +77,7 @@ describe('CoinService', () => {
     describe('getAmountHeldOfTicker()', () => {
         it('returns 0 if users owns none', () => {
             // Act
+            expect(service['heldCoins'].length).toEqual(0);
             var amount = service.getAmountHeldOfTicker("ADA")
 
             // Assert
@@ -91,6 +99,7 @@ describe('CoinService', () => {
     describe('getAllUniqueTickers()', () => {
         it('returns empty list when no coins owned', () => {
             // Act
+            expect
             var names = service.getAllUniqueTickers();
 
             // Assert

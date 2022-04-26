@@ -18,6 +18,9 @@ export default class StorageUtils {
         catch(err){
             console.log('Error: ', err.message);
         }
-        
+    }
+
+    static clearAllStorage(): void {
+        localStorage.clear();
     }
 }

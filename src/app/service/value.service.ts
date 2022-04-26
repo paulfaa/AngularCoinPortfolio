@@ -1,8 +1,5 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { CoinServiceComponent } from './coin.service';
-import { CurrencyServiceComponent } from './currency.service';
-import StorageUtils from '../storage.utils';
-import { Rate } from '../types/rate.type';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { RateService } from './rate.service';
 

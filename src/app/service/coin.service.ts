@@ -18,18 +18,19 @@ export class CoinServiceComponent{
 
   private initService(): void{
     var storedCoins = StorageUtils.readFromStorage('savedCoins');
-    var storedTickers = StorageUtils.readFromStorage('uniqueTickers');
-    if (storedCoins === undefined){ 
-      console.log('setting this.heldcoins to null')
-        this.heldCoins = [];
+    if (storedCoins === null){ 
+      console.log('init method setting heldcoins and uniquetickers to empty list')
+      this.heldCoins = [];
+      this.uniqueTickers = [];
     }
     else {
       console.log('setting this.heldcoins to ' + storedCoins)
       this.heldCoins = storedCoins;
-      this.uniqueTickers = this.getAllUniqueTickers();
+      this.uniqueTickers = StorageUtils.readFromStorage('uniqueTickers');
     }
 }
 
+//move this
   private coinNames: Coin[] = [
     new Coin("Bitcoin","BTC"),
     new Coin("Cardano","ADA"),
@@ -48,15 +49,6 @@ export class CoinServiceComponent{
     new CoinName("Litecoin","LTE"),
     new CoinName("Tron","TRX")
   ]
-
-  public checkListState(): void {
-    if(this.heldCoins == null){
-      this.heldCoins = [];
-    }
-    if(this.uniqueTickers == null){
-      this.uniqueTickers = [];
-    }
-  }
   
   public addCoin(c: Coin){
     this.heldCoins.push(c);
@@ -64,16 +56,16 @@ export class CoinServiceComponent{
 
   public addToHeldCoins(ticker: string, purchasePrice: number, quantity: number){
     var fullName = nameEnum[ticker];
-    console.log(this.heldCoins);
+    //console.log(this.heldCoins);
     if(this.uniqueTickers.includes(ticker) == false){
       this.uniqueTickers.push(ticker);
     }
     this.heldCoins.push(new Coin(fullName, ticker, purchasePrice, quantity));
     this.sortAllHeldCoins();
-    this.saveStorage();
+    this.updateStorage();
   }
 
-  public saveStorage(){
+  public updateStorage(){
     StorageUtils.writeToStorage('savedCoins', this.heldCoins)
     StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
@@ -82,7 +74,7 @@ export class CoinServiceComponent{
     this.heldCoins.forEach((value,index)=>{
       if(value==coinToDelete) this.heldCoins.splice(index,1);
     });
-    this.saveStorage();
+    this.updateStorage();
   }
 
   public getAmountHeldOfTicker(ticker: string): number{
@@ -108,8 +100,9 @@ export class CoinServiceComponent{
 
   public clearAllHeldCoins(){
     console.log("clearing all coins");
-    this.heldCoins, this.uniqueTickers = [];
-    this.saveStorage();
+    this.heldCoins = [];
+    this.uniqueTickers = [];
+    this.updateStorage();
   }
 
   public getAllCoinNames(): CoinName[] {
@@ -117,17 +110,12 @@ export class CoinServiceComponent{
     this.coinNames.forEach(Coin => {
       names.push(Coin)
     });
-    console.log("Output of getallcoinnames: ", names);
     return names;
   }
 
   public getAllHeldCoins(){
     //should only have to load this once on app start, rewrite this
-    if(this.heldCoins == null){
-      this.heldCoins = StorageUtils.readFromStorage('savedCoins');
-    }
     this.sortAllHeldCoins();
-    //console.log(this.heldCoins);
     return this.heldCoins;
   }
 

@@ -33,7 +33,7 @@ export class RateService {
 
     private initService(): void{
         var storedRates = StorageUtils.readFromStorage('rates');
-        if (storedRates === undefined){
+        if (storedRates === null){
             this.rates = [];
         }
         else {
@@ -72,14 +72,13 @@ export class RateService {
     }
 
     public getRateForTicker(tickerToLookup: string): number{
-        this.rates = [];
         var userCurrency = this.currencyService.getCurrencySelected();
         //this.rates = StorageUtils.readFromStorage('rates');
         //console.log("rates: " + this.rates); //rates is null
         var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === userCurrency )
         if(foundRate != undefined){
             this.loggingService.info("RateService: found rate- ", foundRate);
-            return foundRate.getValue();
+            return foundRate.value;
         }
         else{
             this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + userCurrency + ".")
