@@ -1,9 +1,8 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { nameEnum } from '../nameEnum';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.interface';
 import { CoinName } from '../types/coinName.type';
-import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CoinService{

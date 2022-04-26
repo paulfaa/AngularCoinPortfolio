@@ -5,6 +5,7 @@ import { CoinService } from '../service/coin.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
 import { ValueService } from '../service/value.service';
+import StorageUtils from '../storage.utils';
 
 @Component({
   selector: 'app-settings',
@@ -53,6 +54,7 @@ export class SettingsPage {
         {text: 'OK',
         handler: () => {
           this.coinService.clearAllHeldCoins();
+          StorageUtils.clearAllStorage();
           console.log("call deleteall coins")
         }}, 
         {text: 'Cancel',

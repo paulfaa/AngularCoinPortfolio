@@ -31,7 +31,6 @@ describe('RateService', () => {
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);
-        serviceUnderTest['initService']();
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();

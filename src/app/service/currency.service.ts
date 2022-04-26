@@ -1,7 +1,4 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { Coin } from '../types/coin.interface';
-import { CoinName } from '../types/coinName.type';
-import { IValue } from '../types/value.interface';
 
 @Injectable({providedIn: 'root'})
 export class CurrencyService {
@@ -11,6 +8,7 @@ export class CurrencyService {
     public setCurrencySelected(currency: string){
         this.currencySelected = currency;
         localStorage.setItem("currencySelected", this.currencySelected);
+        //window.location.reload(); should restart app on change
     }
 
     public getCurrencySymbol(): string{

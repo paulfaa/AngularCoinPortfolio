@@ -14,7 +14,6 @@ describe('CoinService', () => {
     beforeEach(waitForAsync(() => {
         service = new CoinService();
         service['currencySelected'] = 'EUR';
-        service['initService']();
         TestBed.configureTestingModule({
             declarations: [CoinService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -122,7 +121,33 @@ describe('CoinService', () => {
 
     describe('getLastAddedDate()', () => {
         it('returns the most recent date from all owned coins', () => {
+            // Arrange
+            const oldCoin = new Coin("BitCoin", "BTC", 1.23, 5)
+            const oldDate = new Date(2011,1,1,11,11,0);
+            oldCoin.purchaseDate = oldDate;
+            service.addCoin(oldCoin);
+
             // Act
+            var returnedDate = service.getLastAddedDate();
+
+            // Assert
+            expect(returnedDate).toEqual(oldDate);
+            expect(service['lastAddedCoinDate']).toEqual(oldDate);
+        });
+        it('returns the most recent date from all owned coins2', () => {
+            // Arrange
+            const oldCoin = new Coin("BitCoin", "BTC", 1.23, 5)
+            const oldDate = new Date(2011,1,1,11,11,0);
+            oldCoin.purchaseDate = oldDate;
+            service.addCoin(oldCoin);
+            service.addCoin(testCoin);
+
+            // Act
+            var returnedDate = service.getLastAddedDate();
+
+            // Assert
+            expect(returnedDate).toEqual(testCoin.purchaseDate);
+            expect(service['lastAddedCoinDate']).toEqual(testCoin.purchaseDate);
         });
     });
 

@@ -39,6 +39,14 @@ describe('PortfolioPage', () => {
       expect(component.showEmptyPortfolioAlert).toHaveBeenCalled;
 
     });
+    it("is is not called when the user portfolio contains items", () => {
+      // Arrange
+      mockCoinService.getLengthOfHeldCoins.and.returnValue(3);
+
+      // Assert
+      expect(component.showEmptyPortfolioAlert).not.toHaveBeenCalled;
+
+    });
   });
 
   it('should create', () => {
