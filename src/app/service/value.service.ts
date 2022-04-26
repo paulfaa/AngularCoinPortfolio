@@ -11,16 +11,16 @@ export class ValueService {
         private rateService: RateService,
     ) {}
 
-    public totalValue: number;
-    public totalProfit: number;
+    public totalValue = 0;
+    public totalProfit = 0;
 
     public calculateTotalProfit(): number{
         var totalExpendature = 0;
-        //var totalValue = this.calculateTotalValue();
-        var totalValue = this.totalValue;
+        var totalValue = 0; //shound be var totalValue = this.calculateTotalValue();
         var allCoins = this.coinService.getAllHeldCoins();
         allCoins?.forEach(c => {
-            totalExpendature = totalExpendature + c.purchasePrice
+            totalExpendature = totalExpendature + c.purchasePrice;
+            totalValue = totalValue + c.currentValue;
         });
         var total = totalValue - totalExpendature;
         this.totalProfit = total;

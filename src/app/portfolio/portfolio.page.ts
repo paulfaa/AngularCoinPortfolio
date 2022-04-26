@@ -7,6 +7,10 @@ import { ValueService } from '../service/value.service';
 import {HttpClient} from '@angular/common/http';
 import { LoggingService } from '../service/logging.service';
 
+//TODO 
+// Fix icons on portfolio page
+// Connect to backend
+
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.page.html',

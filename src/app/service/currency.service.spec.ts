@@ -10,6 +10,7 @@ describe('CurrencyService', () => {
     beforeEach(waitForAsync(() => {
         service = new CurrencyService();
         service['currencySelected'] = CurrencyEnum.EUR;
+        localStorage.setItem("currencySelected", "EUR");
         TestBed.configureTestingModule({
             declarations: [CurrencyService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -26,7 +27,7 @@ describe('CurrencyService', () => {
             var currency = service.getCurrencySelected();
 
             // Assert
-            expect(currency.toString()).toEqual("EUR");
+            expect(CurrencyEnum[currency].toString()).toEqual("EUR");
         });
         it('value returned corresponds to value from storage', () => {
             // Arrange

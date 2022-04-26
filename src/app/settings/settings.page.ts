@@ -29,7 +29,6 @@ export class SettingsPage {
     this.lastUpdateDate = this.rateService.getLastUpdateDate();
   }
 
-
   async showDeleteAlert() {
     const alert = await this.alertController.create({
       header: 'Warning',
@@ -69,6 +68,10 @@ export class SettingsPage {
 
   private ConvertToCSV(): string {
     var data = this.coinService.getAllHeldCoins();
+    if (data == null){
+      console.log("no data to convert")
+      return
+    }
     var headerList: string[] = ['name', 'ticker', 'searchString', 'purchasePrice', 'quantity', 'purchaseDate'];
     let array = typeof data != 'object' ? JSON.parse(data) : data;
     let str = '';
@@ -89,6 +92,7 @@ export class SettingsPage {
         str += line + '\r\n';
     }
     console.log(str);
+    // need to save this to users device
     return str;
 }
 
@@ -96,7 +100,8 @@ export class SettingsPage {
     this.currencyService.setCurrencySelected(value);
   }
 
-  public callGetCurrency(): CurrencyEnum{
-    return this.currencyService.getCurrencySelected();
+  public callGetCurrency(): String{
+    var selected = CurrencyEnum[this.currencyService.getCurrencySelected()].toString();
+    return selected;
   }
 }

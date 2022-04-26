@@ -80,7 +80,7 @@ export class RateService {
             return foundRate.value;
         }
         else{
-            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + this.selectedCurrency + ".")
+            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + this.selectedCurrency.toString() + ".")
             return 0;
         }
     }
