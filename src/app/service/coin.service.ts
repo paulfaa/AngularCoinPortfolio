@@ -49,7 +49,7 @@ export class CoinService{
     new CoinName("Tron","TRX")
   ]
   
-  public addCoin(c: Coin){
+  public addCoin(c: Coin): void{
     this.heldCoins.push(c);
   }
 
@@ -64,12 +64,12 @@ export class CoinService{
     this.updateStorage();
   }
 
-  public updateStorage(){
+  public updateStorage(): void{
     StorageUtils.writeToStorage('savedCoins', this.heldCoins)
     StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
 
-  public removeFromHeldCoins(coinToDelete: Coin) {
+  public removeFromHeldCoins(coinToDelete: Coin): void{
     this.heldCoins.forEach((value,index)=>{
       if(value==coinToDelete) this.heldCoins.splice(index,1);
     });
@@ -97,13 +97,14 @@ export class CoinService{
     }
   }
 
-  public clearAllHeldCoins(){
+  public clearAllHeldCoins(): void{
     console.log("clearing all coins");
     this.heldCoins = [];
     this.uniqueTickers = [];
     this.updateStorage();
   }
 
+  //duplicates in list?
   public getAllCoinNames(): CoinName[] {
     let names = [];
     this.coinNames.forEach(Coin => {
@@ -112,7 +113,7 @@ export class CoinService{
     return names;
   }
 
-  public getAllHeldCoins(){
+  public getAllHeldCoins(): Coin[]{
     //should only have to load this once on app start, rewrite this
     this.sortAllHeldCoins();
     return this.heldCoins;
@@ -134,7 +135,7 @@ export class CoinService{
   }
 
   //sorts list alphabetically by ticker then by purchase date
-  private sortAllHeldCoins(){
+  private sortAllHeldCoins(): void{
     if(this.heldCoins != null && this.heldCoins.length >= 2){
       this.heldCoins.sort((a,b) => a.ticker.localeCompare(b.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf());
     }
