@@ -15,37 +15,35 @@ export class ValueService {
     private totalProfit = 0;
 
     public calculateTotalProfit(): number{
-        var totalExpendature = 0;
-        var totalValue = 0; //shound be var totalValue = this.calculateTotalValue();
-        var allCoins = this.coinService.getAllHeldCoins();
-        allCoins?.forEach(c => {
-            totalExpendature = totalExpendature + c.purchasePrice;
-            totalValue = totalValue + c.currentValue.getCurrentValue();
-        });
-        var total = totalValue - totalExpendature;
-        this.totalProfit = total;
-        return total;
+        var totalExpendature = this.getTotalExpenditure();
+        var totalValue = this.calculateTotalValue();
+        var totalProfit = totalValue - totalExpendature;
+        this.totalProfit = totalProfit;
+        return totalProfit;
     }
 
     public calculateTotalValue(): number{
         var total = 0;
         this.rateService.updateAllExchangeRates();
         var allTickers = this.coinService.getAllUniqueTickers();
-        if(allTickers != null){
+        if(allTickers != null && allTickers.length >= 1){
             allTickers.forEach(ticker => {
                 total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker);
-        });
+            });
+        }
         this.totalValue = total;
         return total;
-        }
     }
 
     public getTotalExpenditure(): number{
-        var counter = 0;
-        this.coinService.getAllHeldCoins().forEach(heldCoin => {
-          counter = counter + heldCoin.purchasePrice;
-        });
-        return counter;
+        var expenditure = 0;
+        var heldCoins = this.coinService.getAllHeldCoins();
+        if(heldCoins != null){
+            heldCoins.forEach(heldCoin => {
+                expenditure = expenditure + heldCoin.purchasePrice;
+            });
+        }
+        return expenditure;
       }
 
     public calculateValueForTicker(ticker: string): number{

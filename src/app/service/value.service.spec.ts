@@ -5,7 +5,6 @@ import { CurrencyEnum } from "../currencyEnum";
 import { Coin } from "../types/coin.type";
 import { Value } from "../types/value.type";
 import { CoinService } from "./coin.service";
-import { CurrencyService } from "./currency.service";
 import { RateService } from "./rate.service";
 import { ValueService } from "./value.service";
 
@@ -15,8 +14,8 @@ describe('ValueService', () => {
     let mockCoinService: jasmine.SpyObj<CoinService>;
     let mockRateService: jasmine.SpyObj<RateService>;
 
-    mockCoinService = jasmine.createSpyObj('mockCoinService', ['getAllHeldCoins']);
-    mockRateService = jasmine.createSpyObj('mockRateService', ['methodName1']);
+    mockCoinService = jasmine.createSpyObj('mockCoinService', ['getAllHeldCoins', 'getAllUniqueTickers', 'getAmountHeldOfTicker']);
+    mockRateService = jasmine.createSpyObj('mockRateService', ['updateAllExchangeRates', 'getRateForTicker']);
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new ValueService(mockCoinService, mockRateService);
@@ -29,6 +28,8 @@ describe('ValueService', () => {
         it('should return 0 no coins are owned', () => {
             // Arrange
             mockCoinService.getAllHeldCoins.and.returnValue(null);
+            mockCoinService.getAllUniqueTickers.and.returnValue(null);
+            mockRateService.updateAllExchangeRates.and.returnValue(null);
 
             // Act
             var result = serviceUnderTest.calculateTotalProfit();
@@ -43,6 +44,10 @@ describe('ValueService', () => {
                 new Coin("BitCoin", "BTC", 100, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
+            mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
+            mockCoinService.getAmountHeldOfTicker.and.returnValue(1);
+            mockRateService.updateAllExchangeRates.and.returnValue(null);
+            mockRateService.getRateForTicker.and.returnValue(200);
 
             // Act
             var result = serviceUnderTest.calculateTotalProfit();
@@ -52,17 +57,21 @@ describe('ValueService', () => {
         });
         it('should be able to deal with negative values', () => {
             // Arrange
-            const value = new Value(100, CurrencyEnum.EUR, moment().toDate())
+            const value = new Value(-100, CurrencyEnum.EUR, moment().toDate())
             let coinList: Coin[] = [
                 new Coin("BitCoin", "BTC", 200, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
+            mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
+            mockCoinService.getAmountHeldOfTicker.and.returnValue(1);
+            mockRateService.updateAllExchangeRates.and.returnValue(null);
+            mockRateService.getRateForTicker.and.returnValue(-100);;
 
             // Act
             var result = serviceUnderTest.calculateTotalProfit();
 
             // Assert
-            expect(result).toEqual(-100);
+            expect(result).toEqual(-300);
         });
     });
 });
