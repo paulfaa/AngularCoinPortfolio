@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { nameEnum } from '../nameEnum';
 import StorageUtils from '../storage.utils';
-import { Coin } from '../types/coin.interface';
+import { Coin } from '../types/coin.type';
 import { CoinName } from '../types/coinName.type';
 
 @Injectable({providedIn: 'root'})

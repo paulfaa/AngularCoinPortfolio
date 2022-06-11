@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Coin } from '@types';
+import { Coin } from '../types/coin.type';
 import { CoinService } from '../service/coin.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
-import {HttpClient} from '@angular/common/http';
 import { LoggingService } from '../service/logging.service';
 
 //TODO 

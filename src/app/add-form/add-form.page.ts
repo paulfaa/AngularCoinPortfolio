@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Coin } from '@types';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { CoinService } from '../service/coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
+import { Coin } from '../types/coin.type';
 
 @Component({
   selector: 'app-add-form',

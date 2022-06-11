@@ -1,7 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { waitForAsync, TestBed } from "@angular/core/testing";
-import { Coin } from "../types/coin.interface";
+import * as moment from "moment";
+import { CurrencyEnum } from "../currencyEnum";
+import { Coin } from "../types/coin.type";
+import { Value } from "../types/value.type";
 import { CoinService } from "./coin.service";
+import { CurrencyService } from "./currency.service";
 import { RateService } from "./rate.service";
 import { ValueService } from "./value.service";
 
@@ -34,8 +38,9 @@ describe('ValueService', () => {
         });
         it('should be able to deal with positive values', () => {
             // Arrange
+            const value = new Value(200, CurrencyEnum.EUR, moment().toDate())
             let coinList: Coin[] = [
-                new Coin("BitCoin", "BTC", 100, 1, 200)
+                new Coin("BitCoin", "BTC", 100, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
 
@@ -47,8 +52,9 @@ describe('ValueService', () => {
         });
         it('should be able to deal with negative values', () => {
             // Arrange
+            const value = new Value(100, CurrencyEnum.EUR, moment().toDate())
             let coinList: Coin[] = [
-                new Coin("BitCoin", "BTC", 200, 1, 100)
+                new Coin("BitCoin", "BTC", 200, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
 

@@ -1,24 +1,22 @@
 import { CurrencyEnum } from '../currencyEnum';
-import { IValue } from './value.interface';
+import { Value } from './value.type';
 
 export class Coin {
     name: string;
     ticker: string;
     searchString: string;
     purchasePrice: number;
-    currentValue: number;
-    //value?: IValue;
+    currentValue: Value;
     quantity: number;
     purchaseDate: Date;
-    purchaseCurrency: CurrencyEnum;
     
-    constructor(cName: string, cTicker?: string, cPurchasePrice?: number, cQuantity?: number, cValue?: number){
+    constructor(cName: string, cTicker?: string, cPurchasePrice?: number, cQuantity?: number, value?: Value){
         this.name = cName;
         this.ticker = cTicker;
         this.searchString = cName + " - " + cTicker;
         this.purchasePrice = cPurchasePrice;
         this.quantity = cQuantity;
-        this.currentValue = cValue;
+        this.currentValue = value;
         this.purchaseDate = new Date();
     }
 }

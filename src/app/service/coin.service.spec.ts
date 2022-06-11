@@ -1,14 +1,17 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
+import { CurrencyEnum } from '../currencyEnum';
 import { CoinService } from '../service/coin.service';
 import StorageUtils from '../storage.utils';
-import { Coin } from '../types/coin.interface';
+import { Coin } from '../types/coin.type';
+import { Value } from '../types/value.type';
 
 describe('CoinService', () => {
 
     let service: CoinService;
-    const testCoin = new Coin("Bitcoin", "BTC", 250.55, 0.75, 299.54)
+    const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
+    const testCoin = new Coin("Bitcoin", "BTC", 250.55, 0.75, testValue);
     testCoin.purchaseDate = moment().toDate();
 
     beforeEach(waitForAsync(() => {
