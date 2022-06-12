@@ -85,7 +85,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     async infoPopup(coin: Coin) {
       const alert = await this.alertController.create({
         header: coin.quantity + " " + coin.name,
-        message: coin.purchaseDate.toString() + "<br>" + "\n" + coin.purchasePrice,
+        message: coin.purchaseDetails.date.toString() + "<br>" + "\n" + coin.purchaseDetails.price,
         buttons: [
           {text: 'OK'}
         ]

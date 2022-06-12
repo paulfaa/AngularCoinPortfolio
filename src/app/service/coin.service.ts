@@ -3,6 +3,7 @@ import { nameEnum } from '../nameEnum';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.type';
 import { CoinName } from '../types/coinName.type';
+import { PurchaseDetails } from '../types/purchaseDetails.type';
 
 @Injectable({providedIn: 'root'})
 export class CoinService{
@@ -52,13 +53,14 @@ export class CoinService{
     
   }
 
-  public addToHeldCoins(ticker: string, purchasePrice: number, quantity: number){
+  //can probably remove
+  public addToHeldCoins(ticker: string, purchaseDetails: PurchaseDetails, quantity: number){
     var coinName = new CoinName(nameEnum[ticker], ticker) //TEST
     //console.log(this.heldCoins);
     if(this.uniqueTickers.includes(ticker) == false){
       this.uniqueTickers.push(ticker);
     }
-    this.heldCoins.push(new Coin(coinName, purchasePrice, quantity));
+    this.heldCoins.push(new Coin(coinName, purchaseDetails, quantity));
     this.sortAllHeldCoins();
     this.updateStorage();
   }
@@ -136,7 +138,7 @@ export class CoinService{
   private sortAllHeldCoins(): void{
     if(this.heldCoins != null && this.heldCoins.length >= 2){
       console.log("this.heldcoins: " + this.heldCoins);
-      this.heldCoins.sort((a,b) => a.name.ticker.localeCompare(b.name.ticker) || b.purchaseDate.valueOf() - a.purchaseDate.valueOf()); //was throwing error, seems to work again
+      this.heldCoins.sort((a,b) => a.name.ticker.localeCompare(b.name.ticker) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf()); //was throwing error, seems to work again
     }
   }
 
@@ -149,7 +151,7 @@ export class CoinService{
   public getLastAddedDate(): Date{
     var date;
     this.heldCoins.forEach(coin => {
-      var purchaseDate = coin.purchaseDate;
+      var purchaseDate = coin.purchaseDetails.date;
       if ( date===undefined || date < purchaseDate){
         date = purchaseDate;
       }

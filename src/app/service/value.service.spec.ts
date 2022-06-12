@@ -4,9 +4,11 @@ import * as moment from "moment";
 import { CurrencyEnum } from "../currencyEnum";
 import { Coin } from "../types/coin.type";
 import { CoinName } from "../types/coinName.type";
+import { PurchaseDetails } from "../types/purchaseDetails.type";
 import { Rate } from "../types/rate.type";
 import { Value } from "../types/value.type";
 import { CoinService } from "./coin.service";
+import { CurrencyService } from "./currency.service";
 import { RateService } from "./rate.service";
 import { ValueService } from "./value.service";
 
@@ -15,14 +17,16 @@ describe('ValueService', () => {
     let serviceUnderTest: ValueService;
     let mockCoinService: jasmine.SpyObj<CoinService>;
     let mockRateService: jasmine.SpyObj<RateService>;
+    let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
 
     mockCoinService = jasmine.createSpyObj('mockCoinService', ['getAllHeldCoins', 'getAllUniqueTickers', 'getAmountHeldOfTicker']);
     mockRateService = jasmine.createSpyObj('mockRateService', ['updateAllExchangeRates', 'getRateForTicker']);
+    mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
 
     const coinName = new CoinName("BitCoin", "BTC");
 
     beforeEach(waitForAsync(() => {
-        serviceUnderTest = new ValueService(mockCoinService, mockRateService);
+        serviceUnderTest = new ValueService(mockCoinService, mockRateService, mockCurrencyService);
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();
@@ -44,8 +48,9 @@ describe('ValueService', () => {
         it('should be able to deal with positive values', () => {
             // Arrange
             const value = new Value(200, CurrencyEnum.EUR, moment().toDate())
+            const purchaseDetails = new PurchaseDetails(100, CurrencyEnum.EUR, moment().toDate());
             let coinList: Coin[] = [
-                new Coin(coinName, 100, 1, value)
+                new Coin(coinName, purchaseDetails, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -62,8 +67,9 @@ describe('ValueService', () => {
         it('should be able to deal with negative values', () => {
             // Arrange
             const value = new Value(-100, CurrencyEnum.EUR, moment().toDate())
+            const purchaseDetails = new PurchaseDetails(200, CurrencyEnum.EUR, moment().toDate());
             let coinList: Coin[] = [
-                new Coin(coinName, 200, 1, value)
+                new Coin(coinName, purchaseDetails, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -84,10 +90,12 @@ describe('ValueService', () => {
             // Arrange
             const value1 = new Value(200, CurrencyEnum.EUR, moment().toDate())
             const value2 = new Value(200, CurrencyEnum.EUR, moment().toDate())
+            const purchaseDetails1 = new PurchaseDetails(100, CurrencyEnum.EUR, moment().toDate());
+            const purchaseDetails2 = new PurchaseDetails(120, CurrencyEnum.EUR, moment().toDate());
             const newRate = new Rate("BTC", 200, CurrencyEnum.EUR, moment().toDate());
             let coinList: Coin[] = [
-                new Coin(coinName, 100, 1, value1),
-                new Coin(coinName, 120, 1, value2)
+                new Coin(coinName, purchaseDetails1, 1, value1),
+                new Coin(coinName, purchaseDetails2, 1, value2)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["BTC"]);

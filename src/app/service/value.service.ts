@@ -1,6 +1,5 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { CoinService } from './coin.service';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { RateService } from './rate.service';
 import { Coin } from '../types/coin.type';
 import { Value } from '../types/value.type';
@@ -49,7 +48,7 @@ export class ValueService {
         var heldCoins = this.coinService.getAllHeldCoins();
         if(heldCoins != null){
             heldCoins.forEach(heldCoin => {
-                expenditure = expenditure + heldCoin.purchasePrice;
+                expenditure = expenditure + heldCoin.purchaseDetails.price;
             });
         }
         return expenditure;

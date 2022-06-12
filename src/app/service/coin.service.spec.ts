@@ -6,6 +6,7 @@ import { CoinService } from '../service/coin.service';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.type';
 import { CoinName } from '../types/coinName.type';
+import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
 
 describe('CoinService', () => {
@@ -13,8 +14,8 @@ describe('CoinService', () => {
     let service: CoinService;
     const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
     const coinName = new CoinName("BitCoin", "BTC");
-    const testCoin = new Coin(coinName, 250.55, 0.75, testValue);
-    testCoin.purchaseDate = moment().toDate();
+    const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
+    const testCoin = new Coin(coinName, purchaseDetails, 0.75, testValue);
 
     beforeEach(waitForAsync(() => {
         service = new CoinService();
@@ -30,7 +31,22 @@ describe('CoinService', () => {
         StorageUtils.clearAllStorage();
   	});
 
-    describe('addToHeldCoins()', () => {
+      describe('addCoin()', () => {
+        it('adds the specified coin to the list', () => {
+            // Arrange
+            var coinsLength = service['heldCoins'].length;
+            expect(coinsLength).toEqual(0);
+
+            // Act
+            service.addCoin(testCoin);
+            var coinsLength = service.getAllHeldCoins().length;
+
+            // Assert
+            expect(coinsLength).toEqual(1);
+        });
+    });
+
+    /* describe('addToHeldCoins()', () => {
         it('adds a coin with the passed parameters to the list', () => {
             // Arrange
             var coinsLength = service['heldCoins'].length;
@@ -43,12 +59,12 @@ describe('CoinService', () => {
             // Assert
             expect(coinsLength).toEqual(1);
         });
-    });
+    }); */
 
     describe('clearAllHeldCoins()', () => {
         it('removes all coins from the list', () => {
             // Arrange
-            service.addToHeldCoins("BTC", 12.34, 0.004);
+            service.addCoin(testCoin);
             var coinsLength = service['heldCoins'].length;
             expect(coinsLength).toEqual(1);
 
@@ -89,8 +105,9 @@ describe('CoinService', () => {
         });
         it('returns total holdings of the passed ticker', () => {
             // Arrange
-            service.addToHeldCoins("ADA", 0, 3.45);
-            service.addToHeldCoins("ADA", 0, 1.25);
+            const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
+            service.addToHeldCoins("ADA", purchaseDetails, 3.45);
+            service.addToHeldCoins("ADA", purchaseDetails, 1.25);
 
             // Act
             var amount = service.getAmountHeldOfTicker("ADA")
@@ -111,9 +128,9 @@ describe('CoinService', () => {
         });
         it('returns the ticker once for each unique coin', () => {
             // Arrange
-            service.addToHeldCoins("BTC", 12.34, 0.004);
-            service.addToHeldCoins("BTC", 1.45, 0.001);
-            service.addToHeldCoins("ADA", 15, 23.663);
+            service.addToHeldCoins("BTC", purchaseDetails, 0.004);
+            service.addToHeldCoins("BTC", purchaseDetails, 0.001);
+            service.addToHeldCoins("ADA", purchaseDetails, 23.663);
 
             // Act
             var names = service.getAllUniqueTickers();
@@ -127,9 +144,10 @@ describe('CoinService', () => {
     describe('getLastAddedDate()', () => {
         it('returns the most recent date from all owned coins', () => {
             // Arrange
-            const oldCoin = new Coin(coinName, 1.23, 5)
             const oldDate = new Date(2011,1,1,11,11,0);
-            oldCoin.purchaseDate = oldDate;
+            const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, oldDate);
+            const oldCoin = new Coin(coinName, purchaseDetails, 5)
+        
             service.addCoin(oldCoin);
 
             // Act
@@ -141,9 +159,9 @@ describe('CoinService', () => {
         });
         it('returns the most recent date from all owned coins2', () => {
             // Arrange
-            const oldCoin = new Coin(coinName, 1.23, 5)
             const oldDate = new Date(2011,1,1,11,11,0);
-            oldCoin.purchaseDate = oldDate;
+            const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, oldDate);
+            const oldCoin = new Coin(coinName, purchaseDetails, 5)
             service.addCoin(oldCoin);
             service.addCoin(testCoin);
 
@@ -151,8 +169,8 @@ describe('CoinService', () => {
             var returnedDate = service.getLastAddedDate();
 
             // Assert
-            expect(returnedDate).toEqual(testCoin.purchaseDate);
-            expect(service['lastAddedCoinDate']).toEqual(testCoin.purchaseDate);
+            expect(returnedDate).toEqual(testCoin.purchaseDetails.date);
+            expect(service['lastAddedCoinDate']).toEqual(testCoin.purchaseDetails.date);
         });
     });
 

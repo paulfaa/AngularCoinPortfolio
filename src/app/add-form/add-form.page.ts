@@ -7,6 +7,9 @@ import { CoinName } from '../types/coinName.type';
 import { Coin } from '../types/coin.type';
 import { Value } from '../types/value.type';
 import { ValueService } from '../service/value.service';
+import { PurchaseDetails } from '../types/purchaseDetails.type';
+import { CurrencyService } from '../service/currency.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-add-form',
@@ -20,7 +23,7 @@ export class AddFormPage implements OnInit {
   get name(){
     return this.coinForm.get('name');
   }
-  get amount(){
+  get amount(){  // rename to quantity
     return this.coinForm.get('amount');
   }
   get purchasePrice(){
@@ -40,6 +43,7 @@ export class AddFormPage implements OnInit {
   constructor(
     private coinService: CoinService,
     private valueService: ValueService,
+    private currencyService: CurrencyService,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     //private coinName: String
@@ -69,12 +73,13 @@ export class AddFormPage implements OnInit {
     //has to be a cleaner way instead of converting to json
     var coinName = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
     var coinValue = this.valueService.createNewValue(this.coinForm.controls['amount'].value);
-    var coin = new Coin(coinName, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
+    var purchaseDetails = new PurchaseDetails(this.coinForm.controls['purchasePrice'].value, this.currencyService.getCurrencySelected(), moment().toDate());
+    var coin = new Coin(coinName, purchaseDetails, this.coinForm.controls['amount'].value, coinValue);
     
     console.log("Newly created coin:")
     console.log(coin);
     this.coinService.addCoin(coin);
-    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchasePrice);
+    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchaseDetails.price);
     this.clearAllInputs();
 
     //this.coinService.addToHeldCoins(coinName, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
