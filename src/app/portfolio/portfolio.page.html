@@ -33,8 +33,8 @@
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{ coin.quantity }}</p>
-        <p>{{ currencySymbol }}{{ coin.purchasePrice }}</p>
-        <p>{{ coin.currentValue }}</p>
+        <p>{{ currencySymbol }}{{ coin.purchaseDetails.price }}</p>
+        <p>{{ coin.value.currentValue }}</p>
         <!-- <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6> -->
       </ion-item>
       <ion-item-options side="end">
@@ -46,7 +46,7 @@
     </ion-item-sliding>
 
     <footer *ngIf="!heldCoins[index+1] || coin.name.displayName !== heldCoins[index+1].name.displayName">
-      Total {{coin.name.displayName}} profit:
+      Total {{coin.name.displayName}} profit: <value-footer [ticker]=coin.name.ticker></value-footer>
     </footer>
   </div>
 

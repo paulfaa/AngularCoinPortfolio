@@ -50,7 +50,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       console.log("ngAfterViewInit All held coins: ", this.coinService.getAllHeldCoins());
       
     }
-
+    
     public callCalculateValueForTicker(ticker: string){
       this.valueService.calculateValueForTicker(ticker);
     }
