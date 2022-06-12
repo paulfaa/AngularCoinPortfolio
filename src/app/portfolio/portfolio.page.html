@@ -25,9 +25,9 @@
   
   <div ngFor *ngFor="let coin of heldCoins; let index = index">
     <!-- might look better putting icon before text -->
-    <p id="header" *ngIf="!heldCoins[index-1] || coin.name !== heldCoins[index-1].name">
+    <p id="header" *ngIf="!heldCoins[index-1] || coin.name.displayName !== heldCoins[index-1].name.displayName">
       <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
-      {{ coin.name }}
+      {{ coin.name.displayName }}
     </p>
     
     <ion-item-sliding>
@@ -45,8 +45,8 @@
       </ion-item-options>
     </ion-item-sliding>
 
-    <footer *ngIf="!heldCoins[index+1] || coin.name !== heldCoins[index+1].name">
-      Total {{coin.name}} profit:
+    <footer *ngIf="!heldCoins[index+1] || coin.name.displayName !== heldCoins[index+1].name.displayName">
+      Total {{coin.name.displayName}} profit:
     </footer>
   </div>
 

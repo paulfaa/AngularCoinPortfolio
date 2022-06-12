@@ -5,6 +5,8 @@ import { CoinService } from '../service/coin.service';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
 import { Coin } from '../types/coin.type';
+import { Value } from '../types/value.type';
+import { ValueService } from '../service/value.service';
 
 @Component({
   selector: 'app-add-form',
@@ -37,6 +39,7 @@ export class AddFormPage implements OnInit {
 
   constructor(
     private coinService: CoinService,
+    private valueService: ValueService,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     //private coinName: String
@@ -64,15 +67,17 @@ export class AddFormPage implements OnInit {
 
   public submitForm(){
     //has to be a cleaner way instead of converting to json
-    var json = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
-    //console.log(json.ticker);
-    //console.log('value: ', this.coinForm.controls['amount'].value);
-
-    this.coinService.addToHeldCoins(json.ticker, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
-    this.presentToast("Added: " + this.coinForm.controls['amount'].value + " " + json.name + " @ " + this.coinForm.controls['purchasePrice'].value);
+    var coinName = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
+    var coinValue = this.valueService.createNewValue(this.coinForm.controls['amount'].value);
+    var coin = new Coin(coinName, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
+    
+    console.log("Newly created coin:")
+    console.log(coin);
+    this.coinService.addCoin(coin);
+    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchasePrice);
     this.clearAllInputs();
 
-    //console.log(this.coinService.getAllHeldCoins());
+    //this.coinService.addToHeldCoins(coinName, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
   }
 
   public clearAllInputs(){

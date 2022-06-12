@@ -3,6 +3,9 @@ import { CoinService } from './coin.service';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { RateService } from './rate.service';
 import { Coin } from '../types/coin.type';
+import { Value } from '../types/value.type';
+import { CurrencyService } from './currency.service';
+import * as moment from 'moment';
 
 @Injectable({providedIn: 'root'})
 export class ValueService {
@@ -10,10 +13,15 @@ export class ValueService {
     constructor(
         private coinService: CoinService,
         private rateService: RateService,
+        private currencyService: CurrencyService
     ) {}
 
     private totalValue = 0;
     private totalProfit = 0;
+
+    public createNewValue(currentValue: number): Value{
+        return new Value(currentValue, this.currencyService.getCurrencySelected(), moment().toDate());
+    } 
 
     public calculateTotalProfit(): number{
         var totalExpendature = this.calculateTotalExpenditure();
@@ -55,15 +63,15 @@ export class ValueService {
     }
 
     public updateValueForSingleCoin(coin: Coin): void{
-        var updatedValue = coin.quantity * this.rateService.getRateForTicker(coin.ticker)
-        coin.currentValue.setCurrentValue(updatedValue);
+        var updatedValue = coin.quantity * this.rateService.getRateForTicker(coin.name.ticker)
+        coin.value.setCurrentValue(updatedValue);
     }
 
     public updateValueForTicker(ticker: string): void{
         var heldCoins = this.coinService.getAllHeldCoins();
         if(heldCoins != null){
             heldCoins.forEach(heldCoin => {
-                if(heldCoin.ticker == ticker){
+                if(heldCoin.name.ticker == ticker){
                     this.updateValueForSingleCoin(heldCoin);
                 }
             });

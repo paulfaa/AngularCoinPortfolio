@@ -60,8 +60,8 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     }
 
     public displayFooter(coin: Coin): boolean {
-      if (coin.name !== this.footer) {
-        this.footer = coin.name;
+      if (coin.name.displayName !== this.footer) {
+        this.footer = coin.name.displayName;
         return true;
       } else {
         return false;

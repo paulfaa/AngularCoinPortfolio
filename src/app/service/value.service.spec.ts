@@ -3,6 +3,7 @@ import { waitForAsync, TestBed } from "@angular/core/testing";
 import * as moment from "moment";
 import { CurrencyEnum } from "../currencyEnum";
 import { Coin } from "../types/coin.type";
+import { CoinName } from "../types/coinName.type";
 import { Rate } from "../types/rate.type";
 import { Value } from "../types/value.type";
 import { CoinService } from "./coin.service";
@@ -17,6 +18,8 @@ describe('ValueService', () => {
 
     mockCoinService = jasmine.createSpyObj('mockCoinService', ['getAllHeldCoins', 'getAllUniqueTickers', 'getAmountHeldOfTicker']);
     mockRateService = jasmine.createSpyObj('mockRateService', ['updateAllExchangeRates', 'getRateForTicker']);
+
+    const coinName = new CoinName("BitCoin", "BTC");
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new ValueService(mockCoinService, mockRateService);
@@ -42,7 +45,7 @@ describe('ValueService', () => {
             // Arrange
             const value = new Value(200, CurrencyEnum.EUR, moment().toDate())
             let coinList: Coin[] = [
-                new Coin("BitCoin", "BTC", 100, 1, value)
+                new Coin(coinName, 100, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -60,7 +63,7 @@ describe('ValueService', () => {
             // Arrange
             const value = new Value(-100, CurrencyEnum.EUR, moment().toDate())
             let coinList: Coin[] = [
-                new Coin("BitCoin", "BTC", 200, 1, value)
+                new Coin(coinName, 200, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -83,8 +86,8 @@ describe('ValueService', () => {
             const value2 = new Value(200, CurrencyEnum.EUR, moment().toDate())
             const newRate = new Rate("BTC", 200, CurrencyEnum.EUR, moment().toDate());
             let coinList: Coin[] = [
-                new Coin("BitCoin", "BTC", 100, 1, value1),
-                new Coin("BitCoin", "BTC", 120, 1, value2)
+                new Coin(coinName, 100, 1, value1),
+                new Coin(coinName, 120, 1, value2)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["BTC"]);
@@ -95,7 +98,7 @@ describe('ValueService', () => {
             var result = mockCoinService.getAllHeldCoins();
 
             // Assert
-            expect(result[0].currentValue.getCurrentValue()).toEqual(500);
+            expect(result[0].value.getCurrentValue()).toEqual(500);
         });
     });
 

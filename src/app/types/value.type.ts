@@ -4,7 +4,6 @@ export class Value {
     private currentValue: number;
     private currency: CurrencyEnum;
     private dateValueUpdated: Date;
-    
 
     constructor(currentValue: number, currency: CurrencyEnum, dateValueUpdated: Date){
         this.currentValue = currentValue;
@@ -15,7 +14,7 @@ export class Value {
     public getCurrentValue(): number {
         return this.currentValue;
     }
-    
+
     public setCurrentValue(value: number) {
         this.currentValue = value;
     }

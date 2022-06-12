@@ -1,9 +1,9 @@
 export class CoinName{
-    name: string;
+    displayName: string;
     ticker: string;
 
-  constructor(n: string, t: string) {
-      this.name = n;
-      this.ticker = t;
+  constructor(displayName: string, ticker: string) {
+      this.displayName = displayName;
+      this.ticker = ticker;
   }
 }

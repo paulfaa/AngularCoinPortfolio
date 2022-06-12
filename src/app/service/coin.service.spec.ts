@@ -5,13 +5,15 @@ import { CurrencyEnum } from '../currencyEnum';
 import { CoinService } from '../service/coin.service';
 import StorageUtils from '../storage.utils';
 import { Coin } from '../types/coin.type';
+import { CoinName } from '../types/coinName.type';
 import { Value } from '../types/value.type';
 
 describe('CoinService', () => {
 
     let service: CoinService;
     const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
-    const testCoin = new Coin("Bitcoin", "BTC", 250.55, 0.75, testValue);
+    const coinName = new CoinName("BitCoin", "BTC");
+    const testCoin = new Coin(coinName, 250.55, 0.75, testValue);
     testCoin.purchaseDate = moment().toDate();
 
     beforeEach(waitForAsync(() => {
@@ -125,7 +127,7 @@ describe('CoinService', () => {
     describe('getLastAddedDate()', () => {
         it('returns the most recent date from all owned coins', () => {
             // Arrange
-            const oldCoin = new Coin("BitCoin", "BTC", 1.23, 5)
+            const oldCoin = new Coin(coinName, 1.23, 5)
             const oldDate = new Date(2011,1,1,11,11,0);
             oldCoin.purchaseDate = oldDate;
             service.addCoin(oldCoin);
@@ -139,7 +141,7 @@ describe('CoinService', () => {
         });
         it('returns the most recent date from all owned coins2', () => {
             // Arrange
-            const oldCoin = new Coin("BitCoin", "BTC", 1.23, 5)
+            const oldCoin = new Coin(coinName, 1.23, 5)
             const oldDate = new Date(2011,1,1,11,11,0);
             oldCoin.purchaseDate = oldDate;
             service.addCoin(oldCoin);
