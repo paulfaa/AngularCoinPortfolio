@@ -16,12 +16,13 @@ export class ValueFooterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // should not call only on ngInit, also need to recalculate if coins of the same ticker are deleted. need to add deleteListener
     this.totalValue = this.calculateValueOfTicker();
   }
 
-  private calculateValueOfTicker(): number{
+  public calculateValueOfTicker(): number{
     var totalValue = 0;
-    var matchingCoins = this.coinService.getCoinsByTicker(this.ticker)
+    var matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
     matchingCoins.forEach(coin => {
       totalValue = totalValue + coin.purchaseDetails.price; //should use profir variable instead
     });
@@ -29,4 +30,13 @@ export class ValueFooterComponent implements OnInit {
     return totalValue;
   }
 
+  /* public calculateValueOfId(): number{
+    var totalValue = 0;
+    var matchingCoins = this.coinService.getCoinsById(idConverter(this.ticker));
+    matchingCoins.forEach(coin => {
+      totalValue = totalValue + coin.purchaseDetails.price; 
+    });
+    console.log("totalValueFor " + this.ticker + ": " + totalValue);
+    return totalValue;
+  } */
 }
