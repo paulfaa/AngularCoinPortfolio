@@ -10,18 +10,7 @@
     <ion-refresher-content>Updating rates...</ion-refresher-content>
   </ion-refresher>
   
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>Total value:</ion-card-subtitle>
-      <!-- conditional not working properly -->
-      <ion-card-title>{{currencySymbol}} {{valueService.totalValue | number : '1.2-2'}}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content [ngStyle]="{'color':totalProfit > '0' ? 'green' : 'red' }">
-      Total profit: {{ 10.24 | profitFormat}} (1.25%)
-      <br>
-      Total profit: {{currencySymbol}} {{valueService.totalProfit | number : '1.2-2'}}
-    </ion-card-content>
-  </ion-card>
+  <value-header [totalValue] = totalValue [totalProfit]=totalProfit [currencySymbol]=currencySymbol></value-header>
   
   <div ngFor *ngFor="let coin of heldCoins; let index = index">
     <!-- might look better putting icon before text -->

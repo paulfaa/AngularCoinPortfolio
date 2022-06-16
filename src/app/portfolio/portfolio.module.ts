@@ -9,6 +9,7 @@ import { PortfolioPageRoutingModule } from './portfolio-routing.module';
 import { PortfolioPage } from './portfolio.page';
 import { SharedModule } from '../shared/pipes/shared.module';
 import { ValueFooterComponent } from '../value-footer/value-footer.component';
+import { ValueHeaderComponent } from '../value-header/value-header.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { ValueFooterComponent } from '../value-footer/value-footer.component';
     PortfolioPageRoutingModule,
     SharedModule
   ],
-  declarations: [PortfolioPage, ValueFooterComponent]
+  declarations: [PortfolioPage, ValueFooterComponent, ValueHeaderComponent]
 })
 export class PortfolioPageModule {
   public navController: NavController;
