@@ -3,7 +3,7 @@
     <ion-card-subtitle>Total value:</ion-card-subtitle>
     <ion-card-title>{{currencySymbol}} {{totalValue | number : '1.2-2'}}</ion-card-title>
   </ion-card-header>
-  <ion-card-content [ngClass]= "applyCss()">
+  <ion-card-content [ngClass]= "getCssClass()">
     Total profit: {{ totalProfit | profitFormat}} (1.25%)
     <br>
     Total profit: {{currencySymbol}} {{totalProfit | number : '1.2-2'}}

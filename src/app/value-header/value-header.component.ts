@@ -13,15 +13,15 @@ export class ValueHeaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.applyCss(this.totalProfit);
+    this.getCssClass();
   }
 
-  public applyCss(totalProfit): string{
+  public getCssClass(): string{
     var className = "default"
-    if(totalProfit>0){
+    if(this.totalProfit > 0){
       className = "positive";
     }
-    else{
+    else if(this.totalProfit < 0){
       className = "negative";
     }
     return className;
