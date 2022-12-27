@@ -22,9 +22,9 @@ export class ValueFooterComponent implements OnInit {
 
   public calculateValueOfTicker(): number{
     var totalValue = 0;
-    var matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
+    const matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
     matchingCoins.forEach(coin => {
-      totalValue = totalValue + coin.purchaseDetails.price; //should use profir variable instead
+      totalValue = totalValue + coin.profit;
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;

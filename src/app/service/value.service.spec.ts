@@ -53,27 +53,29 @@ describe('ValueService', () => {
                 new CoinBuilder()
                 .id(12)
                 .name(new CoinName("Cardano", "ADA"))
-                .purchaseDetails(new PurchaseDetails(15, CurrencyEnum.EUR, new Date()))
-                .quantity(2.635)
-                .value(new Value(20.55, CurrencyEnum.EUR, new Date()))
+                .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
+                .quantity(5)
+                .value(new Value(15, CurrencyEnum.EUR, new Date()))
                 .build(),
                 new CoinBuilder()
-                .id(1)
-                .name(new CoinName("BitCoin", "BTC"))
+                .id(12)
+                .name(new CoinName("Cardano", "ADA"))
                 .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
                 .quantity(1)
-                .value(new Value(45, CurrencyEnum.EUR, new Date()))
+                .value(new Value(15, CurrencyEnum.EUR, new Date()))
                 .build()
             ];
             mockCoinService.getAllHeldCoins.and.returnValue(sampleCoins);
-            mockCoinService.getAllUniqueTickers.and.returnValue(["ADA", "BTC"]);
+            mockCoinService.getAllUniqueTickers.and.returnValue(["ADA"]);
+            mockCoinService.getAmountHeldOfTicker.and.returnValue(6);
+            mockRateService.getRateForTicker.and.returnValue(15);
             mockRateService.updateAllExchangeRates.and.returnValue(null);
 
             // Act
             var result = serviceUnderTest.calculateTotalValue();
 
             // Assert
-            expect(result).toEqual(65.55);
+            expect(result).toEqual(90);
         });
     });
 
@@ -144,6 +146,7 @@ describe('ValueService', () => {
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["BTC"]);
+            mockRateService.getRateForTicker.and.returnValue(500);
             mockRateService.updateAllExchangeRates.and.returnValue(null);
 
             // Act

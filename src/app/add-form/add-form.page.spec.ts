@@ -7,6 +7,7 @@ import { AddFormPageRoutingModule } from './add-form-routing.module';
 
 import { AddFormPage } from './add-form.page';
 import { AddFormPageModule } from './add-form.module';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AddFormPage', () => {
   let component: AddFormPage;
@@ -15,7 +16,7 @@ describe('AddFormPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddFormPage ],
-      imports: [IonicModule.forRoot(), ReactiveFormsModule, RouterTestingModule, AddFormPageModule ],
+      imports: [IonicModule.forRoot(), ReactiveFormsModule, RouterTestingModule, AddFormPageModule, HttpClientModule ],
       
     }).compileComponents();
 

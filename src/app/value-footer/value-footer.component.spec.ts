@@ -35,26 +35,29 @@ describe('ValueFooterComponent', () => {
 
   it('returns the sum of all holdings for the specified ticker', () => {
     // Arrange
-    let coinList: Coin[] = [
+    const coinList: Coin[] = [
       new CoinBuilder()
             .name(new CoinName("Cardano", "ADA"))
             .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
             .quantity(0.527)
             .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
+            .profit(15)
             .build(),
             new CoinBuilder()
             .name(new CoinName("Cardano", "ADA"))
             .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
             .quantity(1.847)
             .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
+            .profit(10)
             .build()
   ]
-    mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+    
     component.ticker = "ADA";
+    //fixture.detectChanges();
 
     // Act
+    mockCoinService.getCoinsByTicker.and.returnValue(coinList);
     component.calculateValueOfTicker();
-    fixture.detectChanges();
 
     // Assert
     expect(fixture.nativeElement.querySelector('div').innerText).toEqual(40.80);
