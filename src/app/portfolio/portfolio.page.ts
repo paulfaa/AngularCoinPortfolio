@@ -5,6 +5,7 @@ import { CoinService } from '../service/coin.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
+import { CurrencyEnum } from '../currencyEnum';
 
 //TODO 
 // Fix icons on portfolio page
@@ -83,9 +84,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     } */
 
     async infoPopup(coin: Coin) {
+      const enumIndex = coin.purchaseDetails.currency;
       const alert = await this.alertController.create({
-        header: coin.quantity + " " + coin.name,
-        message: coin.purchaseDetails.date.toString() + "<br>" + "\n" + coin.purchaseDetails.price,
+        header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
+        message: coin.purchaseDetails.date.toString() + "<br>" + "\n" + CurrencyEnum[enumIndex] + coin.purchaseDetails.price,
         buttons: [
           {text: 'OK'}
         ]

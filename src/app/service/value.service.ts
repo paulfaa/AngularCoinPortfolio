@@ -36,10 +36,11 @@ export class ValueService {
         var allTickers = this.coinService.getAllUniqueTickers();
         if(allTickers != null && allTickers.length >= 1){
             allTickers.forEach(ticker => {
-                total = total + this.coinService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker);
+                total = total + (this.coinService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker));
             });
         }
         this.totalValue = total;
+        console.log("Value service total: "+ total);
         return total;
     }
 

@@ -23,5 +23,5 @@ import { ValueHeaderComponent } from '../value-header/value-header.component';
 })
 export class PortfolioPageModule {
   public navController: NavController;
-  profit: 5;
+  //profit: 5;
 }

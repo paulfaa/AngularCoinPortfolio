@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CurrencyEnum } from '../currencyEnum';
 
 @Injectable({providedIn: 'root'})

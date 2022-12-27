@@ -1,7 +1,8 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { waitForAsync, TestBed } from "@angular/core/testing";
 import * as moment from "moment";
 import { CurrencyEnum } from "../currencyEnum";
+import { CoinBuilder } from "../types/coin.builder";
 import { Coin } from "../types/coin.type";
 import { CoinName } from "../types/coinName.type";
 import { PurchaseDetails } from "../types/purchaseDetails.type";
@@ -28,9 +29,53 @@ describe('ValueService', () => {
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new ValueService(mockCoinService, mockRateService, mockCurrencyService);
         TestBed.configureTestingModule({
-            declarations: [RateService]
+            declarations: [RateService],
+            imports: [HttpClientModule]
         }).compileComponents();
     }));
+
+    describe('calculateTotalValue()', () => {
+        it('should return 0 if no coins are owned', () => {
+            // Arrange
+            mockCoinService.getAllHeldCoins.and.returnValue(null);
+            mockCoinService.getAllUniqueTickers.and.returnValue(null);
+            mockRateService.updateAllExchangeRates.and.returnValue(null);
+
+            // Act
+            var result = serviceUnderTest.calculateTotalValue();
+
+            // Assert
+            expect(result).toEqual(0);
+        });
+        it('should return the total value of all coins owned', () => {
+            // Arrange
+            const sampleCoins: Coin[] = [
+                new CoinBuilder()
+                .id(12)
+                .name(new CoinName("Cardano", "ADA"))
+                .purchaseDetails(new PurchaseDetails(15, CurrencyEnum.EUR, new Date()))
+                .quantity(2.635)
+                .value(new Value(20.55, CurrencyEnum.EUR, new Date()))
+                .build(),
+                new CoinBuilder()
+                .id(1)
+                .name(new CoinName("BitCoin", "BTC"))
+                .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
+                .quantity(1)
+                .value(new Value(45, CurrencyEnum.EUR, new Date()))
+                .build()
+            ];
+            mockCoinService.getAllHeldCoins.and.returnValue(sampleCoins);
+            mockCoinService.getAllUniqueTickers.and.returnValue(["ADA", "BTC"]);
+            mockRateService.updateAllExchangeRates.and.returnValue(null);
+
+            // Act
+            var result = serviceUnderTest.calculateTotalValue();
+
+            // Assert
+            expect(result).toEqual(65.55);
+        });
+    });
 
     describe('calculateTotalProfit()', () => {
         it('should return 0 no coins are owned', () => {

@@ -64,7 +64,7 @@ export class RateService {
     }
 
     public getLastUpdateDate(): Date {
-        var date = new Date();
+        var date = new Date(2020, 11, 1);
         this.rates?.forEach(rate => {
             if (rate.updated > date){
                 date = rate.updated;
@@ -76,7 +76,7 @@ export class RateService {
     public getRateForTicker(tickerToLookup: string): number{
         var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === this.selectedCurrency )
         if(foundRate != undefined){
-            this.loggingService.info("RateService: found rate- ", foundRate);
+            this.loggingService.info("RateService: found rate - ", foundRate);
             return foundRate.value;
         }
         else{
