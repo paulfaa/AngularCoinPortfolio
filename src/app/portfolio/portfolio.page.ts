@@ -8,6 +8,7 @@ import { LoggingService } from '../service/logging.service';
 import { CurrencyEnum } from '../currencyEnum';
 
 //TODO 
+// Set coinId when added to portfolio
 // Fix icons on portfolio page
 // Connect to backend
 

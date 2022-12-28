@@ -1,4 +1,3 @@
-import * as moment from "moment";
 import { CurrencyEnum } from "../currencyEnum";
 import { Coin } from "./coin.type";
 import { CoinName } from "./coinName.type";

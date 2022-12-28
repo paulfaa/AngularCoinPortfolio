@@ -15,7 +15,7 @@ describe('ValueFooterComponent', () => {
   let fixture: ComponentFixture<ValueFooterComponent>;
   let mockCoinService: jasmine.SpyObj<CoinService>;
 
-  mockCoinService = jasmine.createSpyObj('mockCoinService', ['getCoinsByTicker']);
+  mockCoinService = jasmine.createSpyObj('mockCoinService', ['getCoinsByTicker', 'getCoinsById']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -35,26 +35,25 @@ describe('ValueFooterComponent', () => {
   describe('calculateValueOfId()', () => {
     it('returns the value of all coins for the specified id', () => {
       //Arrange
-      const coinList: Coin[] = [
-        new CoinBuilder()
+      const c1 = new CoinBuilder()
           .name(new CoinName("Cardano", "ADA"))
           .id(12)
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(0.527)
           .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
           .profit(15)
-          .build(),
-        new CoinBuilder()
+          .build();
+        const c2 = new CoinBuilder()
           .name(new CoinName("Cardano", "ADA"))
           .id(12)
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(1.847)
           .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
           .profit(10)
-          .build()
-      ]
+          .build();
+      const coinList: Coin[] = [c1, c2]
       component.coinId = 12;
-      mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+      mockCoinService.getCoinsById.and.returnValue(coinList);
 
       //Act
       const result = component.calculateValueOfId();
@@ -66,7 +65,7 @@ describe('ValueFooterComponent', () => {
       //Arrange
       const coinList: Coin[] = []
       component.coinId = 12;
-      mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+      mockCoinService.getCoinsById.and.returnValue(coinList);
 
       //Act
       const result = component.calculateValueOfId();

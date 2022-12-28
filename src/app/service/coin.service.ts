@@ -158,7 +158,7 @@ export class CoinService{
   private sortAllHeldCoins(): void{
     if(this.heldCoins != null && this.heldCoins.length >= 2){
       console.log("this.heldcoins: " + this.heldCoins);
-      this.heldCoins.sort((a,b) => a.name.ticker.localeCompare(b.name.ticker) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf()); //was throwing error, seems to work again
+      this.heldCoins.sort((a,b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf()); //was throwing error, seems to work again
     }
   }
 

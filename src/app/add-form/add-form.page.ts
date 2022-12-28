@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { CoinService } from '../service/coin.service';
-import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder } from '@angular/forms';
 import { CoinName } from '../types/coinName.type';
 import { Coin } from '../types/coin.type';
-import { Value } from '../types/value.type';
 import { ValueService } from '../service/value.service';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { CurrencyService } from '../service/currency.service';
@@ -70,11 +69,12 @@ export class AddFormPage implements OnInit {
   }
 
   public submitForm(){
-    //has to be a cleaner way instead of converting to json
-    var coinName = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
-    var coinValue = this.valueService.createNewValue(this.coinForm.controls['amount'].value);
-    var purchaseDetails = new PurchaseDetails(this.coinForm.controls['purchasePrice'].value, this.currencyService.getCurrencySelected(), moment().toDate());
-    var coin = new Coin(coinName, purchaseDetails, this.coinForm.controls['amount'].value, coinValue);
+    const coinName = this.coinForm.controls['name'].value;
+    //const coinName = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
+    const coinValue = this.valueService.createNewValue(this.coinForm.controls['amount'].value);
+    const purchaseDetails = new PurchaseDetails(this.coinForm.controls['purchasePrice'].value, this.currencyService.getCurrencySelected(), moment().toDate());
+    const coin = new Coin(coinName, purchaseDetails, this.coinForm.controls['amount'].value, coinValue);
+    //also should set coinId here
     
     console.log("Newly created coin:")
     console.log(coin);
