@@ -8,8 +8,10 @@ import { CoinService } from '../service/coin.service';
 })
 export class ValueFooterComponent implements OnInit {
   @Input() ticker = '';
+  @Input() coinId = 0;
 
   totalValue: number;
+  totalProfit: number;
 
   constructor(
     private coinService: CoinService
@@ -24,19 +26,39 @@ export class ValueFooterComponent implements OnInit {
     var totalValue = 0;
     const matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
     matchingCoins.forEach(coin => {
-      totalValue = totalValue + coin.profit;
+      totalValue = totalValue + coin.purchaseDetails.price;
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;
   }
 
-  /* public calculateValueOfId(): number{
+  public calculateProfitOfTicker(): number{
+    var totalProfit = 0;
+    const matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
+    matchingCoins.forEach(coin => {
+      totalProfit = totalProfit + coin.profit;
+    });
+    console.log("total profit for " + this.ticker + ": " + totalProfit);
+    return totalProfit;
+  }
+
+  public calculateValueOfId(): number{
     var totalValue = 0;
-    var matchingCoins = this.coinService.getCoinsById(idConverter(this.ticker));
+    var matchingCoins = this.coinService.getCoinsById(this.coinId);
     matchingCoins.forEach(coin => {
       totalValue = totalValue + coin.purchaseDetails.price; 
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;
-  } */
+  }
+
+  public calculateProfitOfId(): number{
+    var totalProfit = 0;
+    var matchingCoins = this.coinService.getCoinsById(this.coinId);
+    matchingCoins.forEach(coin => {
+      totalProfit = totalProfit + coin.profit; 
+    });
+    console.log("totalValueFor " + this.ticker + ": " + totalProfit);
+    return totalProfit;
+  }
 }

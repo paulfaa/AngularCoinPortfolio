@@ -129,6 +129,16 @@ export class CoinService{
     return matches;
   }
 
+  public getCoinsById(id: number): Coin[]{
+    var matches = [];
+    this.heldCoins.forEach(c => {
+      if (c.id == id){
+        matches.push(c);
+      }
+    });
+    return matches;
+  }
+
   public getAllUniqueTickers(): string[]{
     var tickers:string[] = [];
     if(this.heldCoins != null && this.heldCoins.length >= 1){

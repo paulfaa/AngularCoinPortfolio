@@ -8,7 +8,6 @@ import { Coin } from '../types/coin.type';
 import { CoinName } from '../types/coinName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
-
 import { ValueFooterComponent } from './value-footer.component';
 
 describe('ValueFooterComponent', () => {
@@ -20,7 +19,7 @@ describe('ValueFooterComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ValueFooterComponent ],
+      declarations: [ValueFooterComponent],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
@@ -33,25 +32,69 @@ describe('ValueFooterComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('calculateValueOfId()', () => {
+    it('returns the value of all coins for the specified id', () => {
+      //Arrange
+      const coinList: Coin[] = [
+        new CoinBuilder()
+          .name(new CoinName("Cardano", "ADA"))
+          .id(12)
+          .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
+          .quantity(0.527)
+          .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
+          .profit(15)
+          .build(),
+        new CoinBuilder()
+          .name(new CoinName("Cardano", "ADA"))
+          .id(12)
+          .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
+          .quantity(1.847)
+          .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
+          .profit(10)
+          .build()
+      ]
+      component.coinId = 12;
+      mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+
+      //Act
+      const result = component.calculateValueOfId();
+
+      //Assert
+      expect(result).toBe(55);
+    });
+    it('returns the value of all coins for the specified id', () => {
+      //Arrange
+      const coinList: Coin[] = []
+      component.coinId = 12;
+      mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+
+      //Act
+      const result = component.calculateValueOfId();
+
+      //Assert
+      expect(result).toBe(0);
+    });
+  });
+
   it('returns the sum of all holdings for the specified ticker', () => {
     // Arrange
     const coinList: Coin[] = [
       new CoinBuilder()
-            .name(new CoinName("Cardano", "ADA"))
-            .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
-            .quantity(0.527)
-            .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
-            .profit(15)
-            .build(),
-            new CoinBuilder()
-            .name(new CoinName("Cardano", "ADA"))
-            .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
-            .quantity(1.847)
-            .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
-            .profit(10)
-            .build()
-  ]
-    
+        .name(new CoinName("Cardano", "ADA"))
+        .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
+        .quantity(0.527)
+        .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
+        .profit(15)
+        .build(),
+      new CoinBuilder()
+        .name(new CoinName("Cardano", "ADA"))
+        .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
+        .quantity(1.847)
+        .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
+        .profit(10)
+        .build()
+    ]
+
     component.ticker = "ADA";
     //fixture.detectChanges();
 

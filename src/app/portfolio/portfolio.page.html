@@ -6,14 +6,13 @@
 
 <ion-content>
   
-  <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
+  <!-- <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
     <ion-refresher-content>Updating rates...</ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
   
   <value-header [totalValue] = totalValue [totalProfit]=totalProfit [currencySymbol]=currencySymbol></value-header>
   
   <div ngFor *ngFor="let coin of heldCoins; let index = index">
-    <!-- might look better putting icon before text -->
     <p id="header" *ngIf="!heldCoins[index-1] || coin.name.displayName !== heldCoins[index-1].name.displayName">
       <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
       {{ coin.name.displayName }}
@@ -24,7 +23,6 @@
         <p id="quantity">{{ coin.quantity }}</p>
         <p>{{ currencySymbol }}{{ coin.purchaseDetails.price }}</p>
         <p>{{ coin.value.currentValue }}</p>
-        <!-- <h6>Value: {{callCalculateValueForTicker(coin.ticker)| number : '1.2-2'}}</h6> -->
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
