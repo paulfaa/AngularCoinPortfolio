@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { CoinService } from '../service/coin.service';
@@ -9,25 +9,31 @@ import { ValueService } from '../service/value.service';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { CurrencyService } from '../service/currency.service';
 import * as moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-form',
   templateUrl: './add-form.page.html',
   styleUrls: ['./add-form.page.scss'],
 })
-export class AddFormPage implements OnInit {
-  coinNames: CoinName[];
-  coin: Coin;
+export class AddFormPage implements OnInit, OnDestroy {
 
-  get name(){
+  private coinNames: CoinName[];
+  private paramsSubscription: Subscription;
+
+  /* get name(){
     return this.coinForm.get('name');
   }
-  get amount(){  // rename to quantity
-    return this.coinForm.get('amount');
+  get quantity(){
+    return this.coinForm.get('quantity');
   }
-  get purchasePrice(){
-    return this.coinForm.get('purchasePrice');
+  get perCoinPurchasePrice(){
+    return this.coinForm.get('perCoinPurchasePrice');
   }
+  get totalPurchasePrice(){
+    return this.coinForm.get('totalPurchasePrice');
+  } */
 
   public errorMessages = {
     name: [{type: 'required', message: 'This field is required'}]
@@ -35,8 +41,9 @@ export class AddFormPage implements OnInit {
 
   coinForm = this.formBuilder.group({
     name: ['', Validators.required],
-    amount: ['', [Validators.required, Validators.min(0.00000001)]],
-    purchasePrice: ['', [Validators.required, Validators.min(0.01)]]
+    quantity: ['', [Validators.required, Validators.min(0.00000001)]],
+    perCoinPurchasePrice: ['', [Validators.required, Validators.min(0.01)]],
+    totalPurchasePrice: ['', [Validators.min(0.01)]]
   })
 
   constructor(
@@ -45,11 +52,21 @@ export class AddFormPage implements OnInit {
     private currencyService: CurrencyService,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
+    private route: ActivatedRoute
     //private coinName: String
   ) { }
 
   ngOnInit() {
     this.coinNames = this.coinService.getAllCoinNames();
+    this.paramsSubscription = this.route.params.subscribe(() => {
+      this.coinForm.reset();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.paramsSubscription) {
+      this.paramsSubscription.unsubscribe();
+    }
   }
 
   async presentToast(toastContent: string) {
@@ -70,10 +87,10 @@ export class AddFormPage implements OnInit {
 
   public submitForm(){
     const coinName = this.coinForm.controls['name'].value;
-    //const coinName = JSON.parse(JSON.stringify(this.coinForm.controls['name'].value));
-    const coinValue = this.valueService.createNewValue(this.coinForm.controls['amount'].value);
-    const purchaseDetails = new PurchaseDetails(this.coinForm.controls['purchasePrice'].value, this.currencyService.getCurrencySelected(), moment().toDate());
-    const coin = new Coin(coinName, purchaseDetails, this.coinForm.controls['amount'].value, coinValue);
+    const coinQuantity = this.coinForm.controls['quantity'].value;
+    const coinValue = this.valueService.createNewValue(coinQuantity);
+    const purchaseDetails = this.getPurchaseDetails();
+    const coin = new Coin(coinName, purchaseDetails, coinQuantity, coinValue);
     //also should set coinId here
     
     console.log("Newly created coin:")
@@ -81,11 +98,23 @@ export class AddFormPage implements OnInit {
     this.coinService.addCoin(coin);
     this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchaseDetails.price);
     this.clearAllInputs();
-
-    //this.coinService.addToHeldCoins(coinName, this.coinForm.controls['purchasePrice'].value, this.coinForm.controls['amount'].value);
   }
 
   public clearAllInputs(){
     this.coinForm.reset();
+  }
+
+  private getPurchaseDetails(): PurchaseDetails{
+    const selectedCurrency = this.currencyService.getCurrencySelected();
+    const currentDateTime = moment().toDate();
+    var purchasePrice = 0;
+    if(this.coinForm.controls['perCoinPurchasePrice'].value != null){
+      purchasePrice = this.coinForm.controls['perCoinPurchasePrice'].value;
+    }
+    else if(this.coinForm.controls['totalPurchasePrice'].value != null){
+      purchasePrice = this.coinForm.controls['totalPurchasePrice'].value / this.coinForm.controls['quantity'].value;
+    }
+    //ensure method can only be called if input fields valid, otherwise need validation here
+    return new PurchaseDetails(purchasePrice, selectedCurrency, currentDateTime);
   }
 }

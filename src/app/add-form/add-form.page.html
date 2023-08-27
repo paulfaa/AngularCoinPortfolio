@@ -18,20 +18,31 @@
     </ion-item>
 
   <ion-item>
-    <ion-label position="floating">Amount Purchased:</ion-label>
-    <ion-input formControlName="amount" type="number" value={amountPurchased} ref={amountPurchasedRef}></ion-input>
+    <ion-label position="floating">Quantity Purchased:</ion-label>
+    <ion-input formControlName="quantity" type="number" value={quantityPurchased} ref={quantityPurchasedRef}></ion-input>
+  </ion-item>
+
+  <!-- next 2 forms mutually exclusive -->
+  <ion-item>
+    <ion-label position="floating">Cost Per Coin:</ion-label>
+    <ion-input formControlName="perCoinPurchasePrice" type="number" value={perCoinPurchasePrice} ref={perCoinPurchasePriceRef}></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label position="floating">Cost Per Coin:</ion-label>
-    <ion-input formControlName="purchasePrice" type="number" value={purchasePrice} ref={purchasePriceRef}></ion-input>
+    <ion-label position="floating">Total Cost:</ion-label>
+    <ion-input formControlName="totalPurchasePrice" type="number" value={totalPurchasePrice} ref={totalPurchasePriceRef}></ion-input>
   </ion-item>
+
+  <!-- <ion-item>
+    <ion-label position="floating">Transaction Fees:</ion-label>
+    <ion-input formControlName="transactionFees" type="number" value={transactionFees} ref={transactionFeesRef}></ion-input>
+  </ion-item> -->
   </form>
 
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <ion-button expand="block" (click)="submitForm()">Add</ion-button>
+        <ion-button expand="block" [disabled]="coinForm.invalid" (click)="submitForm()">Add</ion-button>
       </ion-col>
       <ion-col col-6>
         <ion-button fill="solid" color="danger" expand="block" (click)="clearAllInputs()">Clear</ion-button>
