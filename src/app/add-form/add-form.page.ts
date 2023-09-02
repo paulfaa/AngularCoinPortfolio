@@ -20,7 +20,7 @@ import { atLeastOne } from '../shared/directives/at-least-one-validator.directiv
 })
 export class AddFormPage implements OnInit, OnDestroy {
 
-  private coinNames: CoinName[];
+  public coinNames: CoinName[];
   //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;
@@ -82,7 +82,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     })
   }
 
-  async presentToast(toastContent: string) {
+  private async presentToast(toastContent: string) {
     const toast = await this.toastController.create({
       message: toastContent,
       duration: 2000
@@ -124,10 +124,9 @@ export class AddFormPage implements OnInit, OnDestroy {
     if(this.coinForm.controls['perCoinPurchasePrice'].value != null){
       purchasePrice = this.coinForm.controls['perCoinPurchasePrice'].value;
     }
-    else if(this.coinForm.controls['totalPurchasePrice'].value != null){
+    else {
       purchasePrice = this.coinForm.controls['totalPurchasePrice'].value / this.coinForm.controls['quantity'].value;
     }
-    //ensure method can only be called if input fields valid, otherwise need validation here
     return new PurchaseDetails(purchasePrice, selectedCurrency, currentDateTime);
   }
 }
