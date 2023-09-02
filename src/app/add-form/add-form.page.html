@@ -7,7 +7,6 @@
   </ion-toolbar>
 </ion-header>
 
-
   <ion-content>
     <form [formGroup]="coinForm" (ngSubmit)="submitForm()">
     <ion-item>
@@ -22,7 +21,6 @@
     <ion-input formControlName="quantity" type="number" value={quantityPurchased} ref={quantityPurchasedRef}></ion-input>
   </ion-item>
 
-  <!-- next 2 forms mutually exclusive -->
   <ion-item>
     <ion-label position="floating">Cost Per Coin:</ion-label>
     <ion-input formControlName="perCoinPurchasePrice" type="number" value={perCoinPurchasePrice} ref={perCoinPurchasePriceRef}></ion-input>

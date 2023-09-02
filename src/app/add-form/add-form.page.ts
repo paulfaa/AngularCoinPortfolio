@@ -11,6 +11,7 @@ import { CurrencyService } from '../service/currency.service';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
 
 @Component({
   selector: 'app-add-form',
@@ -20,20 +21,10 @@ import { Subscription } from 'rxjs';
 export class AddFormPage implements OnInit, OnDestroy {
 
   private coinNames: CoinName[];
+  //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
-
-  /* get name(){
-    return this.coinForm.get('name');
-  }
-  get quantity(){
-    return this.coinForm.get('quantity');
-  }
-  get perCoinPurchasePrice(){
-    return this.coinForm.get('perCoinPurchasePrice');
-  }
-  get totalPurchasePrice(){
-    return this.coinForm.get('totalPurchasePrice');
-  } */
+  private perCoinPurchasePriceSubscription: Subscription;
+  private totalPurchasePriceSubscription: Subscription;
 
   public errorMessages = {
     name: [{type: 'required', message: 'This field is required'}]
@@ -42,9 +33,11 @@ export class AddFormPage implements OnInit, OnDestroy {
   coinForm = this.formBuilder.group({
     name: ['', Validators.required],
     quantity: ['', [Validators.required, Validators.min(0.00000001)]],
-    perCoinPurchasePrice: ['', [Validators.required, Validators.min(0.01)]],
+    perCoinPurchasePrice: ['', [Validators.min(0.01)]],
     totalPurchasePrice: ['', [Validators.min(0.01)]]
-  })
+  }, 
+    { validator: atLeastOne(Validators.required, ['perCoinPurchasePrice','totalPurchasePrice'])
+  });
 
   constructor(
     private coinService: CoinService,
@@ -61,12 +54,32 @@ export class AddFormPage implements OnInit, OnDestroy {
     this.paramsSubscription = this.route.params.subscribe(() => {
       this.coinForm.reset();
     });
+    this.perCoinPurchasePriceSubscription = this.createFormChangeSubscription("perCoinPurchasePrice", "totalPurchasePrice");
+    this.totalPurchasePriceSubscription = this.createFormChangeSubscription("totalPurchasePrice", "perCoinPurchasePrice");
   }
 
   ngOnDestroy(): void {
     if (this.paramsSubscription) {
       this.paramsSubscription.unsubscribe();
     }
+    if (this.perCoinPurchasePriceSubscription) {
+      this.perCoinPurchasePriceSubscription.unsubscribe();
+    }
+    if (this.totalPurchasePriceSubscription) {
+      this.totalPurchasePriceSubscription.unsubscribe();
+    }
+  }
+
+  private createFormChangeSubscription(controlToMonitorName: string, controlToToggleName: string): Subscription {
+    const controlToToggle = this.coinForm.get(controlToToggleName);
+    return this.coinForm.get(controlToMonitorName).valueChanges.subscribe(inputValue => {
+      if(inputValue == null && controlToToggle.disabled == true){
+        controlToToggle.enable();
+      }
+      else if(inputValue != null && controlToToggle.enabled == true){
+        controlToToggle.disable();
+      }     
+    })
   }
 
   async presentToast(toastContent: string) {
