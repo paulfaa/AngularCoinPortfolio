@@ -1,16 +1,16 @@
-import { CoinName } from './coinName.type';
+import { CryptoName } from './cryptoName.type';
 import { PurchaseDetails } from './purchaseDetails.type';
 import { Value } from './value.type';
 
-export class Coin {
+export class CryptoPurchase {
     id: number;
-    name: CoinName;
+    name: CryptoName;
     purchaseDetails: PurchaseDetails;
     value: Value;
     quantity: number;
     profit: number; //should be an object with currencyValue
     
-    constructor(name: CoinName, purchaseDetails?: PurchaseDetails, quantity?: number, value?: Value){
+    constructor(name: CryptoName, purchaseDetails?: PurchaseDetails, quantity?: number, value?: Value){
         this.name = name;
         this.purchaseDetails = purchaseDetails;
         this.quantity = quantity;

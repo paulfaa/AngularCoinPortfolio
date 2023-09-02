@@ -2,26 +2,26 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
 import { CurrencyEnum } from '../currencyEnum';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from './purchases.service';
 import StorageUtils from '../storage.utils';
-import { Coin } from '../types/coin.type';
-import { CoinName } from '../types/coinName.type';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
+import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
 
-describe('CoinService', () => {
+describe('PurchasesService', () => {
 
-    let service: CoinService;
+    let service: PurchasesService;
     const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
-    const coinName = new CoinName("BitCoin", "BTC");
+    const coinName = new CryptoName("BitCoin", "BTC");
     const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
-    const testCoin = new Coin(coinName, purchaseDetails, 0.75, testValue);
+    const testCoin = new CryptoPurchase(coinName, purchaseDetails, 0.75, testValue);
 
     beforeEach(waitForAsync(() => {
-        service = new CoinService();
+        service = new PurchasesService();
         service['currencySelected'] = 'EUR';
         TestBed.configureTestingModule({
-            declarations: [CoinService],
+            declarations: [PurchasesService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
@@ -38,8 +38,8 @@ describe('CoinService', () => {
             expect(coinsLength).toEqual(0);
 
             // Act
-            service.addCoin(testCoin);
-            var coinsLength = service.getAllHeldCoins().length;
+            service.addPurchase(testCoin);
+            var coinsLength = service.getAllPurchases().length;
 
             // Assert
             expect(coinsLength).toEqual(1);
@@ -64,12 +64,12 @@ describe('CoinService', () => {
     describe('clearAllHeldCoins()', () => {
         it('removes all coins from the list', () => {
             // Arrange
-            service.addCoin(testCoin);
+            service.addPurchase(testCoin);
             var coinsLength = service['heldCoins'].length;
             expect(coinsLength).toEqual(1);
 
             // Act
-            service.clearAllHeldCoins();
+            service.clearAllPurchases();
             coinsLength = service['heldCoins'].length;
 
             // Assert
@@ -146,9 +146,9 @@ describe('CoinService', () => {
             // Arrange
             const oldDate = new Date(2011,1,1,11,11,0);
             const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, oldDate);
-            const oldCoin = new Coin(coinName, purchaseDetails, 5)
+            const oldCoin = new CryptoPurchase(coinName, purchaseDetails, 5)
         
-            service.addCoin(oldCoin);
+            service.addPurchase(oldCoin);
 
             // Act
             var returnedDate = service.getLastAddedDate();
@@ -161,9 +161,9 @@ describe('CoinService', () => {
             // Arrange
             const oldDate = new Date(2011,1,1,11,11,0);
             const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, oldDate);
-            const oldCoin = new Coin(coinName, purchaseDetails, 5)
-            service.addCoin(oldCoin);
-            service.addCoin(testCoin);
+            const oldCoin = new CryptoPurchase(coinName, purchaseDetails, 5)
+            service.addPurchase(oldCoin);
+            service.addPurchase(testCoin);
 
             // Act
             var returnedDate = service.getLastAddedDate();

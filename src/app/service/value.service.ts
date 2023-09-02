@@ -1,7 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { CoinService } from './coin.service';
+import { PurchasesService } from './purchases.service';
 import { RateService } from './rate.service';
-import { Coin } from '../types/coin.type';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
 import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
@@ -10,7 +10,7 @@ import * as moment from 'moment';
 export class ValueService {
 
     constructor(
-        private coinService: CoinService,
+        private coinService: PurchasesService,
         private rateService: RateService,
         private currencyService: CurrencyService
     ) {}
@@ -46,10 +46,10 @@ export class ValueService {
 
     public calculateTotalExpenditure(): number{
         var expenditure = 0;
-        var heldCoins = this.coinService.getAllHeldCoins();
-        if(heldCoins != null){
-            heldCoins.forEach(heldCoin => {
-                expenditure = expenditure + heldCoin.purchaseDetails.price;
+        var purchases = this.coinService.getAllPurchases();
+        if(purchases != null){
+            purchases.forEach(purchase => {
+                expenditure = expenditure + purchase.purchaseDetails.price;
             });
         }
         return expenditure;
@@ -62,13 +62,13 @@ export class ValueService {
         return this.rateService.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker);
     }
 
-    public updateValueForSingleCoin(coin: Coin): void{
+    public updateValueForSingleCoin(coin: CryptoPurchase): void{
         var updatedValue = coin.quantity * this.rateService.getRateForTicker(coin.name.ticker)
         coin.value.setCurrentValue(updatedValue);
     }
 
     public updateValueForTicker(ticker: string): void{
-        var heldCoins = this.coinService.getAllHeldCoins();
+        var heldCoins = this.coinService.getAllPurchases();
         if(heldCoins != null){
             heldCoins.forEach(heldCoin => {
                 if(heldCoin.name.ticker == ticker){

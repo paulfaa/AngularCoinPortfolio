@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import * as moment from 'moment';
 import { CurrencyEnum } from '../currencyEnum';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
 import { ValueService } from '../service/value.service';
@@ -19,7 +19,7 @@ export class SettingsPage {
 
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
-              private coinService: CoinService,
+              private coinService: PurchasesService,
               private valueService: ValueService,
               private rateService: RateService
   ){}
@@ -53,7 +53,7 @@ export class SettingsPage {
       buttons: [
         {text: 'OK',
         handler: () => {
-          this.coinService.clearAllHeldCoins();
+          this.coinService.clearAllPurchases();
           StorageUtils.clearAllStorage();
           console.log("call deleteall coins")
         }}, 
@@ -67,7 +67,7 @@ export class SettingsPage {
   }
 
   private ConvertToCSV(): string {
-    var data = this.coinService.getAllHeldCoins();
+    var data = this.coinService.getAllPurchases();
     if (data == null){
       console.log("no data to convert")
       return

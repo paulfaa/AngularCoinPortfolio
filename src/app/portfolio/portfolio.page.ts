@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Coin } from '../types/coin.type';
-import { CoinService } from '../service/coin.service';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
+import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
@@ -19,7 +19,7 @@ import { CurrencyEnum } from '../currencyEnum';
 })
 export class PortfolioPage implements OnInit, AfterViewInit {
   
-  heldCoins: Coin[];
+  purchases: CryptoPurchase[];
   htmlName = '';
   footer = '';
   private currencySymbol = '';
@@ -27,13 +27,13 @@ export class PortfolioPage implements OnInit, AfterViewInit {
   private totalProfit = 0;
   
   constructor(public alertController: AlertController,
-    private coinService: CoinService,
+    private coinService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
     private loggingService: LoggingService) {}
     
     ngOnInit() {
-      this.heldCoins = this.coinService.getAllHeldCoins();
+      this.purchases = this.coinService.getAllPurchases(); //should be a subscription
       this.currencySymbol = this.currencyService.getCurrencySymbol();
       this.totalValue = this.valueService.calculateTotalValue();
       this.totalProfit = this.valueService.calculateTotalProfit();
@@ -49,7 +49,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
     }
     
     ngAfterViewInit() {
-      console.log("ngAfterViewInit All held coins: ", this.coinService.getAllHeldCoins());
+      console.log("ngAfterViewInit all purchases: ", this.coinService.getAllPurchases());
       
     }
     
@@ -57,11 +57,11 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       this.valueService.calculateValueForTicker(ticker);
     }
 
-    public callDeleteMethod(coin: Coin){
+    public callDeleteMethod(coin: CryptoPurchase){
       this.coinService.removeFromHeldCoins(coin);
     }
 
-    public displayFooter(coin: Coin): boolean {
+    public displayFooter(coin: CryptoPurchase): boolean {
       if (coin.name.displayName !== this.footer) {
         this.footer = coin.name.displayName;
         return true;
@@ -84,7 +84,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       return filename
     } */
 
-    async infoPopup(coin: Coin) {
+    async infoPopup(coin: CryptoPurchase) {
       const enumIndex = coin.purchaseDetails.currency;
       const alert = await this.alertController.create({
         header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",

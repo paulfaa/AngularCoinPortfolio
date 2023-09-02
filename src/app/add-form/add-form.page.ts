@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from '../service/purchases.service';
 import { Validators, FormBuilder } from '@angular/forms';
-import { CoinName } from '../types/coinName.type';
-import { Coin } from '../types/coin.type';
+import { CryptoName } from '../types/cryptoName.type';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { ValueService } from '../service/value.service';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { CurrencyService } from '../service/currency.service';
@@ -20,7 +20,7 @@ import { atLeastOne } from '../shared/directives/at-least-one-validator.directiv
 })
 export class AddFormPage implements OnInit, OnDestroy {
 
-  public coinNames: CoinName[];
+  public coinNames: CryptoName[];
   //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;
@@ -40,7 +40,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   });
 
   constructor(
-    private coinService: CoinService,
+    private coinService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
     public toastController: ToastController,
@@ -103,12 +103,12 @@ export class AddFormPage implements OnInit, OnDestroy {
     const coinQuantity = this.coinForm.controls['quantity'].value;
     const coinValue = this.valueService.createNewValue(coinQuantity);
     const purchaseDetails = this.getPurchaseDetails();
-    const coin = new Coin(coinName, purchaseDetails, coinQuantity, coinValue);
+    const coin = new CryptoPurchase(coinName, purchaseDetails, coinQuantity, coinValue);
     //also should set coinId here
     
     console.log("Newly created coin:")
     console.log(coin);
-    this.coinService.addCoin(coin);
+    this.coinService.addPurchase(coin);
     this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchaseDetails.price);
     this.clearAllInputs();
   }

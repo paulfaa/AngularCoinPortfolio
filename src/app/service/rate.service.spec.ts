@@ -5,18 +5,19 @@ import * as moment from 'moment';
 import { CurrencyEnum } from '../currencyEnum';
 import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
-import { CoinService } from './coin.service';
+import { PurchasesService } from './purchases.service';
 import { CurrencyService } from './currency.service';
 import { LoggingService } from './logging.service';
 
 import { RateService } from './rate.service';
+import { CryptoValueClientService } from './crypto-value-client.service';
 
 describe('RateService', () => {
 
     let serviceUnderTest: RateService;
-    let coinService: CoinService;
+    let coinService: PurchasesService;
     let currencyService: CurrencyService;
-    let httpClient: HttpClient;
+    let cryptoValueClientService: CryptoValueClientService;
     let loggingService: LoggingService;
     let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
@@ -31,7 +32,7 @@ describe('RateService', () => {
     const btcRateUsd = new Rate("BTC", 500.25, CurrencyEnum.USD, moment().toDate());
 
     beforeEach(waitForAsync(() => {
-        serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);
+        serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, cryptoValueClientService);
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();

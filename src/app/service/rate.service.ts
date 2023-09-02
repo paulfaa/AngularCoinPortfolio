@@ -5,7 +5,7 @@ import { Observable, throwError } from "rxjs";
 import { CurrencyEnum } from "../currencyEnum";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
-import { CoinService } from "./coin.service";
+import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
@@ -18,7 +18,7 @@ export class RateService {
     private selectedCurrency;
 
     constructor(
-        private coinService: CoinService,
+        private coinService: PurchasesService,
         private currencyService: CurrencyService,
         private loggingService: LoggingService,
         private http: CryptoValueClientService,

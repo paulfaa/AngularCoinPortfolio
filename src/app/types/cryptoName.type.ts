@@ -1,4 +1,4 @@
-export class CoinName {
+export class CryptoName {
   displayName: string;
   ticker: string;
 

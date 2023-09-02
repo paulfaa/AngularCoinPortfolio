@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from '../service/purchases.service';
 
 @Component({
   selector: 'value-footer',
@@ -14,7 +14,7 @@ export class ValueFooterComponent implements OnInit {
   totalProfit: number;
 
   constructor(
-    private coinService: CoinService
+    private coinService: PurchasesService
   ) { }
 
   ngOnInit() {
