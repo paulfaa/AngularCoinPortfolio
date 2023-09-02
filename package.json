@@ -24,7 +24,7 @@
     "@ionic/angular": "^5.5.2",
     "angular-dark-mode": "^3.0.2",
     "ionic-selectable": "^4.9.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
