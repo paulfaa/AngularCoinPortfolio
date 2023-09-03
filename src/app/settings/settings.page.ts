@@ -100,7 +100,7 @@ export class SettingsPage {
   }
 
   public callGetCurrency(): String{
-    var selected = CurrencyEnum[this.currencyService.getCurrencySelected()].toString();
+    var selected = CurrencyEnum[this.currencyService.getSelectedCurrency()].toString();
     return selected;
   }
 }

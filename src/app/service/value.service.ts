@@ -5,34 +5,47 @@ import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
 import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
+import { Observable, Subscription, of } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ValueService {
+
+    private purchases: CryptoPurchase[];
+    private purchasesSubscription: Subscription;
+    private totalValue = 0;
+    private totalProfit = 0;
 
     constructor(
         private purchasesService: PurchasesService,
         private rateService: RateService,
         private currencyService: CurrencyService
-    ) {}
+    ) {
+        this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
+    }
+    
+    public getTotalValue(): Observable<number> {
+        return of(this.totalValue)
+    }
 
-    private totalValue = 0;
-    private totalProfit = 0;
+    public getTotalProfit(): Observable<number> {
+        return of(this.totalProfit)
+    }
 
     public createNewValue(currentValue: number): Value{
-        return new Value(currentValue, this.currencyService.getCurrencySelected(), moment().toDate());
-    } 
+        return new Value(currentValue, this.currencyService.getSelectedCurrency(), moment().toDate());
+    }
 
     public calculateTotalProfit(): number{
         var totalExpendature = this.calculateTotalExpenditure();
-        var totalValue = this.calculateTotalValue();
-        var totalProfit = totalValue - totalExpendature;
-        this.totalProfit = totalProfit;
-        return totalProfit;
+        this.totalValue = this.calculateTotalValue();
+        this.totalProfit = this.totalValue - totalExpendature;
+        console.log("totalProfit value.service ", this.totalProfit)
+        return this.totalProfit;
     }
 
-    public calculateTotalValue(): number{
+    private calculateTotalValue(): number{
         var total = 0;
-        this.rateService.updateAllExchangeRates();
+        //this.rateService.updateAllExchangeRates();
         var allTickers = this.purchasesService.getAllUniqueTickers();
         if(allTickers != null && allTickers.length >= 1){
             allTickers.forEach(ticker => {
@@ -44,11 +57,11 @@ export class ValueService {
         return total;
     }
 
-    public calculateTotalExpenditure(): number{
+    private calculateTotalExpenditure(): number{
         var expenditure = 0;
-        var purchases = this.purchasesService.getAllPurchases();
-        if(purchases != null){
-            purchases.forEach(purchase => {
+        //var purchases = this.purchasesService.getAllPurchases();
+        if(this.purchases != null){
+            this.purchases.forEach(purchase => {
                 expenditure = expenditure + purchase.purchaseDetails.price;
             });
         }
@@ -68,11 +81,10 @@ export class ValueService {
     }
 
     public updateValueForTicker(ticker: string): void{
-        var heldCoins = this.purchasesService.getAllPurchases();
-        if(heldCoins != null){
-            heldCoins.forEach(heldCoin => {
-                if(heldCoin.name.ticker == ticker){
-                    this.updateValueForSingleCoin(heldCoin);
+        if(this.purchases != null){
+            this.purchases.forEach(purchase => {
+                if(purchase.name.ticker == ticker){
+                    this.updateValueForSingleCoin(purchase);
                 }
             });
         }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { PurchasesService } from '../service/purchases.service';
@@ -6,6 +6,7 @@ import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
 import { CurrencyEnum } from '../currencyEnum';
+import { Observable, Subscription, of } from 'rxjs';
 
 //TODO 
 // Set coinId when added to portfolio
@@ -17,53 +18,63 @@ import { CurrencyEnum } from '../currencyEnum';
   templateUrl: './portfolio.page.html',
   styleUrls: ['./portfolio.page.scss'],
 })
-export class PortfolioPage implements OnInit, AfterViewInit {
+export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   
   purchases: CryptoPurchase[];
   htmlName = '';
   footer = '';
-  private currencySymbol = '';
-  private totalValue = 0;
-  private totalProfit = 0;
+  private purchasesSubscription: Subscription;
+  public $totalValue: Observable<number>;
+  public $totalProfit: Observable<number>;
+  public $currencySymbol: Observable<string>;
   
   constructor(public alertController: AlertController,
-    private coinService: PurchasesService,
+    private purchasesService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
-    private loggingService: LoggingService) {}
+    private loggingService: LoggingService){}
     
     ngOnInit() {
-      this.purchases = this.coinService.getAllPurchases(); //should be a subscription
-      this.currencySymbol = this.currencyService.getCurrencySymbol();
-      this.totalValue = this.valueService.calculateTotalValue();
-      this.totalProfit = this.valueService.calculateTotalProfit();
+      this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
+      this.$totalValue = this.valueService.getTotalValue();
+      this.$totalProfit = this.valueService.getTotalProfit();
+      this.$currencySymbol = this.currencyService.getSelectedCurrencySymbol();
+      //if purchases is not empty...
       this.showEmptyPortfolioAlert();
+      this.valueService.calculateTotalProfit();
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnDestroy(): void {
+      if (this.purchasesSubscription) {
+        this.purchasesSubscription.unsubscribe();
+      }
+    }
+
+    /* ngOnChanges(changes: SimpleChanges) {
       if (changes.heldCoins) {
         console.log("ngOnChanges");
         this.totalValue = this.valueService.calculateTotalValue();
         this.totalProfit = this.valueService.calculateTotalProfit();
       }
-    }
+    } */
     
     ngAfterViewInit() {
-      console.log("ngAfterViewInit all purchases: ", this.coinService.getAllPurchases());
+      console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
       
     }
     
+    //use event listeners instead
     public callCalculateValueForTicker(ticker: string){
       this.valueService.calculateValueForTicker(ticker);
     }
 
-    public callDeleteMethod(coin: CryptoPurchase){
-      this.coinService.removeFromHeldCoins(coin);
+    public callDeleteMethod(purchase: CryptoPurchase){
+      this.purchasesService.removeFromHeldCoins(purchase);
     }
 
-    public displayFooter(coin: CryptoPurchase): boolean {
-      if (coin.name.displayName !== this.footer) {
-        this.footer = coin.name.displayName;
+    public displayFooter(purchase: CryptoPurchase): boolean {
+      if (purchase.name.displayName !== this.footer) {
+        this.footer = purchase.name.displayName;
         return true;
       } else {
         return false;
@@ -84,7 +95,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       return filename
     } */
 
-    async infoPopup(coin: CryptoPurchase) {
+    public async infoPopup(coin: CryptoPurchase) {
       const enumIndex = coin.purchaseDetails.currency;
       const alert = await this.alertController.create({
         header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
@@ -96,9 +107,10 @@ export class PortfolioPage implements OnInit, AfterViewInit {
       await alert.present();
       let result = await alert.onDidDismiss();
       console.log(result);
+      console.log(this.$totalValue)
   }
     
-    async showEmptyPortfolioAlert() {
+    private async showEmptyPortfolioAlert() {
       const alert = await this.alertController.create({
         header: 'Nothing here...',
         message: 'Looks like your portfolio is empty. Click the + symbol below to add something.',
@@ -106,7 +118,7 @@ export class PortfolioPage implements OnInit, AfterViewInit {
           {text: 'OK'}
         ]
       });
-      if(this.coinService.getLengthOfHeldCoins() == 0){
+      if(this.purchasesService.getLengthOfHeldCoins() == 0){
         await alert.present();
         this.loggingService.info("Empty portfolio alert shown");
       }

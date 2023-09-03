@@ -118,7 +118,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   }
 
   private getPurchaseDetails(): PurchaseDetails{
-    const selectedCurrency = this.currencyService.getCurrencySelected();
+    const selectedCurrency = this.currencyService.getSelectedCurrency();
     const currentDateTime = moment().toDate();
     var purchasePrice = 0;
     if(this.coinForm.controls['perCoinPurchasePrice'].value != null){

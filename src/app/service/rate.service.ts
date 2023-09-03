@@ -18,7 +18,7 @@ export class RateService {
     private selectedCurrency;
 
     constructor(
-        private coinService: PurchasesService,
+        private purchasesService: PurchasesService,
         private currencyService: CurrencyService,
         private loggingService: LoggingService,
         private http: CryptoValueClientService,
@@ -27,7 +27,7 @@ export class RateService {
     }
 
     private initService(): void{
-        this.selectedCurrency = this.currencyService.getCurrencySelected();
+        this.selectedCurrency = this.currencyService.getSelectedCurrency();
         var storedRates = StorageUtils.readFromStorage('rates');
         if (storedRates === null){
             this.rates = [];
@@ -39,41 +39,32 @@ export class RateService {
 
     public updateAllExchangeRates(){
         var now = moment();
-        var tickersToUpdate = [];
-        //if rates are more than 12 hours old update, otherwise nothing
-        this.rates?.forEach(rate => {
-            if(moment().subtract(12, 'hour').toDate() < rate.updated){
-                tickersToUpdate.push(rate.ticker)
-            }
-        });
-        tickersToUpdate.forEach(ticker => {
-            //var r = backend.getRate(ticker, userCurrency);
-            var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
-            rate.updated = now.toDate();
-            this.rates.push(rate);
-        });
-        this.loggingService.info("RateService updated " + tickersToUpdate.length + " rates.")
+        this.http.getCryptoValues().subscribe(data => {this.rates = data});
+        //var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
+        //rate.updateDate = now.toDate();
+        this.loggingService.info("RateService updated " + this.rates.length + " rates.")
         StorageUtils.writeToStorage("rates", this.rates);
     }
 
     public getLastUpdateDate(): Date {
         var date = new Date(2020, 11, 1);
         this.rates?.forEach(rate => {
-            if (rate.updated > date){
-                date = rate.updated;
+            if (rate.updateDate > date){
+                date = rate.updateDate;
             }
         });
         return date;
     }
 
     public getRateForTicker(tickerToLookup: string): number{
-        var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === this.selectedCurrency )
+        var foundRate = this.rates.find(i => i.name === tickerToLookup && i.currencyCode === this.selectedCurrency )
         if(foundRate != undefined){
             this.loggingService.info("RateService: found rate - ", foundRate);
             return foundRate.value;
         }
         else{
-            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + this.selectedCurrency.toString() + ".")
+            return 5;
+            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + " - " + this.selectedCurrency)
             return 0;
         }
     }

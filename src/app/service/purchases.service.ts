@@ -4,6 +4,7 @@ import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
+import { Observable, Subscription, of } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{
@@ -113,10 +114,9 @@ export class PurchasesService{
     return names;
   }
 
-  public getAllPurchases(): CryptoPurchase[]{
-    //should only have to load this once on app start, rewrite this
+  public getAllPurchases(): Observable<CryptoPurchase[]>{
     this.sortAllPurchases();
-    return this.purchases;
+    return of(this.purchases);
   }
 
   public getPurchasesByTicker(ticker: string): CryptoPurchase[]{

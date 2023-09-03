@@ -9,31 +9,36 @@
   <!-- <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
     <ion-refresher-content>Updating rates...</ion-refresher-content>
   </ion-refresher> -->
+
+  Totalvalue {{$totalValue | async}}
+  Totalprofic {{$totalProfit | async}}
+  Currency {{$currencySymbol | async}}
   
-  <value-header [totalValue] = totalValue [totalProfit]=totalProfit [currencySymbol]=currencySymbol></value-header>
+  <value-header>
+  </value-header>
   
-  <div ngFor *ngFor="let coin of heldCoins; let index = index">
-    <p id="header" *ngIf="!heldCoins[index-1] || coin.name.displayName !== heldCoins[index-1].name.displayName">
+  <div ngFor *ngFor="let purchase of purchases; let index = index">
+    <p id="header" *ngIf="!purchases[index-1] || purchase.name.displayName !== purchases[index-1].name.displayName">
       <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
-      {{ coin.name.displayName }}
+      {{ purchase.name.displayName }}
     </p>
     
     <ion-item-sliding>
       <ion-item>
-        <p id="quantity">{{ coin.quantity }}</p>
-        <p>{{ currencySymbol }}{{ coin.purchaseDetails.price }}</p>
-        <p>{{ coin.value.currentValue }}</p>
+        <p id="quantity">{{ purchase.quantity }}</p>
+        <p>{{ $currencySymbol | async}}{{ purchase.purchaseDetails.price }}</p>
+        <p>{{ purchase.value.currentValue }}</p>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="callDeleteMethod(coin)">Delete</ion-item-option>
+        <ion-item-option color="danger" (click)="callDeleteMethod(purchase)">Delete</ion-item-option>
       </ion-item-options>
       <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="infoPopup(coin)">Info</ion-item-option>
+        <ion-item-option color="primary" (click)="infoPopup(purchase)">Info</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
 
-    <footer *ngIf="!heldCoins[index+1] || coin.name.displayName !== heldCoins[index+1].name.displayName">
-      Total {{coin.name.displayName}} profit: <value-footer [ticker]=coin.name.ticker></value-footer>
+    <footer *ngIf="!purchases[index+1] || purchase.name.displayName !== purchases[index+1].name.displayName">
+      Total {{purchase.name.displayName}} profit: <value-footer [ticker]=purchase.name.ticker></value-footer>
     </footer>
   </div>
 

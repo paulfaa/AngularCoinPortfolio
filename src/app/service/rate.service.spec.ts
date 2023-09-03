@@ -23,7 +23,7 @@ describe('RateService', () => {
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
 
     mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
-    mockCurrencyService.getCurrencySelected.and.returnValue(CurrencyEnum.EUR);
+    mockCurrencyService.getSelectedCurrency.and.returnValue(CurrencyEnum.EUR);
     mockLoggingService = jasmine.createSpyObj('mockCurrencyService', ['warn', 'info']);
     mockLoggingService.warn.and.returnValue(null);
     mockLoggingService.info.and.returnValue(null);
@@ -77,26 +77,26 @@ describe('RateService', () => {
         it('will ignore all rates which have already been updated the past hour', () => {
             // Arrange
             var now = moment().toDate();
-            btcRateEur.updated = now;
+            btcRateEur.updateDate = now;
             serviceUnderTest['rates'].push(btcRateEur);
 
             // Act
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['rates'][0].updated).toEqual(now);
+            expect(serviceUnderTest['rates'][0].updateDate).toEqual(now);
         });
         it('will update all rates which are older than 1hr', () => {
             // Arrange
             var threeHoursAgo = moment().subtract(3, 'hour').toDate();
-            btcRateEur.updated = threeHoursAgo;
+            btcRateEur.updateDate = threeHoursAgo;
             serviceUnderTest['rates'].push(btcRateEur);
 
             // Act
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['rates'][0].updated > threeHoursAgo).toBeTrue;
+            expect(serviceUnderTest['rates'][0].updateDate > threeHoursAgo).toBeTrue;
         });
     });
 
