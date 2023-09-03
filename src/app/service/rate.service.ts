@@ -14,7 +14,7 @@ import { CryptoValueClientService } from "./crypto-value-client.service";
 export class RateService {
 
     private rates: Rate[];
-    private lastUpdateDate: Date;
+    private ratesLastUpdated: Date;
     private selectedCurrency;
 
     constructor(

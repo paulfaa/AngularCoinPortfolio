@@ -8,13 +8,14 @@ import { PurchasesService } from '../service/purchases.service';
 })
 export class ValueFooterComponent implements OnInit {
   @Input() ticker = '';
-  @Input() coinId = 0;
+  @Input() id = 0;
 
   totalValue: number;
   totalProfit: number;
 
+  //needs refactor
   constructor(
-    private coinService: PurchasesService
+    private purchasesService: PurchasesService
   ) { }
 
   ngOnInit() {
@@ -24,9 +25,9 @@ export class ValueFooterComponent implements OnInit {
 
   public calculateValueOfTicker(): number{
     var totalValue = 0;
-    const matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
-    matchingCoins.forEach(coin => {
-      totalValue = totalValue + coin.purchaseDetails.price;
+    const purchasesMatchingTicker = this.purchasesService.getPurchasesByTicker(this.ticker);
+    purchasesMatchingTicker.forEach(purchase => {
+      totalValue = totalValue + purchase.purchaseDetails.price;
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;
@@ -34,8 +35,8 @@ export class ValueFooterComponent implements OnInit {
 
   public calculateProfitOfTicker(): number{
     var totalProfit = 0;
-    const matchingCoins = this.coinService.getCoinsByTicker(this.ticker);
-    matchingCoins.forEach(coin => {
+    const purchasesMatchingTicker = this.purchasesService.getPurchasesByTicker(this.ticker);
+    purchasesMatchingTicker.forEach(coin => {
       totalProfit = totalProfit + coin.profit;
     });
     console.log("total profit for " + this.ticker + ": " + totalProfit);
@@ -44,9 +45,9 @@ export class ValueFooterComponent implements OnInit {
 
   public calculateValueOfId(): number{
     var totalValue = 0;
-    var matchingCoins = this.coinService.getCoinsById(this.coinId);
-    matchingCoins.forEach(coin => {
-      totalValue = totalValue + coin.purchaseDetails.price; 
+    var purchasesMatchingId = this.purchasesService.getPurchasesById(this.id);
+    purchasesMatchingId.forEach(purchase => {
+      totalValue = totalValue + purchase.purchaseDetails.price; 
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;
@@ -54,9 +55,9 @@ export class ValueFooterComponent implements OnInit {
 
   public calculateProfitOfId(): number{
     var totalProfit = 0;
-    var matchingCoins = this.coinService.getCoinsById(this.coinId);
-    matchingCoins.forEach(coin => {
-      totalProfit = totalProfit + coin.profit; 
+    var purchasesMatchingId = this.purchasesService.getPurchasesById(this.id);
+    purchasesMatchingId.forEach(purchases => {
+      totalProfit = totalProfit + purchases.profit; 
     });
     console.log("totalValueFor " + this.ticker + ": " + totalProfit);
     return totalProfit;

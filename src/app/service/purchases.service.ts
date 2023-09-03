@@ -10,7 +10,7 @@ export class PurchasesService{
 
   private purchases: CryptoPurchase[];
   private uniqueTickers: string[];
-  private lastAddedCoinDate: Date;
+  private lastPurchaseDate: Date;
 
   constructor() {
     this.initService();
@@ -31,7 +31,7 @@ export class PurchasesService{
 }
 
 //move this, also make sure add page still works properly
-  private coinNames: CryptoName[] = [
+  private cryptoNames: CryptoName[] = [
     new CryptoName("Bitcoin","BTC"),
     new CryptoName("Cardano","ADA"),
     new CryptoName("Litecoin","LTE"),
@@ -65,14 +65,14 @@ export class PurchasesService{
     this.updateStorage();
   }
 
-  public updateStorage(): void{
+  private updateStorage(): void{
     StorageUtils.writeToStorage('savedCoins', this.purchases)
     StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
 
-  public removeFromHeldCoins(coinToDelete: CryptoPurchase): void{
+  public removeFromHeldCoins(purchaseToRemove: CryptoPurchase): void{
     this.purchases.forEach((value,index)=>{
-      if(value==coinToDelete) this.purchases.splice(index,1);
+      if(value==purchaseToRemove) this.purchases.splice(index,1);
     });
     this.updateStorage();
   }
@@ -80,9 +80,9 @@ export class PurchasesService{
   public getAmountHeldOfTicker(ticker: string): number{
     var counter = 0;
     if(this.purchases != null && this.purchases.length >= 1){
-      this.purchases.forEach(coin => {
-        if(coin.name.ticker == ticker){
-          counter = counter + coin.quantity
+      this.purchases.forEach(purchase => {
+        if(purchase.name.ticker == ticker){
+          counter = counter + purchase.quantity
         }
       });
     }
@@ -99,16 +99,16 @@ export class PurchasesService{
   }
 
   public clearAllPurchases(): void{
-    console.log("clearing all coins");
+    console.log("clearing all purchases");
     this.purchases = [];
     this.uniqueTickers = [];
     this.updateStorage();
   }
 
-  public getAllCoinNames(): CryptoName[] {
+  public getAllCryptoNames(): CryptoName[] {
     let names = [];
-    this.coinNames.forEach(Coin => {
-      names.push(Coin)
+    this.cryptoNames.forEach(name => {
+      names.push(name)
     });
     return names;
   }
@@ -119,7 +119,7 @@ export class PurchasesService{
     return this.purchases;
   }
 
-  public getCoinsByTicker(ticker: string): CryptoPurchase[]{
+  public getPurchasesByTicker(ticker: string): CryptoPurchase[]{
     var matches = [];
     this.purchases.forEach(c => {
       if (c.name.ticker == ticker){
@@ -129,7 +129,7 @@ export class PurchasesService{
     return matches;
   }
 
-  public getCoinsById(id: number): CryptoPurchase[]{
+  public getPurchasesById(id: number): CryptoPurchase[]{
     var matches = [];
     this.purchases.forEach(c => {
       if (c.id == id){
@@ -157,7 +157,7 @@ export class PurchasesService{
   //sorts list alphabetically by ticker then by purchase date
   private sortAllPurchases(): void{
     if(this.purchases != null && this.purchases.length >= 2){
-      console.log("this.heldcoins: " + this.purchases);
+      console.log("this.purchases: " + this.purchases);
       this.purchases.sort((a,b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf()); //was throwing error, seems to work again
     }
   }
@@ -168,15 +168,15 @@ export class PurchasesService{
     });
   }
 
-  public getLastAddedDate(): Date{
+  public getLastAddedDate(): Date {
     var date;
-    this.purchases.forEach(coin => {
-      var purchaseDate = coin.purchaseDetails.date;
-      if ( date===undefined || date < purchaseDate){
+    this.purchases.forEach(purchase => {
+      var purchaseDate = purchase.purchaseDetails.date;
+      if ( date === undefined || date < purchaseDate){
         date = purchaseDate;
       }
     })
-    this.lastAddedCoinDate = date;
+    this.lastPurchaseDate = date;
     return date;
   }
 }

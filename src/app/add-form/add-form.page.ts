@@ -50,7 +50,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.coinNames = this.coinService.getAllCoinNames();
+    this.coinNames = this.coinService.getAllCryptoNames();
     this.paramsSubscription = this.route.params.subscribe(() => {
       this.coinForm.reset();
     });

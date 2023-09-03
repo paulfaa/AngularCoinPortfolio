@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import * as moment from 'moment';
 import { CurrencyEnum } from '../currencyEnum';
 import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
@@ -29,7 +28,7 @@ export class SettingsPage {
     this.lastUpdateDate = this.rateService.getLastUpdateDate();
   }
 
-  async showDeleteAlert() {
+  public async showDeleteAlert() {
     const alert = await this.alertController.create({
       header: 'Warning',
       message: 'This will clear all data stored on your device. Are you sure you want to proceed?',
@@ -46,7 +45,7 @@ export class SettingsPage {
     let result = await alert.onDidDismiss();
   }
 
-  async confirmDeleteAlert() {
+  private async confirmDeleteAlert() {
     const alert = await this.alertController.create({
       header: 'Warning',
       message: 'Are you really sure? This cannot be undone.',
@@ -66,7 +65,7 @@ export class SettingsPage {
     console.log(result);
   }
 
-  private ConvertToCSV(): string {
+  public convertToCSV(): string {
     var data = this.coinService.getAllPurchases();
     if (data == null){
       console.log("no data to convert")

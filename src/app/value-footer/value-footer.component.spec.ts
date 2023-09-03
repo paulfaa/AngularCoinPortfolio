@@ -98,7 +98,7 @@ describe('ValueFooterComponent', () => {
     //fixture.detectChanges();
 
     // Act
-    mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+    mockCoinService.getPurchasesByTicker.and.returnValue(coinList);
     component.calculateValueOfTicker();
 
     // Assert

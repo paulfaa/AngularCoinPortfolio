@@ -10,7 +10,7 @@ import * as moment from 'moment';
 export class ValueService {
 
     constructor(
-        private coinService: PurchasesService,
+        private purchasesService: PurchasesService,
         private rateService: RateService,
         private currencyService: CurrencyService
     ) {}
@@ -33,10 +33,10 @@ export class ValueService {
     public calculateTotalValue(): number{
         var total = 0;
         this.rateService.updateAllExchangeRates();
-        var allTickers = this.coinService.getAllUniqueTickers();
+        var allTickers = this.purchasesService.getAllUniqueTickers();
         if(allTickers != null && allTickers.length >= 1){
             allTickers.forEach(ticker => {
-                total = total + (this.coinService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker));
+                total = total + (this.purchasesService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker));
             });
         }
         this.totalValue = total;
@@ -46,7 +46,7 @@ export class ValueService {
 
     public calculateTotalExpenditure(): number{
         var expenditure = 0;
-        var purchases = this.coinService.getAllPurchases();
+        var purchases = this.purchasesService.getAllPurchases();
         if(purchases != null){
             purchases.forEach(purchase => {
                 expenditure = expenditure + purchase.purchaseDetails.price;
@@ -57,18 +57,18 @@ export class ValueService {
 
     public calculateValueForTicker(ticker: string): number{
         //this.updateAllExchangeRates();
-        console.log("value: " + this.rateService.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker));
+        console.log("value: " + this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker));
         //var rate = this.rateService.getRateForTicker(ticker); //always returning 0
-        return this.rateService.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker);
+        return this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker);
     }
 
-    public updateValueForSingleCoin(coin: CryptoPurchase): void{
-        var updatedValue = coin.quantity * this.rateService.getRateForTicker(coin.name.ticker)
-        coin.value.setCurrentValue(updatedValue);
+    public updateValueForSingleCoin(purchase: CryptoPurchase): void{
+        var updatedValue = purchase.quantity * this.rateService.getRateForTicker(purchase.name.ticker)
+        purchase.value.setCurrentValue(updatedValue);
     }
 
     public updateValueForTicker(ticker: string): void{
-        var heldCoins = this.coinService.getAllPurchases();
+        var heldCoins = this.purchasesService.getAllPurchases();
         if(heldCoins != null){
             heldCoins.forEach(heldCoin => {
                 if(heldCoin.name.ticker == ticker){
