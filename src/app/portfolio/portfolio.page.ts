@@ -68,7 +68,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       this.valueService.calculateValueForTicker(ticker);
     }
 
-    public callDeleteMethod(purchase: CryptoPurchase){
+    public onDeletePurchaseClicked(purchase: CryptoPurchase){
       this.purchasesService.removeFromHeldCoins(purchase);
     }
 

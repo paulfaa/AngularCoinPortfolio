@@ -6,6 +6,7 @@ import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
 import { ValueService } from '../service/value.service';
 import StorageUtils from '../storage.utils';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -14,7 +15,7 @@ import StorageUtils from '../storage.utils';
 })
 export class SettingsPage {
 
-  public lastUpdateDate: Date;
+  public ratesLastUpdateDate: Observable<Date>;
 
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
@@ -24,8 +25,7 @@ export class SettingsPage {
   ){}
 
   ngOnInit() {
-    //this.lastUpdateDate = this.valueService.dateLastUpdated;
-    this.lastUpdateDate = this.rateService.getLastUpdateDate();
+    this.ratesLastUpdateDate = this.rateService.getRatesLastUpdateDate();
   }
 
   public async showDeleteAlert() {
@@ -53,8 +53,7 @@ export class SettingsPage {
         {text: 'OK',
         handler: () => {
           this.coinService.clearAllPurchases();
-          StorageUtils.clearAllStorage();
-          console.log("call deleteall coins")
+          console.log("call delete all coins")
         }}, 
         {text: 'Cancel',
         cssClass: 'modal-button-cancel'}

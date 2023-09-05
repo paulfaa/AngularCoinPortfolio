@@ -20,7 +20,7 @@
 
   <ion-item>
     <ion-label>Exchange rate last updated:</ion-label>
-    {{lastUpdateDate | date: 'short'}}
+    {{ratesLastUpdateDate | async | date: 'short'}}
   </ion-item>
 
   <ion-item>

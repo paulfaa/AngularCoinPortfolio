@@ -30,7 +30,7 @@
         <p>{{ purchase.value.currentValue }}</p>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="callDeleteMethod(purchase)">Delete</ion-item-option>
+        <ion-item-option color="danger" (click)="onDeletePurchaseClicked(purchase)">Delete</ion-item-option>
       </ion-item-options>
       <ion-item-options side="start">
         <ion-item-option color="primary" (click)="infoPopup(purchase)">Info</ion-item-option>

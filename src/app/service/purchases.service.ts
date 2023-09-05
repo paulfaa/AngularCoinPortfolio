@@ -12,9 +12,9 @@ export class PurchasesService{
   private purchases: CryptoPurchase[];
   private uniqueTickers: string[];
   private lastPurchaseDate: Date;
-
+  
   constructor() {
-    this.initService();
+        this.initService();
 }
 
   private initService(): void{

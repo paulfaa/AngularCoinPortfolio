@@ -1,20 +1,17 @@
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import * as moment from "moment";
-import { Observable, throwError } from "rxjs";
-import { CurrencyEnum } from "../currencyEnum";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
 import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
+import { Observable, of } from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class RateService {
 
     private rates: Rate[];
-    private ratesLastUpdated: Date;
+    private ratesLastUpdateDate: Date;
     private selectedCurrency;
 
     constructor(
@@ -29,31 +26,26 @@ export class RateService {
     private initService(): void{
         this.selectedCurrency = this.currencyService.getSelectedCurrency();
         var storedRates = StorageUtils.readFromStorage('rates');
-        if (storedRates === null){
+        if (storedRates === null || storedRates.length == 0){
             this.rates = [];
         }
         else {
             this.rates = storedRates;
+            this.ratesLastUpdateDate = this.rates[0].updateDate;
         }
     }
 
     public updateAllExchangeRates(){
-        var now = moment();
         this.http.getCryptoValues().subscribe(data => {this.rates = data});
         //var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
         //rate.updateDate = now.toDate();
         this.loggingService.info("RateService updated " + this.rates.length + " rates.")
         StorageUtils.writeToStorage("rates", this.rates);
+        this.ratesLastUpdateDate = new Date();
     }
 
-    public getLastUpdateDate(): Date {
-        var date = new Date(2020, 11, 1);
-        this.rates?.forEach(rate => {
-            if (rate.updateDate > date){
-                date = rate.updateDate;
-            }
-        });
-        return date;
+    public getRatesLastUpdateDate(): Observable<Date> {
+        return of(this.ratesLastUpdateDate);
     }
 
     public getRateForTicker(tickerToLookup: string): number{
