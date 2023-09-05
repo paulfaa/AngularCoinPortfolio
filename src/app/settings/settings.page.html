@@ -8,9 +8,11 @@
 
   <ion-item-divider></ion-item-divider>
 
+  {{observable | async | enumToString }}
+
   <ion-item>
     <ion-label>App Currency:</ion-label>
-    <ion-select (ionChange)="callSetCurrency($event.target.value)" [value]="callGetCurrency()">
+    <ion-select (ionChange)="updateSelectedCurrency($event.target.value)" [value]="currencyString">
       <ion-select-option value='EUR'>Euro</ion-select-option>
       <ion-select-option value='USD'>US Dollar</ion-select-option>
       <ion-select-option value='AUD'>Australian Dollar</ion-select-option>
@@ -20,7 +22,7 @@
 
   <ion-item>
     <ion-label>Exchange rate last updated:</ion-label>
-    {{ratesLastUpdateDate | async | date: 'short'}}
+    {{ratesLastUpdateDate$| async | date: 'short'}}
   </ion-item>
 
   <ion-item>

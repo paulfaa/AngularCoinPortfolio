@@ -24,9 +24,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   htmlName = '';
   footer = '';
   private purchasesSubscription: Subscription;
-  public $totalValue: Observable<number>;
-  public $totalProfit: Observable<number>;
-  public $currencySymbol: Observable<string>;
+  public totalValue$: Observable<number>;
+  public totalProfit$: Observable<number>;
+  public currencySymbol$: Observable<string>;
   
   constructor(public alertController: AlertController,
     private purchasesService: PurchasesService,
@@ -36,9 +36,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     
     ngOnInit() {
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
-      this.$totalValue = this.valueService.getTotalValue();
-      this.$totalProfit = this.valueService.getTotalProfit();
-      this.$currencySymbol = this.currencyService.getSelectedCurrencySymbol();
+      this.totalValue$ = this.valueService.getTotalValue();
+      this.totalProfit$ = this.valueService.getTotalProfit();
+      this.currencySymbol$ = this.currencyService.getSelectedCurrencySymbol();
       //if purchases is not empty...
       this.showEmptyPortfolioAlert();
       this.valueService.calculateTotalProfit();
@@ -107,7 +107,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       await alert.present();
       let result = await alert.onDidDismiss();
       console.log(result);
-      console.log(this.$totalValue)
+      console.log(this.totalValue$)
   }
     
     private async showEmptyPortfolioAlert() {

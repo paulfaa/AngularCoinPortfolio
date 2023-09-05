@@ -10,9 +10,9 @@
     <ion-refresher-content>Updating rates...</ion-refresher-content>
   </ion-refresher> -->
 
-  Totalvalue {{$totalValue | async}}
-  Totalprofic {{$totalProfit | async}}
-  Currency {{$currencySymbol | async}}
+  Totalvalue {{totalValue$ | async}}
+  Totalprofic {{totalProfit$ | async}}
+  Currency {{currencySymbol$ | async}}
   
   <value-header>
   </value-header>
@@ -26,7 +26,7 @@
     <ion-item-sliding>
       <ion-item>
         <p id="quantity">{{ purchase.quantity }}</p>
-        <p>{{ $currencySymbol | async}}{{ purchase.purchaseDetails.price }}</p>
+        <p>{{ currencySymbol$ | async}}{{ purchase.purchaseDetails.price }}</p>
         <p>{{ purchase.value.currentValue }}</p>
       </ion-item>
       <ion-item-options side="end">

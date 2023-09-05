@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
+import { CurrencyEnum } from '../currencyEnum';
 
 @Component({
   selector: 'app-add-form',
@@ -25,6 +26,8 @@ export class AddFormPage implements OnInit, OnDestroy {
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;
   private totalPurchasePriceSubscription: Subscription;
+  private currencySubscription: Subscription;
+  private selectedCurrency: CurrencyEnum;
 
   public errorMessages = {
     name: [{type: 'required', message: 'This field is required'}]
@@ -56,6 +59,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     });
     this.perCoinPurchasePriceSubscription = this.createFormChangeSubscription("perCoinPurchasePrice", "totalPurchasePrice");
     this.totalPurchasePriceSubscription = this.createFormChangeSubscription("totalPurchasePrice", "perCoinPurchasePrice");
+    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(value => {this.selectedCurrency = value});
   }
 
   ngOnDestroy(): void {
@@ -67,6 +71,9 @@ export class AddFormPage implements OnInit, OnDestroy {
     }
     if (this.totalPurchasePriceSubscription) {
       this.totalPurchasePriceSubscription.unsubscribe();
+    }
+    if(this.currencySubscription) {
+      this.currencySubscription.unsubscribe();
     }
   }
 
@@ -118,7 +125,6 @@ export class AddFormPage implements OnInit, OnDestroy {
   }
 
   private getPurchaseDetails(): PurchaseDetails{
-    const selectedCurrency = this.currencyService.getSelectedCurrency();
     const currentDateTime = moment().toDate();
     var purchasePrice = 0;
     if(this.coinForm.controls['perCoinPurchasePrice'].value != null){
@@ -127,6 +133,6 @@ export class AddFormPage implements OnInit, OnDestroy {
     else {
       purchasePrice = this.coinForm.controls['totalPurchasePrice'].value / this.coinForm.controls['quantity'].value;
     }
-    return new PurchaseDetails(purchasePrice, selectedCurrency, currentDateTime);
+    return new PurchaseDetails(purchasePrice, this.selectedCurrency, currentDateTime);
   }
 }

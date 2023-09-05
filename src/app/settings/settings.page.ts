@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum, enumToString } from '../currencyEnum';
 import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
 import { ValueService } from '../service/value.service';
 import StorageUtils from '../storage.utils';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
 })
-export class SettingsPage {
+export class SettingsPage implements OnDestroy {
 
-  public ratesLastUpdateDate: Observable<Date>;
+  public ratesLastUpdateDate$: Observable<Date>;
+  private selectedCurrencySubscription: Subscription;
+  public currencyString: string;
+  public observable: Observable<CurrencyEnum>;
 
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
@@ -25,7 +28,16 @@ export class SettingsPage {
   ){}
 
   ngOnInit() {
-    this.ratesLastUpdateDate = this.rateService.getRatesLastUpdateDate();
+    this.ratesLastUpdateDate$ = this.rateService.getRatesLastUpdateDate();
+    this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency()
+    .subscribe(data => this.currencyString = enumToString(data));
+    this.observable = this.currencyService.getSelectedCurrency();
+  }
+
+  ngOnDestroy(): void {
+    if(this.selectedCurrencySubscription){
+      this.selectedCurrencySubscription.unsubscribe();
+    }
   }
 
   public async showDeleteAlert() {
@@ -94,12 +106,8 @@ export class SettingsPage {
     return str;
 }
 
-  public callSetCurrency(value: CurrencyEnum){
-    this.currencyService.setCurrencySelected(value);
+  public updateSelectedCurrency(value: CurrencyEnum){
+    this.currencyService.setSelectedCurrency(value.toString());
   }
 
-  public callGetCurrency(): String{
-    var selected = CurrencyEnum[this.currencyService.getSelectedCurrency()].toString();
-    return selected;
-  }
 }

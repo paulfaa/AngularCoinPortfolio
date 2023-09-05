@@ -6,6 +6,7 @@ import { Value } from '../types/value.type';
 import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
 import { Observable, Subscription, of } from 'rxjs';
+import { CurrencyEnum } from '../currencyEnum';
 
 @Injectable({providedIn: 'root'})
 export class ValueService {
@@ -32,7 +33,7 @@ export class ValueService {
     }
 
     public createNewValue(currentValue: number): Value{
-        return new Value(currentValue, this.currencyService.getSelectedCurrency(), moment().toDate());
+        return new Value(currentValue, CurrencyEnum.EUR, moment().toDate());
     }
 
     public calculateTotalProfit(): number{
