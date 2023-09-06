@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { CurrencyEnum, enumToString } from '../currencyEnum';
+
 import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
 import { ValueService } from '../service/value.service';
 import StorageUtils from '../storage.utils';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-settings',
@@ -106,7 +107,7 @@ export class SettingsPage implements OnDestroy {
     return str;
 }
 
-  public updateSelectedCurrency(value: CurrencyEnum){
+  public updateSelectedCurrency(value: CurrencyEnum): void{
     this.currencyService.setSelectedCurrency(value.toString());
   }
 

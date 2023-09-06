@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import { PurchasesService } from './purchases.service';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';

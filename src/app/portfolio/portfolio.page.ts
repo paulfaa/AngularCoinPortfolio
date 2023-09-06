@@ -5,8 +5,9 @@ import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import { Observable, Subscription, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 //TODO 
 // Set coinId when added to portfolio
@@ -38,7 +39,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
       this.totalValue$ = this.valueService.getTotalValue();
       this.totalProfit$ = this.valueService.getTotalProfit();
-      this.currencySymbol$ = this.currencyService.getSelectedCurrencySymbol();
+      this.currencySymbol$ = this.currencyService.getSelectedCurrency();
       //if purchases is not empty...
       this.showEmptyPortfolioAlert();
       this.valueService.calculateTotalProfit();

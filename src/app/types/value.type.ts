@@ -1,4 +1,4 @@
-import { CurrencyEnum } from "../currencyEnum";
+import { CurrencyEnum } from "./currencyEnum";
 
 export class Value {
     private currentValue: number;

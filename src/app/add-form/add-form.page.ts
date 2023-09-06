@@ -12,7 +12,7 @@ import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-add-form',

@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { CurrencyEnum } from "../currencyEnum";
+import { CurrencyEnum } from "./currencyEnum";
 import { CryptoPurchaseBuilder } from "./cryptoPurchase.builder";
 import { CryptoPurchase } from "./cryptoPurchase.type";
 import { CryptoName } from "./cryptoName.type";

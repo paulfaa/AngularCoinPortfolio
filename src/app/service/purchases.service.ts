@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { nameEnum } from '../nameEnum';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Observable, Subscription, of } from 'rxjs';
+import { nameEnum } from '../types/nameEnum';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{

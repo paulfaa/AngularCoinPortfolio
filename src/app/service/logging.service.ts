@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LogLevel } from '../logLevelEnum';
+import { LogLevel } from '../types/logLevelEnum';
 
 @Injectable({providedIn: 'root'})
 export class LoggingService {

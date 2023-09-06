@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { waitForAsync, TestBed } from "@angular/core/testing";
 import * as moment from "moment";
-import { CurrencyEnum } from "../currencyEnum";
+import { CurrencyEnum } from "../types/currencyEnum";
 import { CryptoPurchaseBuilder } from "../types/cryptoPurchase.builder";
 import { CryptoPurchase } from "../types/cryptoPurchase.type";
 import { CryptoName } from "../types/cryptoName.type";

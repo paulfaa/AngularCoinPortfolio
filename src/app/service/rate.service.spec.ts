@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
 import { PurchasesService } from './purchases.service';

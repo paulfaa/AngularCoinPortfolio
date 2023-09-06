@@ -5,16 +5,24 @@ import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
 import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
-import { Observable, Subscription, of } from 'rxjs';
-import { CurrencyEnum } from '../currencyEnum';
+import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
+import { CurrencyEnum } from '../types/currencyEnum';
 
 @Injectable({providedIn: 'root'})
 export class ValueService {
 
+    //duplicating data from purchaseservice here
     private purchases: CryptoPurchase[];
+
     private purchasesSubscription: Subscription;
     private totalValue = 0;
     private totalProfit = 0;
+
+    private totalValueSubject = new BehaviorSubject<number>(this.calculateTotalValue());
+    private totalValue$: Observable<number> = this.totalValueSubject.asObservable();
+
+    private totalProfitSubject = new BehaviorSubject<number>(this.calculateTotalProfit());
+    private totalProfit$: Observable<number> = this.totalProfitSubject.asObservable();
 
     constructor(
         private purchasesService: PurchasesService,
@@ -25,11 +33,11 @@ export class ValueService {
     }
     
     public getTotalValue(): Observable<number> {
-        return of(this.totalValue)
+        return this.totalValue$;
     }
 
     public getTotalProfit(): Observable<number> {
-        return of(this.totalProfit)
+        return this.totalProfit$;
     }
 
     public createNewValue(currentValue: number): Value{

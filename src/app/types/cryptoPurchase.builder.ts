@@ -1,4 +1,4 @@
-import { CurrencyEnum } from "../currencyEnum";
+import { CurrencyEnum } from "./currencyEnum";
 import { CryptoPurchase } from "./cryptoPurchase.type";
 import { CryptoName } from "./cryptoName.type";
 import { PurchaseDetails } from "./purchaseDetails.type";

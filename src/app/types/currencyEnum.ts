@@ -1,7 +1,8 @@
 export enum CurrencyEnum {
-    EUR,
-    USD,
-    NZD
+    EUR = "€",
+    USD = "$",
+    AUD = "$",
+    NZD = "$"
 }
 
 export function enumToString(enumValue: CurrencyEnum): string {

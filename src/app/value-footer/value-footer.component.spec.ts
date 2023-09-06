@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import { PurchasesService } from '../service/purchases.service';
 import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
