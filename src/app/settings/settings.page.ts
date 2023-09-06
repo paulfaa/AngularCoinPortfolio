@@ -4,8 +4,6 @@ import { AlertController } from '@ionic/angular';
 import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
-import { ValueService } from '../service/value.service';
-import StorageUtils from '../storage.utils';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 
@@ -19,12 +17,10 @@ export class SettingsPage implements OnDestroy {
   public ratesLastUpdateDate$: Observable<Date>;
   private selectedCurrencySubscription: Subscription;
   public currencyString: string;
-  public observable: Observable<CurrencyEnum>;
 
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
               private coinService: PurchasesService,
-              private valueService: ValueService,
               private rateService: RateService
   ){}
 
@@ -32,7 +28,6 @@ export class SettingsPage implements OnDestroy {
     this.ratesLastUpdateDate$ = this.rateService.getRatesLastUpdateDate();
     this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency()
     .subscribe(data => this.currencyString = enumToString(data));
-    this.observable = this.currencyService.getSelectedCurrency();
   }
 
   ngOnDestroy(): void {
@@ -105,7 +100,7 @@ export class SettingsPage implements OnDestroy {
     console.log(str);
     // need to save this to users device
     return str;
-}
+  }
 
   public updateSelectedCurrency(value: CurrencyEnum): void{
     this.currencyService.setSelectedCurrency(value.toString());

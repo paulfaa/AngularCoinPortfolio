@@ -37,12 +37,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     
     ngOnInit() {
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
-      this.totalValue$ = this.valueService.getTotalValue();
-      this.totalProfit$ = this.valueService.getTotalProfit();
+      
       this.currencySymbol$ = this.currencyService.getSelectedCurrency();
-      //if purchases is not empty...
       this.showEmptyPortfolioAlert();
-      this.valueService.calculateTotalProfit();
     }
 
     ngOnDestroy(): void {
@@ -61,7 +58,8 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     
     ngAfterViewInit() {
       console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
-      
+      this.totalValue$ = this.valueService.getTotalValue();
+      this.totalProfit$ = this.valueService.getTotalProfit();
     }
     
     //use event listeners instead

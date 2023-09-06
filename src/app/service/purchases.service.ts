@@ -3,11 +3,14 @@ import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
-import { Observable, Subscription, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
 import { nameEnum } from '../types/nameEnum';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{
+
+  private purchasesSubject = new BehaviorSubject<CryptoPurchase[]>(this.initService());
+  private purchases$: Observable<CryptoPurchase[]> = this.purchasesSubject.asObservable();
 
   private purchases: CryptoPurchase[];
   private uniqueTickers: string[];
@@ -15,23 +18,25 @@ export class PurchasesService{
   
   constructor() {
         this.initService();
-}
+  }
 
-  private initService(): void{
+  private initService(): CryptoPurchase[]{
     var storedPurchases = StorageUtils.readFromStorage('savedCoins');
     if (storedPurchases === null){ 
       console.log('init method setting heldcoins and uniquetickers to empty list')
       this.purchases = [];
       this.uniqueTickers = [];
+      return [];
     }
     else {
       console.log('setting this.heldcoins to ' + storedPurchases)
       this.purchases = storedPurchases;
       this.uniqueTickers = StorageUtils.readFromStorage('uniqueTickers');
+      return storedPurchases;
     }
 }
 
-//move this, also make sure add page still works properly
+//move this
   private cryptoNames: CryptoName[] = [
     new CryptoName("Bitcoin","BTC"),
     new CryptoName("Cardano","ADA"),

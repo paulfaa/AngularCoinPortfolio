@@ -9,12 +9,11 @@
   <!-- <ion-refresher slot="fixed" onIonRefresh={doRefresh}>
     <ion-refresher-content>Updating rates...</ion-refresher-content>
   </ion-refresher> -->
-
-  Totalvalue {{totalValue$ | async}}
-  Totalprofic {{totalProfit$ | async}}
-  Currency {{currencySymbol$ | async}}
   
-  <value-header>
+  <value-header
+    [totalValue] = totalValue$
+    [totalProfit]=totalProfit$
+    [currencySymbol]=currencySymbol$>
   </value-header>
   
   <div ngFor *ngFor="let purchase of purchases; let index = index">

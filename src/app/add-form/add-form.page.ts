@@ -116,7 +116,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     console.log("Newly created coin:")
     console.log(coin);
     this.coinService.addPurchase(coin);
-    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchaseDetails.price);
+    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + this.selectedCurrency + coin.purchaseDetails.price);
     this.clearAllInputs();
   }
 

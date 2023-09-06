@@ -8,8 +8,6 @@
 
   <ion-item-divider></ion-item-divider>
 
-  {{observable | async }}
-
   <ion-item>
     <ion-label>App Currency:</ion-label>
     <ion-select (ionChange)="updateSelectedCurrency($event.target.value)" [value]="currencyString">
