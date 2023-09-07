@@ -33,7 +33,7 @@ describe('PortfolioPage', () => {
   describe("showEmptyPortfolioAlert()", () => {
     it("is called when the user portfolio is empty", () => {
       // Arrange
-      mockCoinService.getLengthOfHeldCoins.and.returnValue(0);
+      mockCoinService.getNumberOfPurchases.and.returnValue(0);
 
       // Assert
       expect(component.showEmptyPortfolioAlert).toHaveBeenCalled;
@@ -41,7 +41,7 @@ describe('PortfolioPage', () => {
     });
     it("is is not called when the user portfolio contains items", () => {
       // Arrange
-      mockCoinService.getLengthOfHeldCoins.and.returnValue(3);
+      mockCoinService.getNumberOfPurchases.and.returnValue(3);
 
       // Assert
       expect(component.showEmptyPortfolioAlert).not.toHaveBeenCalled;

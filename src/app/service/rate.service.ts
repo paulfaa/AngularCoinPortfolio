@@ -49,6 +49,7 @@ export class RateService {
     }
 
     public getRateForTicker(tickerToLookup: string): number{
+        return 5;
         var foundRate = this.rates.find(i => i.name === tickerToLookup && i.currencyCode === this.selectedCurrency )
         if(foundRate != undefined){
             this.loggingService.info("RateService: found rate - ", foundRate);

@@ -2,36 +2,28 @@ import { Injectable } from '@angular/core';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
-import { PurchaseDetails } from '../types/purchaseDetails.type';
-import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
-import { nameEnum } from '../types/nameEnum';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{
 
   private purchasesSubject = new BehaviorSubject<CryptoPurchase[]>(this.initService());
   private purchases$: Observable<CryptoPurchase[]> = this.purchasesSubject.asObservable();
-
-  private purchases: CryptoPurchase[];
-  private uniqueTickers: string[];
-  private lastPurchaseDate: Date;
+  private lastPurchaseDate: Date; //check if needed
   
-  constructor() {
-        this.initService();
-  }
+  constructor(){}
 
   private initService(): CryptoPurchase[]{
     var storedPurchases = StorageUtils.readFromStorage('savedCoins');
-    if (storedPurchases === null){ 
-      console.log('init method setting heldcoins and uniquetickers to empty list')
-      this.purchases = [];
-      this.uniqueTickers = [];
+    if (storedPurchases === null || storedPurchases == undefined){ 
+      console.log('init method returning empty list')
+      //this.purchases = [];
+      //this.uniqueTickers = [];
       return [];
     }
     else {
-      console.log('setting this.heldcoins to ' + storedPurchases)
-      this.purchases = storedPurchases;
-      this.uniqueTickers = StorageUtils.readFromStorage('uniqueTickers');
+      console.log('init method returning ' + storedPurchases)
+      //this.uniqueTickers = StorageUtils.readFromStorage('uniqueTickers');
       return storedPurchases;
     }
 }
@@ -49,55 +41,65 @@ export class PurchasesService{
     new CryptoName("Solana","SOL")
   ]
 
-  public addPurchase(purchase: CryptoPurchase): void{
-    if(this.uniqueTickers.includes(purchase.name.ticker) == false){
-      this.uniqueTickers.push(purchase.name.ticker);
-    }
-    this.purchases.push(purchase);
+  public addPurchase(purchase: CryptoPurchase) {
+    const currentPurchases = this.purchasesSubject.getValue();
+    const updatedPurchases = [...currentPurchases, purchase];
     this.sortAllPurchases();
     this.updateStorage();
-    
+    this.purchasesSubject.next(updatedPurchases);
   }
 
-  //can probably remove
-  public addToHeldCoins(ticker: string, purchaseDetails: PurchaseDetails, quantity: number){
-    var coinName = new CryptoName(nameEnum[ticker], ticker) //TEST
-    //console.log(this.heldCoins);
-    if(this.uniqueTickers.includes(ticker) == false){
-      this.uniqueTickers.push(ticker);
-    }
-    this.purchases.push(new CryptoPurchase(coinName, purchaseDetails, quantity));
+  public removePurchase(purchase: CryptoPurchase) {
+    const currentPurchases = this.purchasesSubject.getValue();
+    const updatedPurchases = currentPurchases.filter(p => p == purchase);
     this.sortAllPurchases();
     this.updateStorage();
+    this.purchasesSubject.next(updatedPurchases);
+  }
+
+  public getAllPurchases() {
+    return this.purchases$;
+  }
+
+  public getAllUniqueTickers(): Set<string>{
+    return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
   }
 
   private updateStorage(): void{
-    StorageUtils.writeToStorage('savedCoins', this.purchases)
-    StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
+    StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue())
+    //StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
 
-  public removeFromHeldCoins(purchaseToRemove: CryptoPurchase): void{
-    this.purchases.forEach((value,index)=>{
-      if(value==purchaseToRemove) this.purchases.splice(index,1);
+  /* public removeFromHeldCoins(purchaseToRemove: CryptoPurchase): void{
+    const currentPurchases = this.purchasesSubject.getValue();
+    currentPurchases.forEach((value,index)=>{
+      if(value == purchaseToRemove){
+        this.purchasesSubject.next(currentPurchases.splice(index,1));
+        this.updateStorage();
+      } 
     });
-    this.updateStorage();
-  }
+  } */
 
+  //refactor to use coinMarket id instead
   public getAmountHeldOfTicker(ticker: string): number{
     var counter = 0;
-    if(this.purchases != null && this.purchases.length >= 1){
-      this.purchases.forEach(purchase => {
+    var purchases = this.purchasesSubject.getValue();
+    if(purchases != null && purchases.length >= 1){
+      purchases.forEach(purchase => {
         if(purchase.name.ticker == ticker){
           counter = counter + purchase.quantity
         }
       });
     }
+    console.log("user holding " + counter + " ticker")
     return counter;
   }
 
-  public getLengthOfHeldCoins(): number{
-    if(this.purchases != null){
-      return this.purchases.length;
+  public getNumberOfPurchases(): number{
+    return this.purchasesSubject.getValue().length;
+    const currentPurchases = this.purchasesSubject.getValue();
+    if(currentPurchases != null){
+      return currentPurchases.length;
     }
     else{
       return 0;
@@ -106,8 +108,7 @@ export class PurchasesService{
 
   public clearAllPurchases(): void{
     console.log("clearing all purchases");
-    this.purchases = [];
-    this.uniqueTickers = [];
+    this.purchasesSubject.next([]);
     this.updateStorage();
   }
 
@@ -119,14 +120,10 @@ export class PurchasesService{
     return names;
   }
 
-  public getAllPurchases(): Observable<CryptoPurchase[]>{
-    this.sortAllPurchases();
-    return of(this.purchases);
-  }
-
+  //refactor to use coinmarket id
   public getPurchasesByTicker(ticker: string): CryptoPurchase[]{
     var matches = [];
-    this.purchases.forEach(c => {
+    this.purchasesSubject.getValue().forEach(c => {
       if (c.name.ticker == ticker){
         matches.push(c);
       }
@@ -135,47 +132,27 @@ export class PurchasesService{
   }
 
   public getPurchasesById(id: number): CryptoPurchase[]{
-    var matches = [];
-    this.purchases.forEach(c => {
-      if (c.id == id){
-        matches.push(c);
-      }
-    });
-    return matches;
-  }
-
-  public getAllUniqueTickers(): string[]{
-    var tickers:string[] = [];
-    if(this.purchases != null && this.purchases.length >= 1){
-      //can optimise here
-      this.purchases.forEach(coin => {
-        if(tickers.includes(coin.name.ticker) == false){
-          tickers.push(coin.name.ticker);
-        }
-      });
-    }
-    console.log("All unique tickers: " + tickers);
-    this.uniqueTickers = tickers;
-    return tickers;
+    return this.purchasesSubject.getValue().filter(purchase => purchase.id === id);
   }
 
   //sorts list alphabetically by ticker then by purchase date
   private sortAllPurchases(): void{
-    if(this.purchases != null && this.purchases.length >= 2){
-      console.log("this.purchases: " + this.purchases);
-      this.purchases.sort((a,b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf()); //was throwing error, seems to work again
+    const purchases = this.purchasesSubject.getValue();
+    if(purchases != null && purchases.length >= 2){
+      console.log("this.purchases: " + purchases);
+      purchases.sort((a,b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf());
     }
   }
 
-  private filterCoins(coins: CryptoPurchase[], text: string): CryptoPurchase[] {
+  /* private filterCoins(coins: CryptoPurchase[], text: string): CryptoPurchase[] {
     return coins.filter(coin => {
       return coin.name.displayName.toLowerCase().indexOf(text) !== -1;
     });
-  }
+  } */
 
-  public getLastAddedDate(): Date {
+  /* public getLastAddedDate(): Date {
     var date;
-    this.purchases.forEach(purchase => {
+    this.purchasesSubject.getValue().forEach(purchase => {
       var purchaseDate = purchase.purchaseDetails.date;
       if ( date === undefined || date < purchaseDate){
         date = purchaseDate;
@@ -183,5 +160,5 @@ export class PurchasesService{
     })
     this.lastPurchaseDate = date;
     return date;
-  }
+  } */
 }

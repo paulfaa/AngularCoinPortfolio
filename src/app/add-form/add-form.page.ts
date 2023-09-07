@@ -43,7 +43,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   });
 
   constructor(
-    private coinService: PurchasesService,
+    private purchasesService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
     public toastController: ToastController,
@@ -53,7 +53,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.coinNames = this.coinService.getAllCryptoNames();
+    this.coinNames = this.purchasesService.getAllCryptoNames(); //should be stored as a constant somewhere instead
     this.paramsSubscription = this.route.params.subscribe(() => {
       this.coinForm.reset();
     });
@@ -115,8 +115,9 @@ export class AddFormPage implements OnInit, OnDestroy {
     
     console.log("Newly created coin:")
     console.log(coin);
-    this.coinService.addPurchase(coin);
-    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + this.selectedCurrency + coin.purchaseDetails.price);
+    this.purchasesService.addPurchase(coin);
+    //need to move toast position
+    //this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + this.selectedCurrency + coin.purchaseDetails.price);
     this.clearAllInputs();
   }
 

@@ -7,7 +7,6 @@ import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
 import { CurrencyEnum } from '../types/currencyEnum';
 import { Observable, Subscription, of } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 //TODO 
 // Set coinId when added to portfolio
@@ -37,9 +36,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     
     ngOnInit() {
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
-      
       this.currencySymbol$ = this.currencyService.getSelectedCurrency();
       this.showEmptyPortfolioAlert();
+      this.valueService.calculateTotalProfit();
     }
 
     ngOnDestroy(): void {
@@ -47,14 +46,6 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
         this.purchasesSubscription.unsubscribe();
       }
     }
-
-    /* ngOnChanges(changes: SimpleChanges) {
-      if (changes.heldCoins) {
-        console.log("ngOnChanges");
-        this.totalValue = this.valueService.calculateTotalValue();
-        this.totalProfit = this.valueService.calculateTotalProfit();
-      }
-    } */
     
     ngAfterViewInit() {
       console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
@@ -62,13 +53,13 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       this.totalProfit$ = this.valueService.getTotalProfit();
     }
     
-    //use event listeners instead
+    /* //use event listeners instead
     public callCalculateValueForTicker(ticker: string){
       this.valueService.calculateValueForTicker(ticker);
-    }
+    } */
 
     public onDeletePurchaseClicked(purchase: CryptoPurchase){
-      this.purchasesService.removeFromHeldCoins(purchase);
+      this.purchasesService.removePurchase(purchase);
     }
 
     public displayFooter(purchase: CryptoPurchase): boolean {
@@ -117,7 +108,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
           {text: 'OK'}
         ]
       });
-      if(this.purchasesService.getLengthOfHeldCoins() == 0){
+      if(this.purchases.length == 0){
         await alert.present();
         this.loggingService.info("Empty portfolio alert shown");
       }
