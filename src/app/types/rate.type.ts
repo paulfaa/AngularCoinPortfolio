@@ -1,16 +1,16 @@
-import { CurrencyEnum } from "../currencyEnum";
-
 export class Rate {
-    ticker: string;
+    id: number;
+    name: string;
+    currencyCode: string;
     value: number;
-    currencyCode: CurrencyEnum;
-    updated: Date;
+    updateDate: Date;
 
-  constructor(rTicker: string, rValue: number, rCurrencyCode: CurrencyEnum, rUpdated: Date) {
-      this.ticker = rTicker;
-      this.value = rValue;
-      this.currencyCode = rCurrencyCode;
-      this.updated = rUpdated;
+  constructor(id: number, ticker: string, value: number, currencyCode: string, updated: Date) {
+    this.id = id;
+      this.name = ticker;
+      this.value = value;
+      this.currencyCode = currencyCode;
+      this.updateDate = updated;
   }
 
   public getValue(): number{

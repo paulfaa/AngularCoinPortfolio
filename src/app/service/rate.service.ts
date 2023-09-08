@@ -1,79 +1,89 @@
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import * as moment from "moment";
-import { Observable, throwError } from "rxjs";
-import { CurrencyEnum } from "../currencyEnum";
+import { Injectable, OnDestroy } from "@angular/core";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
-import { CoinService } from "./coin.service";
+import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
+import { Observable, of, Subscription } from "rxjs";
+import { element } from "protractor";
+import { CurrencyEnum, enumToString } from "../types/currencyEnum";
 
 @Injectable({providedIn: 'root'})
-export class RateService {
+export class RateService implements OnDestroy{
 
     private rates: Rate[];
-    private lastUpdateDate: Date;
-    private selectedCurrency;
+    private ratesLastUpdateDate: Date;
+    private selectedCurrencySubscription: Subscription;
+    private selectedCurrency: CurrencyEnum;
 
     constructor(
-        private coinService: CoinService,
+        private purchasesService: PurchasesService,
         private currencyService: CurrencyService,
         private loggingService: LoggingService,
         private http: CryptoValueClientService,
     ) {
         this.initService();
     }
+    ngOnDestroy(): void {
+        if(this.selectedCurrencySubscription){
+            this.selectedCurrencySubscription.unsubscribe();
+        };
+    }
 
     private initService(): void{
-        this.selectedCurrency = this.currencyService.getCurrencySelected();
+        this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
+            this.selectedCurrency = result
+        );
         var storedRates = StorageUtils.readFromStorage('rates');
-        if (storedRates === null){
+        if (storedRates === null || storedRates.length == 0){
             this.rates = [];
         }
         else {
             this.rates = storedRates;
+            this.ratesLastUpdateDate = this.rates[0].updateDate;
         }
     }
 
     public updateAllExchangeRates(){
-        var now = moment();
-        var tickersToUpdate = [];
-        //if rates are more than 12 hours old update, otherwise nothing
-        this.rates?.forEach(rate => {
-            if(moment().subtract(12, 'hour').toDate() < rate.updated){
-                tickersToUpdate.push(rate.ticker)
-            }
-        });
-        tickersToUpdate.forEach(ticker => {
-            //var r = backend.getRate(ticker, userCurrency);
-            var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
-            rate.updated = now.toDate();
-            this.rates.push(rate);
-        });
-        this.loggingService.info("RateService updated " + tickersToUpdate.length + " rates.")
+        this.http.getCryptoValues().subscribe(data => {this.rates = data});
+        //var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
+        //rate.updateDate = now.toDate();
+        this.loggingService.info("RateService updated " + this.rates.length + " rates.")
         StorageUtils.writeToStorage("rates", this.rates);
+        this.ratesLastUpdateDate = new Date();
     }
 
-    public getLastUpdateDate(): Date {
-        var date = new Date(2020, 11, 1);
-        this.rates?.forEach(rate => {
-            if (rate.updated > date){
-                date = rate.updated;
-            }
+    public getRatesLastUpdateDate(): Observable<Date> {
+        return of(this.ratesLastUpdateDate);
+    }
+
+    public getRateForId(id: number): number | undefined{
+        const currencyCode = enumToString(this.selectedCurrency);
+        const matchingRate = this.rates.find(element => {
+            element.id == id && element.currencyCode == currencyCode
         });
-        return date;
+        if(matchingRate == undefined){
+            console.log("no stored rate for : " + id)
+            //return undefined;
+            return 0;
+        }
+        else{
+            console.log("rate found for id " + id + " was " + matchingRate.value)
+            return matchingRate.value;
+        }
     }
 
     public getRateForTicker(tickerToLookup: string): number{
-        var foundRate = this.rates.find(i => i.ticker === tickerToLookup && i.currencyCode === this.selectedCurrency )
+        return 5;
+        var foundRate = this.rates.find(i => i.name === tickerToLookup && i.currencyCode === this.selectedCurrency )
         if(foundRate != undefined){
             this.loggingService.info("RateService: found rate - ", foundRate);
             return foundRate.value;
         }
         else{
-            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + "-" + this.selectedCurrency.toString() + ".")
+            return 5;
+            this.loggingService.warn("RateService: no rate found for " + tickerToLookup + " - " + this.selectedCurrency)
             return 0;
         }
     }

@@ -2,27 +2,28 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import StorageUtils from '../storage.utils';
 import { Rate } from '../types/rate.type';
-import { CoinService } from './coin.service';
+import { PurchasesService } from './purchases.service';
 import { CurrencyService } from './currency.service';
 import { LoggingService } from './logging.service';
 
 import { RateService } from './rate.service';
+import { CryptoValueClientService } from './crypto-value-client.service';
 
 describe('RateService', () => {
 
     let serviceUnderTest: RateService;
-    let coinService: CoinService;
+    let coinService: PurchasesService;
     let currencyService: CurrencyService;
-    let httpClient: HttpClient;
+    let cryptoValueClientService: CryptoValueClientService;
     let loggingService: LoggingService;
     let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
 
     mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
-    mockCurrencyService.getCurrencySelected.and.returnValue(CurrencyEnum.EUR);
+    mockCurrencyService.getSelectedCurrency.and.returnValue(CurrencyEnum.EUR);
     mockLoggingService = jasmine.createSpyObj('mockCurrencyService', ['warn', 'info']);
     mockLoggingService.warn.and.returnValue(null);
     mockLoggingService.info.and.returnValue(null);
@@ -31,7 +32,7 @@ describe('RateService', () => {
     const btcRateUsd = new Rate("BTC", 500.25, CurrencyEnum.USD, moment().toDate());
 
     beforeEach(waitForAsync(() => {
-        serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, httpClient);
+        serviceUnderTest = new RateService(coinService, mockCurrencyService, mockLoggingService, cryptoValueClientService);
         TestBed.configureTestingModule({
             declarations: [RateService]
         }).compileComponents();
@@ -76,26 +77,26 @@ describe('RateService', () => {
         it('will ignore all rates which have already been updated the past hour', () => {
             // Arrange
             var now = moment().toDate();
-            btcRateEur.updated = now;
+            btcRateEur.updateDate = now;
             serviceUnderTest['rates'].push(btcRateEur);
 
             // Act
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['rates'][0].updated).toEqual(now);
+            expect(serviceUnderTest['rates'][0].updateDate).toEqual(now);
         });
         it('will update all rates which are older than 1hr', () => {
             // Arrange
             var threeHoursAgo = moment().subtract(3, 'hour').toDate();
-            btcRateEur.updated = threeHoursAgo;
+            btcRateEur.updateDate = threeHoursAgo;
             serviceUnderTest['rates'].push(btcRateEur);
 
             // Act
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['rates'][0].updated > threeHoursAgo).toBeTrue;
+            expect(serviceUnderTest['rates'][0].updateDate > threeHoursAgo).toBeTrue;
         });
     });
 

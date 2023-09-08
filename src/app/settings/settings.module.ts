@@ -6,17 +6,19 @@ import { IonicModule } from '@ionic/angular';
 
 import { SettingsPageRoutingModule } from './settings-routing.module';
 import { SettingsPage } from './settings.page';
+import { SharedModule } from "../shared/pipes/shared.module";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SettingsPageRoutingModule
-  ],
-  declarations: [
-    SettingsPage,
-  ]
+    declarations: [
+        SettingsPage,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SettingsPageRoutingModule,
+        SharedModule
+    ]
 })
 
 export class SettingsPageModule {

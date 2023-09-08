@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum } from '../types/currencyEnum';
 import { CurrencyService } from '../service/currency.service';
 
 describe('CurrencyService', () => {
@@ -24,7 +24,7 @@ describe('CurrencyService', () => {
     describe('getCurrencySelected()', () => {
         it('should return EUR as default value', () => {
             // Act
-            var currency = service.getCurrencySelected();
+            var currency = service.getSelectedCurrency();
 
             // Assert
             expect(CurrencyEnum[currency].toString()).toEqual("EUR");
@@ -34,7 +34,7 @@ describe('CurrencyService', () => {
             service.setCurrencySelected(CurrencyEnum.USD)
 
             // Act
-            var currency = service.getCurrencySelected();
+            var currency = service.getSelectedCurrency();
 
             // Assert
             expect(currency.toString()).toEqual("USD");
@@ -44,7 +44,7 @@ describe('CurrencyService', () => {
     describe('getCurrencySymbol()', () => {
         it('returns currency symbol corresponding to string', () => {
             // Act
-            var symbol = service.getCurrencySymbol();
+            var symbol = service.getSelectedCurrencySymbol();
 
             // Assert
             expect(symbol).toEqual("€");

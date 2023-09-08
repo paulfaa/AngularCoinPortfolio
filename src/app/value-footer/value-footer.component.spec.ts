@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
-import { CoinService } from '../service/coin.service';
-import { CoinBuilder } from '../types/coin.builder';
-import { Coin } from '../types/coin.type';
-import { CoinName } from '../types/coinName.type';
+import { CurrencyEnum } from '../types/currencyEnum';
+import { PurchasesService } from '../service/purchases.service';
+import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
+import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
 import { ValueFooterComponent } from './value-footer.component';
@@ -13,7 +13,7 @@ import { ValueFooterComponent } from './value-footer.component';
 describe('ValueFooterComponent', () => {
   let component: ValueFooterComponent;
   let fixture: ComponentFixture<ValueFooterComponent>;
-  let mockCoinService: jasmine.SpyObj<CoinService>;
+  let mockCoinService: jasmine.SpyObj<PurchasesService>;
 
   mockCoinService = jasmine.createSpyObj('mockCoinService', ['getCoinsByTicker', 'getCoinsById']);
 
@@ -35,23 +35,23 @@ describe('ValueFooterComponent', () => {
   describe('calculateValueOfId()', () => {
     it('returns the value of all coins for the specified id', () => {
       //Arrange
-      const c1 = new CoinBuilder()
-          .name(new CoinName("Cardano", "ADA"))
+      const c1 = new CryptoPurchaseBuilder()
+          .name(new CryptoName("Cardano", "ADA"))
           .id(12)
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(0.527)
           .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
           .profit(15)
           .build();
-        const c2 = new CoinBuilder()
-          .name(new CoinName("Cardano", "ADA"))
+        const c2 = new CryptoPurchaseBuilder()
+          .name(new CryptoName("Cardano", "ADA"))
           .id(12)
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(1.847)
           .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
           .profit(10)
           .build();
-      const coinList: Coin[] = [c1, c2]
+      const coinList: CryptoPurchase[] = [c1, c2]
       component.coinId = 12;
       mockCoinService.getCoinsById.and.returnValue(coinList);
 
@@ -63,7 +63,7 @@ describe('ValueFooterComponent', () => {
     });
     it('returns the value of all coins for the specified id', () => {
       //Arrange
-      const coinList: Coin[] = []
+      const coinList: CryptoPurchase[] = []
       component.coinId = 12;
       mockCoinService.getCoinsById.and.returnValue(coinList);
 
@@ -77,16 +77,16 @@ describe('ValueFooterComponent', () => {
 
   it('returns the sum of all holdings for the specified ticker', () => {
     // Arrange
-    const coinList: Coin[] = [
-      new CoinBuilder()
-        .name(new CoinName("Cardano", "ADA"))
+    const coinList: CryptoPurchase[] = [
+      new CryptoPurchaseBuilder()
+        .name(new CryptoName("Cardano", "ADA"))
         .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
         .quantity(0.527)
         .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
         .profit(15)
         .build(),
-      new CoinBuilder()
-        .name(new CoinName("Cardano", "ADA"))
+      new CryptoPurchaseBuilder()
+        .name(new CryptoName("Cardano", "ADA"))
         .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
         .quantity(1.847)
         .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
@@ -98,7 +98,7 @@ describe('ValueFooterComponent', () => {
     //fixture.detectChanges();
 
     // Act
-    mockCoinService.getCoinsByTicker.and.returnValue(coinList);
+    mockCoinService.getPurchasesByTicker.and.returnValue(coinList);
     component.calculateValueOfTicker();
 
     // Assert

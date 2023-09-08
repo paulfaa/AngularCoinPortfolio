@@ -1,35 +1,32 @@
 import { Injectable } from '@angular/core';
-import { CurrencyEnum } from '../currencyEnum';
+import { CurrencyEnum, enumToString } from '../types/currencyEnum';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class CurrencyService {
+    
+    private currencySubject = new BehaviorSubject<CurrencyEnum>(this.loadSavedCurrency());
+    private currency$: Observable<CurrencyEnum> = this.currencySubject.asObservable();
 
-    private currencySelected: CurrencyEnum;
-
-    public setCurrencySelected(currency: CurrencyEnum){
-        this.currencySelected = currency;
-        localStorage.setItem("currencySelected", this.currencySelected.toString());
-        //window.location.reload(); should restart app on change
+    public getSelectedCurrency(): Observable<CurrencyEnum>{
+        return this.currency$;
     }
 
-    public getCurrencySymbol(): string{
-        var symbol = localStorage.getItem("currencySelected");
-        switch(symbol){
-            case 'EUR':
-            case null:
-                return "€";
-            case 'USD':
-            case 'NZD':
-                return "$";
+    //can probably hnage back to accept enum directly
+    public setSelectedCurrency(c: string){
+        const currency = CurrencyEnum[c];
+        this.currencySubject.next(currency);
+        localStorage.setItem("currencySelected", enumToString(currency));
+    }
+
+    private loadSavedCurrency(): CurrencyEnum{
+        const storedCurrency = CurrencyEnum[localStorage.getItem("currencySelected")];
+        if(storedCurrency == null){
+            localStorage.setItem("currencySelected", enumToString(CurrencyEnum.EUR));
+            return CurrencyEnum.EUR;
         }
-    }
-
-    public getCurrencySelected(): CurrencyEnum{
-        //default to EUR if nothing selected
-        this.currencySelected = CurrencyEnum[localStorage.getItem("currencySelected")];
-        if(this.currencySelected == null){
-            this.currencySelected = CurrencyEnum.EUR;
+        else{
+            return storedCurrency;
         }
-        return this.currencySelected;
-    }
+    } 
 }

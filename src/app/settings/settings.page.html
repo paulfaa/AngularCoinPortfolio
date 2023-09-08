@@ -10,7 +10,7 @@
 
   <ion-item>
     <ion-label>App Currency:</ion-label>
-    <ion-select (ionChange)="callSetCurrency($event.target.value)" [value]="callGetCurrency()">
+    <ion-select (ionChange)="updateSelectedCurrency($event.target.value)" [value]="currencyString">
       <ion-select-option value='EUR'>Euro</ion-select-option>
       <ion-select-option value='USD'>US Dollar</ion-select-option>
       <ion-select-option value='AUD'>Australian Dollar</ion-select-option>
@@ -20,7 +20,7 @@
 
   <ion-item>
     <ion-label>Exchange rate last updated:</ion-label>
-    {{lastUpdateDate | date: 'short'}}
+    {{ratesLastUpdateDate$| async | date: 'short'}}
   </ion-item>
 
   <ion-item>
@@ -28,7 +28,7 @@
     <ion-toggle id="themeToggle"></ion-toggle>
   </ion-item>
 
-  <ion-item (click)="ConvertToCSV()">
+  <ion-item (click)="convertToCSV()">
     <ion-label>
       Export CSV (Under Development)
     </ion-label>

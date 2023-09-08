@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from '../service/purchases.service';
 import { Validators, FormBuilder } from '@angular/forms';
-import { CoinName } from '../types/coinName.type';
-import { Coin } from '../types/coin.type';
+import { CryptoName } from '../types/cryptoName.type';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { ValueService } from '../service/value.service';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { CurrencyService } from '../service/currency.service';
@@ -12,6 +12,8 @@ import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
+import { CurrencyEnum } from '../types/currencyEnum';
+import { cryptoNames } from '../shared/constants/constants';
 
 @Component({
   selector: 'app-add-form',
@@ -20,17 +22,19 @@ import { atLeastOne } from '../shared/directives/at-least-one-validator.directiv
 })
 export class AddFormPage implements OnInit, OnDestroy {
 
-  public coinNames: CoinName[];
+  public coinNames = cryptoNames;
   //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;
   private totalPurchasePriceSubscription: Subscription;
+  private currencySubscription: Subscription;
+  private selectedCurrency: CurrencyEnum;
 
   public errorMessages = {
     name: [{type: 'required', message: 'This field is required'}]
   }
 
-  coinForm = this.formBuilder.group({
+  cryptoForm = this.formBuilder.group({
     name: ['', Validators.required],
     quantity: ['', [Validators.required, Validators.min(0.00000001)]],
     perCoinPurchasePrice: ['', [Validators.min(0.01)]],
@@ -40,7 +44,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   });
 
   constructor(
-    private coinService: CoinService,
+    private purchasesService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
     public toastController: ToastController,
@@ -50,12 +54,12 @@ export class AddFormPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.coinNames = this.coinService.getAllCoinNames();
     this.paramsSubscription = this.route.params.subscribe(() => {
-      this.coinForm.reset();
+      this.cryptoForm.reset();
     });
     this.perCoinPurchasePriceSubscription = this.createFormChangeSubscription("perCoinPurchasePrice", "totalPurchasePrice");
     this.totalPurchasePriceSubscription = this.createFormChangeSubscription("totalPurchasePrice", "perCoinPurchasePrice");
+    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(value => {this.selectedCurrency = value});
   }
 
   ngOnDestroy(): void {
@@ -68,11 +72,14 @@ export class AddFormPage implements OnInit, OnDestroy {
     if (this.totalPurchasePriceSubscription) {
       this.totalPurchasePriceSubscription.unsubscribe();
     }
+    if(this.currencySubscription) {
+      this.currencySubscription.unsubscribe();
+    }
   }
 
   private createFormChangeSubscription(controlToMonitorName: string, controlToToggleName: string): Subscription {
-    const controlToToggle = this.coinForm.get(controlToToggleName);
-    return this.coinForm.get(controlToMonitorName).valueChanges.subscribe(inputValue => {
+    const controlToToggle = this.cryptoForm.get(controlToToggleName);
+    return this.cryptoForm.get(controlToMonitorName).valueChanges.subscribe(inputValue => {
       if(inputValue == null && controlToToggle.disabled == true){
         controlToToggle.enable();
       }
@@ -99,34 +106,32 @@ export class AddFormPage implements OnInit, OnDestroy {
   }
 
   public submitForm(){
-    const coinName = this.coinForm.controls['name'].value;
-    const coinQuantity = this.coinForm.controls['quantity'].value;
-    const coinValue = this.valueService.createNewValue(coinQuantity);
+    const coinName: CryptoName = this.cryptoForm.controls['name'].value;
+    const coinQuantity = this.cryptoForm.controls['quantity'].value;
+    const coinValue = this.valueService.createNewValue(coinQuantity, this.selectedCurrency);
     const purchaseDetails = this.getPurchaseDetails();
-    const coin = new Coin(coinName, purchaseDetails, coinQuantity, coinValue);
-    //also should set coinId here
+    const purchase = new CryptoPurchase(coinName, purchaseDetails, coinQuantity, coinValue);
     
-    console.log("Newly created coin:")
-    console.log(coin);
-    this.coinService.addCoin(coin);
-    this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + coin.purchaseDetails.price);
+    console.log("Newly created purchase: ", purchase)
+    this.purchasesService.addPurchase(purchase);
+    //need to move toast position
+    //this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + this.selectedCurrency + coin.purchaseDetails.price);
     this.clearAllInputs();
   }
 
   public clearAllInputs(){
-    this.coinForm.reset();
+    this.cryptoForm.reset();
   }
 
   private getPurchaseDetails(): PurchaseDetails{
-    const selectedCurrency = this.currencyService.getCurrencySelected();
     const currentDateTime = moment().toDate();
     var purchasePrice = 0;
-    if(this.coinForm.controls['perCoinPurchasePrice'].value != null){
-      purchasePrice = this.coinForm.controls['perCoinPurchasePrice'].value;
+    if(this.cryptoForm.controls['perCoinPurchasePrice'].value != null){
+      purchasePrice = this.cryptoForm.controls['perCoinPurchasePrice'].value;
     }
     else {
-      purchasePrice = this.coinForm.controls['totalPurchasePrice'].value / this.coinForm.controls['quantity'].value;
+      purchasePrice = this.cryptoForm.controls['totalPurchasePrice'].value / this.cryptoForm.controls['quantity'].value;
     }
-    return new PurchaseDetails(purchasePrice, selectedCurrency, currentDateTime);
+    return new PurchaseDetails(purchasePrice, this.selectedCurrency, currentDateTime);
   }
 }

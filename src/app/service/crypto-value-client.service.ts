@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CryptoValueResponse } from '../types/cryptoValueResponse.type';
 import { Observable, throwError } from 'rxjs';
+import { Rate } from '../types/rate.type';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +12,15 @@ export class CryptoValueClientService {
 
   constructor(private http: HttpClient) { }
 
-  public getCryptoValue(coinId: number, currency: string): Observable<CryptoValueResponse>{
+  public getCryptoValue(coinId: number, currency: string): Observable<Rate>{
     var params: HttpParams = new HttpParams();
     const cryptoValueUrl = this.buildGetValueUrl(coinId, currency);
-    return this.http.get<CryptoValueResponse>(cryptoValueUrl);
+    return this.http.get<Rate>(cryptoValueUrl);
   }
 
-  public getCryptoValues(): Observable<CryptoValueResponse[]>{
+  public getCryptoValues(): Observable<Rate[]>{
     const allValuesUrl = this.baseUrl + "values"
-    return this.http.get<CryptoValueResponse[]>(allValuesUrl);
+    return this.http.get<Rate[]>(allValuesUrl);
   }
 
   private buildGetValueUrl(coinId: number, currency: string): string {

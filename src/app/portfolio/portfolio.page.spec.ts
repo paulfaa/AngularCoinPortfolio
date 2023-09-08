@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { CoinService } from '../service/coin.service';
+import { PurchasesService } from '../service/purchases.service';
 import { ValueService } from '../service/value.service';
 import { ProfitFormatPipe } from '../shared/pipes/profit-format.pipe';
 
@@ -10,9 +10,9 @@ import { PortfolioPage } from './portfolio.page';
 describe('PortfolioPage', () => {
   let component: PortfolioPage;
   let fixture: ComponentFixture<PortfolioPage>;
-  let coinService: CoinService;
+  let coinService: PurchasesService;
   let valueService: ValueService;
-  let mockCoinService: jasmine.SpyObj<CoinService>;
+  let mockCoinService: jasmine.SpyObj<PurchasesService>;
 
   mockCoinService = jasmine.createSpyObj('mockCoinService', ['getLengthOfHeldCoins']);
   
@@ -33,7 +33,7 @@ describe('PortfolioPage', () => {
   describe("showEmptyPortfolioAlert()", () => {
     it("is called when the user portfolio is empty", () => {
       // Arrange
-      mockCoinService.getLengthOfHeldCoins.and.returnValue(0);
+      mockCoinService.getNumberOfPurchases.and.returnValue(0);
 
       // Assert
       expect(component.showEmptyPortfolioAlert).toHaveBeenCalled;
@@ -41,7 +41,7 @@ describe('PortfolioPage', () => {
     });
     it("is is not called when the user portfolio contains items", () => {
       // Arrange
-      mockCoinService.getLengthOfHeldCoins.and.returnValue(3);
+      mockCoinService.getNumberOfPurchases.and.returnValue(3);
 
       // Assert
       expect(component.showEmptyPortfolioAlert).not.toHaveBeenCalled;

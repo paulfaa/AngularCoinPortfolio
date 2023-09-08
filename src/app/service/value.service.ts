@@ -1,80 +1,111 @@
-import { Component, Injectable, OnInit } from '@angular/core';
-import { CoinService } from './coin.service';
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { PurchasesService } from './purchases.service';
 import { RateService } from './rate.service';
-import { Coin } from '../types/coin.type';
+import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
 import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
+import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
+import { CurrencyEnum } from '../types/currencyEnum';
+import { map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
-export class ValueService {
+export class ValueService implements OnDestroy {
+
+    //duplicating data from purchaseservice here
+    private purchases: CryptoPurchase[];
+    private purchasesSubscription: Subscription;
+
+    private totalValueSubject = new BehaviorSubject<number>(0);
+    private totalValue$: Observable<number> = this.totalValueSubject.asObservable();
+
+    private totalProfitSubject = new BehaviorSubject<number>(0);
+    private totalProfit$: Observable<number> = this.totalProfitSubject.asObservable(); 
 
     constructor(
-        private coinService: CoinService,
+        private purchasesService: PurchasesService,
         private rateService: RateService,
         private currencyService: CurrencyService
-    ) {}
+    ) {
+        this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {
+            this.purchases = purchases
+            this.calculateTotalProfit();
+        });
+    }
+    ngOnDestroy(): void {
+        if(this.purchasesSubscription){
+            this.purchasesSubscription.unsubscribe();
+        }
+    }
+    
+    public getTotalValue(): Observable<number> {
+        return this.totalValue$;
+    }
 
-    private totalValue = 0;
-    private totalProfit = 0;
+    public getTotalProfit(): Observable<number> {
+        return this.totalProfit$;
+    }
 
-    public createNewValue(currentValue: number): Value{
-        return new Value(currentValue, this.currencyService.getCurrencySelected(), moment().toDate());
-    } 
+    public getPercentageProfit(): Observable<number> {
+        return this.totalProfit$.pipe(
+            map(totalProfit => (totalProfit / this.totalValueSubject.value) * 100)
+        );
+    }
+
+    public createNewValue(currentValue: number, selectedCurrency: CurrencyEnum): Value{
+        return new Value(currentValue, selectedCurrency, moment().toDate());
+    }
 
     public calculateTotalProfit(): number{
-        var totalExpendature = this.calculateTotalExpenditure();
-        var totalValue = this.calculateTotalValue();
-        var totalProfit = totalValue - totalExpendature;
-        this.totalProfit = totalProfit;
+        const totalExpendature = this.calculateTotalExpenditure()
+        const totalValue = this.calculateTotalValue();
+        const totalProfit = totalValue - totalExpendature;
+        this.totalValueSubject.next(totalValue);
+        this.totalProfitSubject.next(totalProfit);
+        console.log("totalProfit value.service ", this.totalProfit$)
         return totalProfit;
     }
 
-    public calculateTotalValue(): number{
+    private calculateTotalValue(): number{
+        const random = Math.random()
         var total = 0;
-        this.rateService.updateAllExchangeRates();
-        var allTickers = this.coinService.getAllUniqueTickers();
-        if(allTickers != null && allTickers.length >= 1){
-            allTickers.forEach(ticker => {
-                total = total + (this.coinService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker));
-            });
-        }
-        this.totalValue = total;
+        const allIds = this.purchasesService.getAllUniqueIds();
+        allIds.forEach(id => {
+            const q = this.purchasesService.getQuantityHeldById(id);
+            const r = random * (10 - 0.01) + 0.01;
+            //const r = this.rateService.getRateForId(id);
+            total = total + (q * r)
+        })
         console.log("Value service total: "+ total);
-        return total;
+        return total;        
     }
 
-    public calculateTotalExpenditure(): number{
-        var expenditure = 0;
-        var heldCoins = this.coinService.getAllHeldCoins();
-        if(heldCoins != null){
-            heldCoins.forEach(heldCoin => {
-                expenditure = expenditure + heldCoin.purchaseDetails.price;
-            });
-        }
+    private calculateTotalExpenditure(): number{
+        var expenditure = this.purchases.reduce((total, purchase) => total + purchase.purchaseDetails.price, 0);
+        console.log("total expenditure: ", expenditure)
         return expenditure;
-      }
+    }
 
+    //refactor to use id instead
     public calculateValueForTicker(ticker: string): number{
         //this.updateAllExchangeRates();
-        console.log("value: " + this.rateService.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker));
+        console.log("value: " + this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker));
         //var rate = this.rateService.getRateForTicker(ticker); //always returning 0
-        return this.rateService.getRateForTicker(ticker) * this.coinService.getAmountHeldOfTicker(ticker);
+        return this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker);
     }
 
-    public updateValueForSingleCoin(coin: Coin): void{
-        var updatedValue = coin.quantity * this.rateService.getRateForTicker(coin.name.ticker)
-        coin.value.setCurrentValue(updatedValue);
+    /* public updateValueForSingleCoin(purchase: CryptoPurchase): void{
+        var updatedValue = purchase.quantity * this.rateService.getRateForTicker(purchase.name.ticker)
+        purchase.value.setCurrentValue(updatedValue);
     }
 
     public updateValueForTicker(ticker: string): void{
-        var heldCoins = this.coinService.getAllHeldCoins();
-        if(heldCoins != null){
-            heldCoins.forEach(heldCoin => {
-                if(heldCoin.name.ticker == ticker){
-                    this.updateValueForSingleCoin(heldCoin);
+        if(this.purchases != null){
+            this.purchases.forEach(purchase => {
+                if(purchase.name.ticker == ticker){
+                    this.updateValueForSingleCoin(purchase);
                 }
             });
         }
-    }
+    } */
 }

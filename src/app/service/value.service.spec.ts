@@ -1,14 +1,14 @@
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { waitForAsync, TestBed } from "@angular/core/testing";
 import * as moment from "moment";
-import { CurrencyEnum } from "../currencyEnum";
-import { CoinBuilder } from "../types/coin.builder";
-import { Coin } from "../types/coin.type";
-import { CoinName } from "../types/coinName.type";
+import { CurrencyEnum } from "../types/currencyEnum";
+import { CryptoPurchaseBuilder } from "../types/cryptoPurchase.builder";
+import { CryptoPurchase } from "../types/cryptoPurchase.type";
+import { CryptoName } from "../types/cryptoName.type";
 import { PurchaseDetails } from "../types/purchaseDetails.type";
 import { Rate } from "../types/rate.type";
 import { Value } from "../types/value.type";
-import { CoinService } from "./coin.service";
+import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { RateService } from "./rate.service";
 import { ValueService } from "./value.service";
@@ -16,7 +16,7 @@ import { ValueService } from "./value.service";
 describe('ValueService', () => {
 
     let serviceUnderTest: ValueService;
-    let mockCoinService: jasmine.SpyObj<CoinService>;
+    let mockCoinService: jasmine.SpyObj<PurchasesService>;
     let mockRateService: jasmine.SpyObj<RateService>;
     let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
 
@@ -24,7 +24,7 @@ describe('ValueService', () => {
     mockRateService = jasmine.createSpyObj('mockRateService', ['updateAllExchangeRates', 'getRateForTicker']);
     mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
 
-    const coinName = new CoinName("BitCoin", "BTC");
+    const coinName = new CryptoName("BitCoin", "BTC");
 
     beforeEach(waitForAsync(() => {
         serviceUnderTest = new ValueService(mockCoinService, mockRateService, mockCurrencyService);
@@ -49,17 +49,17 @@ describe('ValueService', () => {
         });
         it('should return the total value of all coins owned', () => {
             // Arrange
-            const sampleCoins: Coin[] = [
-                new CoinBuilder()
+            const sampleCoins: CryptoPurchase[] = [
+                new CryptoPurchaseBuilder()
                 .id(12)
-                .name(new CoinName("Cardano", "ADA"))
+                .name(new CryptoName("Cardano", "ADA"))
                 .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
                 .quantity(5)
                 .value(new Value(15, CurrencyEnum.EUR, new Date()))
                 .build(),
-                new CoinBuilder()
+                new CryptoPurchaseBuilder()
                 .id(12)
-                .name(new CoinName("Cardano", "ADA"))
+                .name(new CryptoName("Cardano", "ADA"))
                 .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
                 .quantity(1)
                 .value(new Value(15, CurrencyEnum.EUR, new Date()))
@@ -96,8 +96,8 @@ describe('ValueService', () => {
             // Arrange
             const value = new Value(200, CurrencyEnum.EUR, moment().toDate())
             const purchaseDetails = new PurchaseDetails(100, CurrencyEnum.EUR, moment().toDate());
-            let coinList: Coin[] = [
-                new Coin(coinName, purchaseDetails, 1, value)
+            let coinList: CryptoPurchase[] = [
+                new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -115,8 +115,8 @@ describe('ValueService', () => {
             // Arrange
             const value = new Value(-100, CurrencyEnum.EUR, moment().toDate())
             const purchaseDetails = new PurchaseDetails(200, CurrencyEnum.EUR, moment().toDate());
-            let coinList: Coin[] = [
-                new Coin(coinName, purchaseDetails, 1, value)
+            let coinList: CryptoPurchase[] = [
+                new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["EUR"]);
@@ -140,9 +140,9 @@ describe('ValueService', () => {
             const purchaseDetails1 = new PurchaseDetails(100, CurrencyEnum.EUR, moment().toDate());
             const purchaseDetails2 = new PurchaseDetails(120, CurrencyEnum.EUR, moment().toDate());
             const newRate = new Rate("BTC", 200, CurrencyEnum.EUR, moment().toDate());
-            let coinList: Coin[] = [
-                new Coin(coinName, purchaseDetails1, 1, value1),
-                new Coin(coinName, purchaseDetails2, 1, value2)
+            let coinList: CryptoPurchase[] = [
+                new CryptoPurchase(coinName, purchaseDetails1, 1, value1),
+                new CryptoPurchase(coinName, purchaseDetails2, 1, value2)
             ]
             mockCoinService.getAllHeldCoins.and.returnValue(coinList);
             mockCoinService.getAllUniqueTickers.and.returnValue(["BTC"]);

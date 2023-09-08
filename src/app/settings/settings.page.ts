@@ -1,35 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import * as moment from 'moment';
-import { CurrencyEnum } from '../currencyEnum';
-import { CoinService } from '../service/coin.service';
+
+import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { RateService } from '../service/rate.service';
-import { ValueService } from '../service/value.service';
-import StorageUtils from '../storage.utils';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
 })
-export class SettingsPage {
+export class SettingsPage implements OnDestroy {
 
-  public lastUpdateDate: Date;
+  public ratesLastUpdateDate$: Observable<Date>;
+  private selectedCurrencySubscription: Subscription;
+  public currencyString: string;
 
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
-              private coinService: CoinService,
-              private valueService: ValueService,
+              private coinService: PurchasesService,
               private rateService: RateService
   ){}
 
   ngOnInit() {
-    //this.lastUpdateDate = this.valueService.dateLastUpdated;
-    this.lastUpdateDate = this.rateService.getLastUpdateDate();
+    this.ratesLastUpdateDate$ = this.rateService.getRatesLastUpdateDate();
+    this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency()
+    .subscribe(data => this.currencyString = enumToString(data));
   }
 
-  async showDeleteAlert() {
+  ngOnDestroy(): void {
+    if(this.selectedCurrencySubscription){
+      this.selectedCurrencySubscription.unsubscribe();
+    }
+  }
+
+  public async showDeleteAlert() {
     const alert = await this.alertController.create({
       header: 'Warning',
       message: 'This will clear all data stored on your device. Are you sure you want to proceed?',
@@ -46,16 +53,15 @@ export class SettingsPage {
     let result = await alert.onDidDismiss();
   }
 
-  async confirmDeleteAlert() {
+  private async confirmDeleteAlert() {
     const alert = await this.alertController.create({
       header: 'Warning',
       message: 'Are you really sure? This cannot be undone.',
       buttons: [
         {text: 'OK',
         handler: () => {
-          this.coinService.clearAllHeldCoins();
-          StorageUtils.clearAllStorage();
-          console.log("call deleteall coins")
+          this.coinService.clearAllPurchases();
+          console.log("call delete all coins")
         }}, 
         {text: 'Cancel',
         cssClass: 'modal-button-cancel'}
@@ -66,8 +72,8 @@ export class SettingsPage {
     console.log(result);
   }
 
-  private ConvertToCSV(): string {
-    var data = this.coinService.getAllHeldCoins();
+  public convertToCSV(): string {
+    var data = this.coinService.getAllPurchases();
     if (data == null){
       console.log("no data to convert")
       return
@@ -94,14 +100,10 @@ export class SettingsPage {
     console.log(str);
     // need to save this to users device
     return str;
-}
-
-  public callSetCurrency(value: CurrencyEnum){
-    this.currencyService.setCurrencySelected(value);
   }
 
-  public callGetCurrency(): String{
-    var selected = CurrencyEnum[this.currencyService.getCurrencySelected()].toString();
-    return selected;
+  public updateSelectedCurrency(value: CurrencyEnum): void{
+    this.currencyService.setSelectedCurrency(value.toString());
   }
+
 }
