@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
 import { CurrencyEnum } from '../types/currencyEnum';
+import { cryptoNames } from '../shared/constants/constants';
 
 @Component({
   selector: 'app-add-form',
@@ -21,7 +22,7 @@ import { CurrencyEnum } from '../types/currencyEnum';
 })
 export class AddFormPage implements OnInit, OnDestroy {
 
-  public coinNames: CryptoName[];
+  public coinNames = cryptoNames;
   //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;
@@ -53,7 +54,6 @@ export class AddFormPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.coinNames = this.purchasesService.getAllCryptoNames(); //should be stored as a constant somewhere instead
     this.paramsSubscription = this.route.params.subscribe(() => {
       this.coinForm.reset();
     });
@@ -106,12 +106,11 @@ export class AddFormPage implements OnInit, OnDestroy {
   }
 
   public submitForm(){
-    const coinName = this.coinForm.controls['name'].value;
+    const coinName: CryptoName = this.coinForm.controls['name'].value;
     const coinQuantity = this.coinForm.controls['quantity'].value;
     const coinValue = this.valueService.createNewValue(coinQuantity);
     const purchaseDetails = this.getPurchaseDetails();
     const coin = new CryptoPurchase(coinName, purchaseDetails, coinQuantity, coinValue);
-    //also should set coinId here
     
     console.log("Newly created coin:")
     console.log(coin);

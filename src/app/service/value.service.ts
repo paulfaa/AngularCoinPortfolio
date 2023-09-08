@@ -19,7 +19,7 @@ export class ValueService implements OnDestroy {
     private totalValue$: Observable<number> = this.totalValueSubject.asObservable();
 
     private totalProfitSubject = new BehaviorSubject<number>(0);
-    private totalProfit$: Observable<number> = this.totalProfitSubject.asObservable();
+    private totalProfit$: Observable<number> = this.totalProfitSubject.asObservable(); 
 
     constructor(
         private purchasesService: PurchasesService,
@@ -27,9 +27,7 @@ export class ValueService implements OnDestroy {
         private currencyService: CurrencyService
     ) {
         this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {
-            console.log("purchasesSubscription updated")
             this.purchases = purchases
-            this.calculateTotalValue();
             this.calculateTotalProfit();
         });
     }
@@ -55,8 +53,8 @@ export class ValueService implements OnDestroy {
         const totalExpendature = this.calculateTotalExpenditure()
         const totalValue = this.calculateTotalValue();
         const totalProfit = totalValue - totalExpendature;
-        //this.totalValueSubject.next(totalValue);
-        //this.totalProfitSubject.next(totalValue - totalExpendature);
+        this.totalValueSubject.next(totalValue);
+        this.totalProfitSubject.next(totalProfit);
         console.log("totalProfit value.service ", this.totalProfit$)
         return totalProfit;
     }
@@ -65,16 +63,14 @@ export class ValueService implements OnDestroy {
         const currentValue = this.totalValueSubject.getValue()
         this.totalValueSubject.next(currentValue + 5) //fix
         var total = 0;
-        const allTickers = this.purchasesService.getAllUniqueTickers();
-        //console.log("alltickers: " , allTickers)
-        if(allTickers != null && allTickers.size >= 1){
-            allTickers.forEach(ticker => { 
-                total = total + (this.purchasesService.getAmountHeldOfTicker(ticker) * this.rateService.getRateForTicker(ticker));
-                console.log("total: ", total)
-            });
-        }
+        const allIds = this.purchasesService.getAllUniqueIds();
+        allIds.forEach(id => {
+            const q = this.purchasesService.getQuantityHeldById(id);
+            const r = this.rateService.getRateForId(id);
+            total = total + (q * r)
+        })
         console.log("Value service total: "+ total);
-        return total;
+        return total;        
     }
 
     private calculateTotalExpenditure(): number{

@@ -3,7 +3,6 @@ import { PurchaseDetails } from './purchaseDetails.type';
 import { Value } from './value.type';
 
 export class CryptoPurchase {
-    id: number;
     name: CryptoName;
     purchaseDetails: PurchaseDetails;
     value: Value;

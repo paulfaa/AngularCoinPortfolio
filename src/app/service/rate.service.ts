@@ -1,18 +1,21 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import StorageUtils from "../storage.utils";
 import { Rate } from "../types/rate.type";
 import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subscription } from "rxjs";
+import { element } from "protractor";
+import { CurrencyEnum, enumToString } from "../types/currencyEnum";
 
 @Injectable({providedIn: 'root'})
-export class RateService {
+export class RateService implements OnDestroy{
 
     private rates: Rate[];
     private ratesLastUpdateDate: Date;
-    private selectedCurrency;
+    private selectedCurrencySubscription: Subscription;
+    private selectedCurrency: CurrencyEnum;
 
     constructor(
         private purchasesService: PurchasesService,
@@ -22,9 +25,16 @@ export class RateService {
     ) {
         this.initService();
     }
+    ngOnDestroy(): void {
+        if(this.selectedCurrencySubscription){
+            this.selectedCurrencySubscription.unsubscribe();
+        };
+    }
 
     private initService(): void{
-        this.selectedCurrency = this.currencyService.getSelectedCurrency();
+        this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
+            this.selectedCurrency = result
+        );
         var storedRates = StorageUtils.readFromStorage('rates');
         if (storedRates === null || storedRates.length == 0){
             this.rates = [];
@@ -46,6 +56,22 @@ export class RateService {
 
     public getRatesLastUpdateDate(): Observable<Date> {
         return of(this.ratesLastUpdateDate);
+    }
+
+    public getRateForId(id: number): number | undefined{
+        const currencyCode = enumToString(this.selectedCurrency);
+        const matchingRate = this.rates.find(element => {
+            element.id == id && element.currencyCode == currencyCode
+        });
+        if(matchingRate == undefined){
+            console.log("no stored rate for : " + id)
+            //return undefined;
+            return 0;
+        }
+        else{
+            console.log("rate found for id " + id + " was " + matchingRate.value)
+            return matchingRate.value;
+        }
     }
 
     public getRateForTicker(tickerToLookup: string): number{

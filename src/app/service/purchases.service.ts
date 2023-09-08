@@ -3,6 +3,7 @@ import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { cryptoNames } from '../shared/constants/constants';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{
@@ -17,34 +18,17 @@ export class PurchasesService{
     var storedPurchases = StorageUtils.readFromStorage('savedCoins');
     if (storedPurchases === null || storedPurchases == undefined){ 
       console.log('init method returning empty list')
-      //this.purchases = [];
-      //this.uniqueTickers = [];
       return [];
     }
     else {
       console.log('init method returning ' + storedPurchases)
-      //this.uniqueTickers = StorageUtils.readFromStorage('uniqueTickers');
       return storedPurchases;
     }
 }
 
-//move this
-  private cryptoNames: CryptoName[] = [
-    new CryptoName("Bitcoin","BTC"),
-    new CryptoName("Cardano","ADA"),
-    new CryptoName("Litecoin","LTE"),
-    new CryptoName("Ethereum","ETH"),
-    new CryptoName("Polkadot","DOT"),
-    new CryptoName("Stella","XLM"),
-    new CryptoName("Tether","USDT"),
-    new CryptoName("XRP","XRP"),
-    new CryptoName("Solana","SOL")
-  ]
-
   public addPurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
     const updatedPurchases = [...currentPurchases, purchase];
-    this.sortAllPurchases();
     this.updateStorage();
     this.purchasesSubject.next(updatedPurchases);
   }
@@ -52,7 +36,6 @@ export class PurchasesService{
   public removePurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
     const updatedPurchases = currentPurchases.filter(p => p == purchase);
-    this.sortAllPurchases();
     this.updateStorage();
     this.purchasesSubject.next(updatedPurchases);
   }
@@ -65,9 +48,13 @@ export class PurchasesService{
     return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
   }
 
-  private updateStorage(): void{
+  public getAllUniqueIds(): Set<number>{
+    return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
+  }
+
+  private updateStorage(): void {
+    this.sortAllPurchases();
     StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue())
-    //StorageUtils.writeToStorage('uniqueTickers', this.uniqueTickers)
   }
 
   /* public removeFromHeldCoins(purchaseToRemove: CryptoPurchase): void{
@@ -95,15 +82,18 @@ export class PurchasesService{
     return counter;
   }
 
+  public getQuantityHeldById(id: number): number {
+    var counter = 0;
+    var purchases = this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId == id);
+    purchases.forEach(purchase => {
+      counter = counter + purchase.quantity;
+    });
+    console.log("user holding " + counter + " id")
+    return counter;
+  }
+
   public getNumberOfPurchases(): number{
     return this.purchasesSubject.getValue().length;
-    const currentPurchases = this.purchasesSubject.getValue();
-    if(currentPurchases != null){
-      return currentPurchases.length;
-    }
-    else{
-      return 0;
-    }
   }
 
   public clearAllPurchases(): void{
@@ -112,13 +102,14 @@ export class PurchasesService{
     this.updateStorage();
   }
 
-  public getAllCryptoNames(): CryptoName[] {
+  //refactor to use stored const
+  /* public getAllCryptoNames(): CryptoName[] {
     let names = [];
-    this.cryptoNames.forEach(name => {
+    cryptoNames.forEach(name => {
       names.push(name)
     });
     return names;
-  }
+  } */
 
   //refactor to use coinmarket id
   public getPurchasesByTicker(ticker: string): CryptoPurchase[]{
@@ -131,8 +122,8 @@ export class PurchasesService{
     return matches;
   }
 
-  public getPurchasesById(id: number): CryptoPurchase[]{
-    return this.purchasesSubject.getValue().filter(purchase => purchase.id === id);
+  public getPurchasesById(coinMarketId: number): CryptoPurchase[]{
+    return this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId === coinMarketId);
   }
 
   //sorts list alphabetically by ticker then by purchase date
