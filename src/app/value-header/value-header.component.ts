@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class ValueHeaderComponent implements OnInit {
   @Input() totalValue;
   @Input() totalProfit;
+  @Input() profitAsPercentage;
   @Input() currencySymbol;
 
   constructor() { }

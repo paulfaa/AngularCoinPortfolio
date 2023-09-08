@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { PurchasesService } from '../service/purchases.service';
@@ -9,7 +9,6 @@ import { CurrencyEnum } from '../types/currencyEnum';
 import { Observable, Subscription, of } from 'rxjs';
 
 //TODO 
-// Set coinId when added to portfolio
 // Fix icons on portfolio page
 // Connect to backend
 
@@ -26,6 +25,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   private purchasesSubscription: Subscription;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
+  public profitAsPercentage$: Observable<number>;
   public currencySymbol$: Observable<string>;
   
   constructor(public alertController: AlertController,
@@ -37,6 +37,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
       this.currencySymbol$ = this.currencyService.getSelectedCurrency();
+      this.profitAsPercentage$ = this.valueService.getPercentageProfit();
       this.showEmptyPortfolioAlert();
       this.valueService.calculateTotalProfit();
     }
@@ -59,6 +60,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     } */
 
     public onDeletePurchaseClicked(purchase: CryptoPurchase){
+      console.log("delete clicked for ", purchase)
       this.purchasesService.removePurchase(purchase);
     }
 

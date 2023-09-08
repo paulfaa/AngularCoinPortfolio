@@ -8,7 +8,7 @@
 </ion-header>
 
   <ion-content>
-    <form [formGroup]="coinForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="cryptoForm" (ngSubmit)="submitForm()">
     <ion-item>
     <ion-label>Coin</ion-label>
     <ionic-selectable formControlName="name" item-content [(ngModel)]="coinName" itemValueField="ticker" itemTextField="displayName" [items]="coinNames" [canSearch]="true"
@@ -40,7 +40,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <ion-button expand="block" [disabled]="coinForm.invalid" (click)="submitForm()">Add</ion-button>
+        <ion-button expand="block" [disabled]="cryptoForm.invalid" (click)="submitForm()">Add</ion-button>
       </ion-col>
       <ion-col col-6>
         <ion-button fill="solid" color="danger" expand="block" (click)="clearAllInputs()">Clear</ion-button>

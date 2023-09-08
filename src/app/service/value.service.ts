@@ -7,6 +7,7 @@ import { CurrencyService } from './currency.service';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
 import { CurrencyEnum } from '../types/currencyEnum';
+import { map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class ValueService implements OnDestroy {
@@ -45,8 +46,14 @@ export class ValueService implements OnDestroy {
         return this.totalProfit$;
     }
 
-    public createNewValue(currentValue: number): Value{
-        return new Value(currentValue, CurrencyEnum.EUR, moment().toDate()); //fix this, changed to EUR for testing
+    public getPercentageProfit(): Observable<number> {
+        return this.totalProfit$.pipe(
+            map(totalProfit => (totalProfit / this.totalValueSubject.value) * 100)
+        );
+    }
+
+    public createNewValue(currentValue: number, selectedCurrency: CurrencyEnum): Value{
+        return new Value(currentValue, selectedCurrency, moment().toDate());
     }
 
     public calculateTotalProfit(): number{
@@ -60,13 +67,13 @@ export class ValueService implements OnDestroy {
     }
 
     private calculateTotalValue(): number{
-        const currentValue = this.totalValueSubject.getValue()
-        this.totalValueSubject.next(currentValue + 5) //fix
+        const random = Math.random()
         var total = 0;
         const allIds = this.purchasesService.getAllUniqueIds();
         allIds.forEach(id => {
             const q = this.purchasesService.getQuantityHeldById(id);
-            const r = this.rateService.getRateForId(id);
+            const r = random * (10 - 0.01) + 0.01;
+            //const r = this.rateService.getRateForId(id);
             total = total + (q * r)
         })
         console.log("Value service total: "+ total);
@@ -75,7 +82,7 @@ export class ValueService implements OnDestroy {
 
     private calculateTotalExpenditure(): number{
         var expenditure = this.purchases.reduce((total, purchase) => total + purchase.purchaseDetails.price, 0);
-        console.log("total expendeture: ", expenditure)
+        console.log("total expenditure: ", expenditure)
         return expenditure;
     }
 

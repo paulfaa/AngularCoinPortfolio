@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
-import { CryptoName } from '../types/cryptoName.type';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { cryptoNames } from '../shared/constants/constants';
 
 @Injectable({providedIn: 'root'})
 export class PurchasesService{
@@ -35,7 +33,7 @@ export class PurchasesService{
 
   public removePurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
-    const updatedPurchases = currentPurchases.filter(p => p == purchase);
+    const updatedPurchases = currentPurchases.filter(p => p !== purchase);  //refactor
     this.updateStorage();
     this.purchasesSubject.next(updatedPurchases);
   }
@@ -56,16 +54,6 @@ export class PurchasesService{
     this.sortAllPurchases();
     StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue())
   }
-
-  /* public removeFromHeldCoins(purchaseToRemove: CryptoPurchase): void{
-    const currentPurchases = this.purchasesSubject.getValue();
-    currentPurchases.forEach((value,index)=>{
-      if(value == purchaseToRemove){
-        this.purchasesSubject.next(currentPurchases.splice(index,1));
-        this.updateStorage();
-      } 
-    });
-  } */
 
   //refactor to use coinMarket id instead
   public getAmountHeldOfTicker(ticker: string): number{
@@ -102,15 +90,6 @@ export class PurchasesService{
     this.updateStorage();
   }
 
-  //refactor to use stored const
-  /* public getAllCryptoNames(): CryptoName[] {
-    let names = [];
-    cryptoNames.forEach(name => {
-      names.push(name)
-    });
-    return names;
-  } */
-
   //refactor to use coinmarket id
   public getPurchasesByTicker(ticker: string): CryptoPurchase[]{
     var matches = [];
@@ -139,17 +118,5 @@ export class PurchasesService{
     return coins.filter(coin => {
       return coin.name.displayName.toLowerCase().indexOf(text) !== -1;
     });
-  } */
-
-  /* public getLastAddedDate(): Date {
-    var date;
-    this.purchasesSubject.getValue().forEach(purchase => {
-      var purchaseDate = purchase.purchaseDetails.date;
-      if ( date === undefined || date < purchaseDate){
-        date = purchaseDate;
-      }
-    })
-    this.lastPurchaseDate = date;
-    return date;
   } */
 }
