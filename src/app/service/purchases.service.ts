@@ -27,15 +27,15 @@ export class PurchasesService{
   public addPurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
     const updatedPurchases = [...currentPurchases, purchase];
-    this.updateStorage();
     this.purchasesSubject.next(updatedPurchases);
+    this.updateStorage();
   }
 
   public removePurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
     const updatedPurchases = currentPurchases.filter(p => p !== purchase);  //refactor
-    this.updateStorage();
     this.purchasesSubject.next(updatedPurchases);
+    this.updateStorage();
   }
 
   public getAllPurchases() {

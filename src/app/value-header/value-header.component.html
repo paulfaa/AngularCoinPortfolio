@@ -6,9 +6,10 @@
   </ion-card-header>
   
   <ion-card-content [ngClass]= "getCssClass()">
-    Total profit: {{totalProfit | async | profitFormat}} 
-    <br>
-    Total profit: {{currencySymbol | async}} {{totalProfit | async | number : '1.2-2'}} ({{profitAsPercentage | async | number : '1.2-2'}}%)
+    <!-- Total profit: {{totalProfit | async | profitFormat}} 
+    <br> -->
+    Total profit: {{currencySymbol | async}}
+    {{totalProfit | async | number : '1.2-2'}} ({{profitAsPercentage | async | number : '1.2-2'}}%)
   </ion-card-content>
   
 </ion-card>

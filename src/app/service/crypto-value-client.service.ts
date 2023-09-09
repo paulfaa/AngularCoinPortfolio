@@ -18,11 +18,12 @@ export class CryptoValueClientService {
     return this.http.get<Rate>(cryptoValueUrl);
   }
 
-  public getCryptoValues(): Observable<Rate[]>{
-    const allValuesUrl = this.baseUrl + "values"
+  public getCryptoValues(currencyCode: string): Observable<Rate[]>{
+    const allValuesUrl = this.baseUrl + "values?currencyCode=" + currencyCode;
     return this.http.get<Rate[]>(allValuesUrl);
   }
 
+  //update on server side to accept list of ids
   private buildGetValueUrl(coinId: number, currency: string): string {
     return this.baseUrl + "value?id=" + coinId + "?currency=" + currency;
   }

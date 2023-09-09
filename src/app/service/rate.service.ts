@@ -5,15 +5,19 @@ import { PurchasesService } from "./purchases.service";
 import { CurrencyService } from "./currency.service";
 import { LoggingService } from "./logging.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
-import { Observable, of, Subscription } from "rxjs";
-import { element } from "protractor";
+import { BehaviorSubject, Observable, of, Subscription } from "rxjs";
 import { CurrencyEnum, enumToString } from "../types/currencyEnum";
+import { twelveHoursInMs } from "../shared/constants/constants";
+import * as moment from "moment";
 
 @Injectable({providedIn: 'root'})
 export class RateService implements OnDestroy{
 
+    //private ratesSubject = new BehaviorSubject<Map<string, Rate>>(new Map<string, Rate>());
+    //private rates$: Observable<Map<string, Rate>> = this.ratesSubject.asObservable();
+    private ratesMap: Map<string, Rate>; //key is currency code
     private rates: Rate[];
-    private ratesLastUpdateDate: Date;
+    private ratesLastUpdateDate: Date | undefined;
     private selectedCurrencySubscription: Subscription;
     private selectedCurrency: CurrencyEnum;
 
@@ -35,7 +39,8 @@ export class RateService implements OnDestroy{
         this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
             this.selectedCurrency = result
         );
-        var storedRates = StorageUtils.readFromStorage('rates');
+        const storedRates = StorageUtils.readFromStorage('rates');
+        const lastUpdateDate = StorageUtils.readFromStorage('lastUpdateDate');
         if (storedRates === null || storedRates.length == 0){
             this.rates = [];
         }
@@ -43,15 +48,39 @@ export class RateService implements OnDestroy{
             this.rates = storedRates;
             this.ratesLastUpdateDate = this.rates[0].updateDate;
         }
+        if(lastUpdateDate != null){
+            this.ratesLastUpdateDate = lastUpdateDate;
+        }
     }
 
     public updateAllExchangeRates(){
-        this.http.getCryptoValues().subscribe(data => {this.rates = data});
-        //var rate = new Rate("BTC", 2.457345, CurrencyEnum.EUR, now.toDate());
-        //rate.updateDate = now.toDate();
-        this.loggingService.info("RateService updated " + this.rates.length + " rates.")
-        StorageUtils.writeToStorage("rates", this.rates);
-        this.ratesLastUpdateDate = new Date();
+        if(this.ratesLastUpdateDate == undefined){
+            this.callCryptoValueEndpoint();
+            return;
+        }
+        const timeDifference = Math.abs(moment().toDate().getTime() - new Date(this.ratesLastUpdateDate).getTime());
+        if(timeDifference <= twelveHoursInMs){ //should be >= changed for testing
+            this.callCryptoValueEndpoint();
+        }
+        else{
+            this.loggingService.info("No need to update, rates are newer than 12 hours old");
+        }
+    }
+
+    private callCryptoValueEndpoint(){
+        const currencyCode = enumToString(this.selectedCurrency);
+        this.http.getCryptoValues(currencyCode).subscribe(data => {
+            this.rates = data; //use map with currency as keys instead of all in one list
+            console.log("RateService updated " + this.rates.length + " " + currencyCode + " rates.");
+            this.ratesLastUpdateDate = new Date();
+            StorageUtils.writeToStorage("rates", this.rates);
+            StorageUtils.writeToStorage("lastUpdateDate", this.ratesLastUpdateDate);
+        },
+        error => {
+            console.error("Error fetching data:", error);
+            //need to show error on UI side here
+          }
+        );
     }
 
     public getRatesLastUpdateDate(): Observable<Date> {
@@ -74,6 +103,7 @@ export class RateService implements OnDestroy{
         }
     }
 
+    //remove this
     public getRateForTicker(tickerToLookup: string): number{
         return 5;
         var foundRate = this.rates.find(i => i.name === tickerToLookup && i.currencyCode === this.selectedCurrency )

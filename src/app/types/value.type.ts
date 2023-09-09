@@ -1,9 +1,9 @@
 import { CurrencyEnum } from "./currencyEnum";
 
 export class Value {
-    private currentValue: number;
-    private currency: CurrencyEnum;
-    private updateDate: Date;
+    public currentValue: number;
+    public currency: CurrencyEnum;
+    public updateDate: Date;
 
     constructor(currentValue: number, currency: CurrencyEnum, dateValueUpdated: Date){
         this.currentValue = currentValue;
