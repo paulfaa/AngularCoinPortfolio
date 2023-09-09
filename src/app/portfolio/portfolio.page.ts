@@ -5,12 +5,12 @@ import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
-import { CurrencyEnum } from '../types/currencyEnum';
+import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 import { Observable, Subscription, of } from 'rxjs';
+import { RateService } from '../service/rate.service';
 
 //TODO 
 // Fix icons on portfolio page
-// Connect to backend
 
 @Component({
   selector: 'app-portfolio',
@@ -31,10 +31,12 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   constructor(public alertController: AlertController,
     private purchasesService: PurchasesService,
     private valueService: ValueService,
+    private rateService: RateService,
     private currencyService: CurrencyService,
     private loggingService: LoggingService){}
     
     ngOnInit() {
+      this.rateService.updateAllExchangeRates();
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
       this.currencySymbol$ = this.currencyService.getSelectedCurrency();
       this.profitAsPercentage$ = this.valueService.getPercentageProfit();
@@ -91,7 +93,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       const enumIndex = coin.purchaseDetails.currency;
       const alert = await this.alertController.create({
         header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
-        message: coin.purchaseDetails.date.toString() + "<br>" + "\n" + CurrencyEnum[enumIndex] + coin.purchaseDetails.price,
+        message: "Date added: " + coin.purchaseDetails.date + "<br>" + "\n Cost: " + coin.purchaseDetails.price + " " + enumToString(coin.purchaseDetails.currency),
         buttons: [
           {text: 'OK'}
         ]

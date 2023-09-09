@@ -7,7 +7,7 @@ export default class StorageUtils {
         try{
             var data = localStorage.getItem(keyName);
             if(data != null || data != undefined || data != "undefined"){
-                console.log("Stored data for key " +  keyName + ": " + data);
+                //console.log("Stored data for key " +  keyName + ": " + data);
                 return JSON.parse(data);
             }
             else{

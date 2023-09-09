@@ -12,6 +12,8 @@ export const cryptoNames: CryptoName[] = [
     new CryptoName("Solana","SOL", 797)
   ]
 
+  export const twelveHoursInMs: number = 43200000;
+
   /* export const cryptoNames: CryptoName[] = [
     { displayName: "Bitcoin", ticker: "BTC" },
     { displayName: "Cardano", ticker: "ADA" },
