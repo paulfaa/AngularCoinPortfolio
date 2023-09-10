@@ -22,5 +22,6 @@ export default class StorageUtils {
 
     static clearAllStorage(): void {
         localStorage.clear();
+        console.log("Cleared all storage");
     }
 }

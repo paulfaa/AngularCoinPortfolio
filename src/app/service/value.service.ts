@@ -67,14 +67,14 @@ export class ValueService implements OnDestroy {
     }
 
     private calculateTotalValue(): number{
-        const random = Math.random()
         var total = 0;
         const allIds = this.purchasesService.getAllUniqueIds();
         allIds.forEach(id => {
-            const q = this.purchasesService.getQuantityHeldById(id);
-            const r = random * (10 - 0.01) + 0.01;
-            //const r = this.rateService.getRateForId(id);
-            total = total + (q * r)
+            const quantity = this.purchasesService.getQuantityHeldById(id);
+            const rate = this.rateService.getRateForId(id); //race condition, getting called before rateService is ready
+            if(quantity && rate){
+                total = total + (quantity * rate);
+            }
         })
         console.log("Value service total: "+ total);
         return total;        
@@ -86,26 +86,14 @@ export class ValueService implements OnDestroy {
         return expenditure;
     }
 
-    //refactor to use id instead
-    public calculateValueForTicker(ticker: string): number{
-        //this.updateAllExchangeRates();
-        console.log("value: " + this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker));
-        //var rate = this.rateService.getRateForTicker(ticker); //always returning 0
-        return this.rateService.getRateForTicker(ticker) * this.purchasesService.getAmountHeldOfTicker(ticker);
+    public calculateValueForId(coinMarketId: number): number{
+        const value = this.rateService.getRateForId(coinMarketId) * this.purchasesService.getQuantityHeldById(coinMarketId);
+        console.log("value caclulated for all holdings of " + coinMarketId + " - " + value)
+        return value;
     }
 
     /* public updateValueForSingleCoin(purchase: CryptoPurchase): void{
         var updatedValue = purchase.quantity * this.rateService.getRateForTicker(purchase.name.ticker)
         purchase.value.setCurrentValue(updatedValue);
-    }
-
-    public updateValueForTicker(ticker: string): void{
-        if(this.purchases != null){
-            this.purchases.forEach(purchase => {
-                if(purchase.name.ticker == ticker){
-                    this.updateValueForSingleCoin(purchase);
-                }
-            });
-        }
-    } */
+    } ^&*/
 }

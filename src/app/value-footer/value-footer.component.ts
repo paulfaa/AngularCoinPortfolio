@@ -20,27 +20,7 @@ export class ValueFooterComponent implements OnInit {
 
   ngOnInit() {
     // should not call only on ngInit, also need to recalculate if coins of the same ticker are deleted. need to add deleteListener
-    this.totalValue = this.calculateValueOfTicker();
-  }
-
-  public calculateValueOfTicker(): number{
-    var totalValue = 0;
-    const purchasesMatchingTicker = this.purchasesService.getPurchasesByTicker(this.ticker);
-    purchasesMatchingTicker.forEach(purchase => {
-      totalValue = totalValue + purchase.purchaseDetails.price;
-    });
-    console.log("totalValueFor " + this.ticker + ": " + totalValue);
-    return totalValue;
-  }
-
-  public calculateProfitOfTicker(): number{
-    var totalProfit = 0;
-    const purchasesMatchingTicker = this.purchasesService.getPurchasesByTicker(this.ticker);
-    purchasesMatchingTicker.forEach(coin => {
-      totalProfit = totalProfit + coin.profit;
-    });
-    console.log("total profit for " + this.ticker + ": " + totalProfit);
-    return totalProfit;
+    this.totalValue = this.calculateValueOfId();
   }
 
   public calculateValueOfId(): number{

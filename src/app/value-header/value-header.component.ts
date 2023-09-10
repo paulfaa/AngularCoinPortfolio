@@ -27,5 +27,4 @@ export class ValueHeaderComponent implements OnInit {
     }
     return className;
   }
-
 }

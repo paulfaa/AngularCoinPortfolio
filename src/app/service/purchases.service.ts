@@ -86,6 +86,7 @@ export class PurchasesService{
 
   public clearAllPurchases(): void{
     console.log("clearing all purchases");
+    StorageUtils.clearAllStorage();
     this.purchasesSubject.next([]);
     this.updateStorage();
   }

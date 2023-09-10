@@ -38,7 +38,7 @@
     </ion-item-sliding>
 
     <footer *ngIf="!purchases[index+1] || purchase.name.displayName !== purchases[index+1].name.displayName">
-      Total {{purchase.name.displayName}} profit: <value-footer [ticker]=purchase.name.ticker></value-footer>
+      Total {{purchase.name.displayName}} value: <value-footer [id]=purchase.name.coinMarketId></value-footer>
     </footer>
   </div>
 
