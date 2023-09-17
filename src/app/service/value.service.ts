@@ -13,7 +13,7 @@ import { CryptoValueClientService } from './crypto-value-client.service';
 import StorageUtils from '../storage.utils';
 import { twelveHoursInMs } from '../shared/constants/constants';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ValueService implements OnDestroy {
 
     private purchases: CryptoPurchase[];
@@ -42,46 +42,46 @@ export class ValueService implements OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        if(this.purchasesSubscription){
+        if (this.purchasesSubscription) {
             this.purchasesSubscription.unsubscribe();
         }
-        if(this.selectedCurrencySubscription){
+        if (this.selectedCurrencySubscription) {
             this.selectedCurrencySubscription.unsubscribe();
         };
     }
 
-    private initService(): void{
+    private initService(): void {
         this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
             this.selectedCurrency = result
         );
         const storedRates = StorageUtils.readFromStorage('rates');
         const lastUpdateDate = StorageUtils.readFromStorage('lastUpdateDate');
-        if (storedRates === null || storedRates.length == 0 || storedRates.length == undefined){
+        if (storedRates === null || storedRates.length == 0 || storedRates.length == undefined) {
             this.ratesMap = new Map<string, Rate[]>();
         }
         else {
             this.ratesMap = storedRates;
         }
-        if(lastUpdateDate != null){
+        if (lastUpdateDate != null) {
             this.ratesLastUpdateDate = lastUpdateDate;
         }
     }
 
-    public updateAllExchangeRates(){
-        if(this.ratesLastUpdateDate == undefined){
+    public updateAllExchangeRates() {
+        if (this.ratesLastUpdateDate == undefined) {
             this.callCryptoValueEndpoint();
             return;
         }
         const timeDifference = Math.abs(moment().toDate().getTime() - new Date(this.ratesLastUpdateDate).getTime());
-        if(timeDifference <= twelveHoursInMs){ //should be >= changed for testing
+        if (timeDifference <= twelveHoursInMs) { //should be >= changed for testing
             this.callCryptoValueEndpoint();
         }
-        else{
+        else {
             this.loggingService.info("No need to update, rates are newer than 12 hours old");
         }
     }
 
-    private callCryptoValueEndpoint(){
+    private callCryptoValueEndpoint() {
         const currencyCode = enumToString(this.selectedCurrency);
         this.http.getCryptoValues(currencyCode).subscribe(data => {
             this.ratesMap.set(currencyCode, data);
@@ -90,11 +90,11 @@ export class ValueService implements OnDestroy {
             StorageUtils.writeToStorage("rates", this.ratesMap);
             StorageUtils.writeToStorage("lastUpdateDate", this.ratesLastUpdateDate);
         },
-        error => {
-            console.error("Error fetching data:", error);
-            //need to show error on UI side here
-            //There was an error connecting to the server, please try again later
-          }
+            error => {
+                console.error("Error fetching data:", error);
+                //need to show error on UI side here
+                //There was an error connecting to the server, please try again later
+            }
         );
     }
 
@@ -102,27 +102,27 @@ export class ValueService implements OnDestroy {
         return of(this.ratesLastUpdateDate);
     }
 
-    public getRateForId(id: number): number | undefined{
+    public getRateForId(id: number): number | undefined {
         const currencyCode = enumToString(this.selectedCurrency);
         const matchingRates = this.ratesMap.get(currencyCode)
-        if(matchingRates != undefined){
+        if (matchingRates != undefined) {
             const matchingRate = matchingRates.find(element => {
                 return element.id == id && element.currencyCode == currencyCode
             });
-            if(matchingRate == undefined){
+            if (matchingRate == undefined) {
                 console.log("no stored rate for id: " + id)
                 return undefined;
             }
-            else{
+            else {
                 console.log(`${currencyCode} rate found for id ${id} was ` + matchingRate.value)
                 return matchingRate.value;
             }
         }
-        else{
+        else {
             console.log(`no stored rates for currency ${currencyCode}!`)
         }
     }
-    
+
     public getTotalValue(): Observable<number> {
         return this.totalValue$;
     }
@@ -137,11 +137,11 @@ export class ValueService implements OnDestroy {
         );
     }
 
-    public createNewValue(currentValue: number, selectedCurrency: CurrencyEnum): Value{
+    public createNewValue(currentValue: number, selectedCurrency: CurrencyEnum): Value {
         return new Value(currentValue, selectedCurrency, moment().toDate());
     }
 
-    public calculateTotalProfit(): number{
+    public calculateTotalProfit(): number {
         const totalExpendature = this.calculateTotalExpenditure()
         const totalValue = this.calculateTotalValue();
         const totalProfit = totalValue - totalExpendature;
@@ -151,22 +151,22 @@ export class ValueService implements OnDestroy {
         return totalProfit;
     }
 
-    private calculateTotalValue(): number{
+    private calculateTotalValue(): number {
         var total = 0;
         const allIds = this.purchasesService.getAllUniqueIds();
         allIds.forEach(id => {
             const quantity = this.purchasesService.getQuantityHeldById(id);
             const rate = this.getRateForId(id);
-            if(quantity && rate){
+            if (quantity && rate) {
                 total = total + (quantity * rate);
             }
         })
-        console.log("Value service total: "+ total);
+        console.log("Value service total: " + total);
         this.totalValueSubject.next(total);
-        return total;        
+        return total;
     }
 
-    private calculateTotalExpenditure(): number{
+    private calculateTotalExpenditure(): number {
         var expenditure = this.purchases.reduce((total, purchase) => total + purchase.purchaseDetails.price, 0);
         console.log("total expenditure: ", expenditure)
         return expenditure;

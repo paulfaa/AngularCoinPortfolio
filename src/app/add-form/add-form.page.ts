@@ -31,7 +31,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   private selectedCurrency: CurrencyEnum;
 
   public errorMessages = {
-    name: [{type: 'required', message: 'This field is required'}]
+    name: [{ type: 'required', message: 'This field is required' }]
   }
 
   cryptoForm = this.formBuilder.group({
@@ -39,9 +39,10 @@ export class AddFormPage implements OnInit, OnDestroy {
     quantity: ['', [Validators.required, Validators.min(0.00000001)]],
     perCoinPurchasePrice: ['', [Validators.min(0.01)]],
     totalPurchasePrice: ['', [Validators.min(0.01)]]
-  }, 
-    { validator: atLeastOne(Validators.required, ['perCoinPurchasePrice','totalPurchasePrice'])
-  });
+  },
+    {
+      validator: atLeastOne(Validators.required, ['perCoinPurchasePrice', 'totalPurchasePrice'])
+    });
 
   constructor(
     private purchasesService: PurchasesService,
@@ -59,7 +60,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     });
     this.perCoinPurchasePriceSubscription = this.createFormChangeSubscription("perCoinPurchasePrice", "totalPurchasePrice");
     this.totalPurchasePriceSubscription = this.createFormChangeSubscription("totalPurchasePrice", "perCoinPurchasePrice");
-    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(value => {this.selectedCurrency = value});
+    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(value => { this.selectedCurrency = value });
   }
 
   ngOnDestroy(): void {
@@ -72,7 +73,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     if (this.totalPurchasePriceSubscription) {
       this.totalPurchasePriceSubscription.unsubscribe();
     }
-    if(this.currencySubscription) {
+    if (this.currencySubscription) {
       this.currencySubscription.unsubscribe();
     }
   }
@@ -80,12 +81,12 @@ export class AddFormPage implements OnInit, OnDestroy {
   private createFormChangeSubscription(controlToMonitorName: string, controlToToggleName: string): Subscription {
     const controlToToggle = this.cryptoForm.get(controlToToggleName);
     return this.cryptoForm.get(controlToMonitorName).valueChanges.subscribe(inputValue => {
-      if(inputValue == null && controlToToggle.disabled == true){
+      if (inputValue == null && controlToToggle.disabled == true) {
         controlToToggle.enable();
       }
-      else if(inputValue != null && controlToToggle.enabled == true){
+      else if (inputValue != null && controlToToggle.enabled == true) {
         controlToToggle.disable();
-      }     
+      }
     })
   }
 
@@ -105,13 +106,13 @@ export class AddFormPage implements OnInit, OnDestroy {
     //this.coinName = event as HTMLElement
   }
 
-  public submitForm(){
+  public submitForm() {
     const coinName: CryptoName = this.cryptoForm.controls['name'].value;
     const coinQuantity = this.cryptoForm.controls['quantity'].value;
     const coinValue = this.valueService.createNewValue(coinQuantity, this.selectedCurrency);
     const purchaseDetails = this.getPurchaseDetails();
     const purchase = new CryptoPurchase(coinName, purchaseDetails, coinQuantity, coinValue);
-    
+
     console.log("Newly created purchase: ", purchase)
     this.purchasesService.addPurchase(purchase);
     //need to move toast position
@@ -119,14 +120,14 @@ export class AddFormPage implements OnInit, OnDestroy {
     this.clearAllInputs();
   }
 
-  public clearAllInputs(){
+  public clearAllInputs() {
     this.cryptoForm.reset();
   }
 
-  private getPurchaseDetails(): PurchaseDetails{
+  private getPurchaseDetails(): PurchaseDetails {
     const currentDateTime = moment().toDate();
     var purchasePrice = 0;
-    if(this.cryptoForm.controls['perCoinPurchasePrice'].value != null){
+    if (this.cryptoForm.controls['perCoinPurchasePrice'].value != null) {
       purchasePrice = this.cryptoForm.controls['perCoinPurchasePrice'].value;
     }
     else {

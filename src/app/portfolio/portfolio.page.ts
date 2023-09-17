@@ -17,7 +17,7 @@ import { Observable, Subscription, of } from 'rxjs';
   styleUrls: ['./portfolio.page.scss'],
 })
 export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
-  
+
   purchases: CryptoPurchase[];
   htmlName = '';
   footer = '';
@@ -26,92 +26,92 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
   public currencySymbol$: Observable<string>;
-  
+
   constructor(public alertController: AlertController,
     private purchasesService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
-    private loggingService: LoggingService){}
-    
-    ngOnInit() {
-      this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
-      this.currencySymbol$ = this.currencyService.getSelectedCurrency();
-      this.profitAsPercentage$ = this.valueService.getPercentageProfit();
-      this.showEmptyPortfolioAlert();
-    }
+    private loggingService: LoggingService) { }
 
-    ngOnDestroy(): void {
-      if (this.purchasesSubscription) {
-        this.purchasesSubscription.unsubscribe();
-      }
-    }
-    
-    ngAfterViewInit() {
-      console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
-      this.totalValue$ = this.valueService.getTotalValue();
-      this.totalProfit$ = this.valueService.getTotalProfit();
-      this.valueService.calculateTotalProfit();
-    }
-    
-    /* //use event listeners instead
-    public callCalculateValueForTicker(ticker: string){
-      this.valueService.calculateValueForTicker(ticker);
-    } */
-
-    public onDeletePurchaseClicked(purchase: CryptoPurchase){
-      console.log("delete clicked for ", purchase)
-      this.purchasesService.removePurchase(purchase);
-    }
-
-    public displayFooter(purchase: CryptoPurchase): boolean {
-      if (purchase.name.displayName !== this.footer) {
-        this.footer = purchase.name.displayName;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    /* public getIconFromCoinName(coin: Coin): string {
-      const filePath = "/assets/icon/";
-      var filename;
-      this.httpClient.get(filePath + coin.name.toLowerCase() + ".svg").subscribe(() => {
-        filename = filePath + coin.name.toLowerCase() + ".svg"
-      }, (err) => {
-        // HANDLE file not found
-        if (err.status === 404) {
-          filename = "circle.svg";
-        }
-      });
-      return filename
-    } */
-
-    public async infoPopup(coin: CryptoPurchase) {
-      const enumIndex = coin.purchaseDetails.currency;
-      const alert = await this.alertController.create({
-        header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
-        message: "Date added: " + coin.purchaseDetails.date + "<br>" + "\n Cost: " + coin.purchaseDetails.price + " " + enumToString(coin.purchaseDetails.currency),
-        buttons: [
-          {text: 'OK'}
-        ]
-      });
-      await alert.present();
-      let result = await alert.onDidDismiss();
-      console.log(result);
-      console.log(this.totalValue$)
+  ngOnInit() {
+    this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => { this.purchases = purchases });
+    this.currencySymbol$ = this.currencyService.getSelectedCurrency();
+    this.profitAsPercentage$ = this.valueService.getPercentageProfit();
+    this.showEmptyPortfolioAlert();
   }
-    
-    private async showEmptyPortfolioAlert() {
-      const alert = await this.alertController.create({
-        header: 'Nothing here...',
-        message: 'Looks like your portfolio is empty. Click the + symbol below to add something.',
-        buttons: [
-          {text: 'OK'}
-        ]
-      });
-      if(this.purchases.length == 0){
-        await alert.present();
-        this.loggingService.info("Empty portfolio alert shown");
+
+  ngOnDestroy(): void {
+    if (this.purchasesSubscription) {
+      this.purchasesSubscription.unsubscribe();
+    }
+  }
+
+  ngAfterViewInit() {
+    console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
+    this.totalValue$ = this.valueService.getTotalValue();
+    this.totalProfit$ = this.valueService.getTotalProfit();
+    this.valueService.calculateTotalProfit();
+  }
+
+  /* //use event listeners instead
+  public callCalculateValueForTicker(ticker: string){
+    this.valueService.calculateValueForTicker(ticker);
+  } */
+
+  public onDeletePurchaseClicked(purchase: CryptoPurchase) {
+    console.log("delete clicked for ", purchase)
+    this.purchasesService.removePurchase(purchase);
+  }
+
+  public displayFooter(purchase: CryptoPurchase): boolean {
+    if (purchase.name.displayName !== this.footer) {
+      this.footer = purchase.name.displayName;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /* public getIconFromCoinName(coin: Coin): string {
+    const filePath = "/assets/icon/";
+    var filename;
+    this.httpClient.get(filePath + coin.name.toLowerCase() + ".svg").subscribe(() => {
+      filename = filePath + coin.name.toLowerCase() + ".svg"
+    }, (err) => {
+      // HANDLE file not found
+      if (err.status === 404) {
+        filename = "circle.svg";
       }
+    });
+    return filename
+  } */
+
+  public async infoPopup(coin: CryptoPurchase) {
+    const enumIndex = coin.purchaseDetails.currency;
+    const alert = await this.alertController.create({
+      header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
+      message: "Date added: " + coin.purchaseDetails.date + "<br>" + "\n Cost: " + coin.purchaseDetails.price + " " + enumToString(coin.purchaseDetails.currency),
+      buttons: [
+        { text: 'OK' }
+      ]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    console.log(result);
+    console.log(this.totalValue$)
+  }
+
+  private async showEmptyPortfolioAlert() {
+    const alert = await this.alertController.create({
+      header: 'Nothing here...',
+      message: 'Looks like your portfolio is empty. Click the + symbol below to add something.',
+      buttons: [
+        { text: 'OK' }
+      ]
+    });
+    if (this.purchases.length == 0) {
+      await alert.present();
+      this.loggingService.info("Empty portfolio alert shown");
+    }
   }
 }

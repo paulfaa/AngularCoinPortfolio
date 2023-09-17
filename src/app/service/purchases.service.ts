@@ -3,18 +3,18 @@ import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-@Injectable({providedIn: 'root'})
-export class PurchasesService{
+@Injectable({ providedIn: 'root' })
+export class PurchasesService {
 
   private purchasesSubject = new BehaviorSubject<CryptoPurchase[]>(this.initService());
   private purchases$: Observable<CryptoPurchase[]> = this.purchasesSubject.asObservable();
   private lastPurchaseDate: Date; //check if needed
-  
-  constructor(){}
 
-  private initService(): CryptoPurchase[]{
+  constructor() { }
+
+  private initService(): CryptoPurchase[] {
     var storedPurchases = StorageUtils.readFromStorage('savedCoins');
-    if (storedPurchases === null || storedPurchases == undefined){ 
+    if (storedPurchases === null || storedPurchases == undefined) {
       console.log('init method returning empty list')
       return [];
     }
@@ -22,7 +22,7 @@ export class PurchasesService{
       console.log('init method returning ' + storedPurchases)
       return storedPurchases;
     }
-}
+  }
 
   public addPurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
@@ -42,11 +42,11 @@ export class PurchasesService{
     return this.purchases$;
   }
 
-  public getAllUniqueTickers(): Set<string>{
+  public getAllUniqueTickers(): Set<string> {
     return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
   }
 
-  public getAllUniqueIds(): Set<number>{
+  public getAllUniqueIds(): Set<number> {
     return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
   }
 
@@ -56,12 +56,12 @@ export class PurchasesService{
   }
 
   //refactor to use coinMarket id instead
-  public getAmountHeldOfTicker(ticker: string): number{
+  public getAmountHeldOfTicker(ticker: string): number {
     var counter = 0;
     var purchases = this.purchasesSubject.getValue();
-    if(purchases != null && purchases.length >= 1){
+    if (purchases != null && purchases.length >= 1) {
       purchases.forEach(purchase => {
-        if(purchase.name.ticker == ticker){
+        if (purchase.name.ticker == ticker) {
           counter = counter + purchase.quantity
         }
       });
@@ -80,11 +80,11 @@ export class PurchasesService{
     return counter;
   }
 
-  public getNumberOfPurchases(): number{
+  public getNumberOfPurchases(): number {
     return this.purchasesSubject.getValue().length;
   }
 
-  public clearAllPurchases(): void{
+  public clearAllPurchases(): void {
     console.log("clearing all purchases");
     StorageUtils.clearAllStorage();
     this.purchasesSubject.next([]);
@@ -92,26 +92,26 @@ export class PurchasesService{
   }
 
   //refactor to use coinmarket id
-  public getPurchasesByTicker(ticker: string): CryptoPurchase[]{
+  public getPurchasesByTicker(ticker: string): CryptoPurchase[] {
     var matches = [];
     this.purchasesSubject.getValue().forEach(c => {
-      if (c.name.ticker == ticker){
+      if (c.name.ticker == ticker) {
         matches.push(c);
       }
     });
     return matches;
   }
 
-  public getPurchasesById(coinMarketId: number): CryptoPurchase[]{
+  public getPurchasesById(coinMarketId: number): CryptoPurchase[] {
     return this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId === coinMarketId);
   }
 
   //sorts list alphabetically by ticker then by purchase date
-  private sortAllPurchases(): void{
+  private sortAllPurchases(): void {
     const purchases = this.purchasesSubject.getValue();
-    if(purchases != null && purchases.length >= 2){
+    if (purchases != null && purchases.length >= 2) {
       console.log("this.purchases: " + purchases);
-      purchases.sort((a,b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf());
+      purchases.sort((a, b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf());
     }
   }
 

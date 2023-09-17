@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LogLevel } from '../types/logLevelEnum';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class LoggingService {
     level: LogLevel = LogLevel.All;
     logWithDate: boolean = true;
@@ -9,18 +9,18 @@ export class LoggingService {
     private writeToLog(msg: string, level: LogLevel, params: any[]) {
         if (this.shouldLog(level)) {
             let value: string = "";
-            
+
             // Build log string
             if (this.logWithDate) {
                 value = new Date() + " - ";
             }
-            
+
             value += "Type: " + LogLevel[this.level];
             value += " - Message: " + msg;
             if (params.length) {
                 value += " - Extra Info: " + this.formatParams(params);
             }
-            
+
             // Log the value
             console.log(value);
         }
@@ -36,11 +36,11 @@ export class LoggingService {
 
     private formatParams(params: any[]): string {
         let ret: string = params.join(",");
-        
+
         // Is there at least one object in the array?
         if (params.some(p => typeof p == "object")) {
             ret = "";
-            
+
             // Build comma-delimited string
             for (let item of params) {
                 ret += JSON.stringify(item) + ",";
@@ -52,23 +52,23 @@ export class LoggingService {
     debug(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.Debug, optionalParams);
     }
-    
+
     info(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.Info, optionalParams);
     }
-    
+
     warn(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.Warn, optionalParams);
     }
-    
+
     error(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.Error, optionalParams);
     }
-    
+
     fatal(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.Fatal, optionalParams);
     }
-    
+
     log(msg: string, ...optionalParams: any[]) {
         this.writeToLog(msg, LogLevel.All, optionalParams);
     }
