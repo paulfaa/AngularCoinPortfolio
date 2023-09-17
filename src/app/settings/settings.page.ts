@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 
 import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
-import { RateService } from '../service/rate.service';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { CurrencyEnum, enumToString } from '../types/currencyEnum';
+import { ValueService } from '../service/value.service';
 
 @Component({
   selector: 'app-settings',
@@ -21,11 +21,11 @@ export class SettingsPage implements OnDestroy {
   constructor(public alertController: AlertController,
               private currencyService: CurrencyService,
               private coinService: PurchasesService,
-              private rateService: RateService
+              private valueService: ValueService
   ){}
 
   ngOnInit() {
-    this.ratesLastUpdateDate$ = this.rateService.getRatesLastUpdateDate();
+    this.ratesLastUpdateDate$ = this.valueService.getRatesLastUpdateDate();
     this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency()
     .subscribe(data => this.currencyString = enumToString(data));
   }

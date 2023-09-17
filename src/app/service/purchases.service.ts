@@ -76,7 +76,7 @@ export class PurchasesService{
     purchases.forEach(purchase => {
       counter = counter + purchase.quantity;
     });
-    console.log("user holding " + counter + " id")
+    console.log(`quantity held of id ${id} is ${counter}`)
     return counter;
   }
 

@@ -7,7 +7,6 @@ import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
 import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 import { Observable, Subscription, of } from 'rxjs';
-import { RateService } from '../service/rate.service';
 
 //TODO 
 // Fix icons on portfolio page
@@ -31,17 +30,14 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   constructor(public alertController: AlertController,
     private purchasesService: PurchasesService,
     private valueService: ValueService,
-    private rateService: RateService,
     private currencyService: CurrencyService,
     private loggingService: LoggingService){}
     
     ngOnInit() {
-      this.rateService.updateAllExchangeRates();
       this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {this.purchases = purchases});
       this.currencySymbol$ = this.currencyService.getSelectedCurrency();
       this.profitAsPercentage$ = this.valueService.getPercentageProfit();
       this.showEmptyPortfolioAlert();
-      this.valueService.calculateTotalProfit();
     }
 
     ngOnDestroy(): void {
@@ -54,6 +50,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
       this.totalValue$ = this.valueService.getTotalValue();
       this.totalProfit$ = this.valueService.getTotalProfit();
+      this.valueService.calculateTotalProfit();
     }
     
     /* //use event listeners instead
