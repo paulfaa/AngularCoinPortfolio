@@ -5,8 +5,8 @@ import { PurchasesService } from '../service/purchases.service';
 import { CurrencyService } from '../service/currency.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
-import { CurrencyEnum, enumToString } from '../types/currencyEnum';
-import { Observable, Subscription, of } from 'rxjs';
+import { enumToString } from '../types/currencyEnum';
+import { Observable, Subscription } from 'rxjs';
 
 //TODO 
 // Fix icons on portfolio page
@@ -18,16 +18,18 @@ import { Observable, Subscription, of } from 'rxjs';
 })
 export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
 
-  purchases: CryptoPurchase[];
+  purchases: CryptoPurchase[]; //make async instead of duplicating data
   htmlName = '';
   footer = '';
+  private httpErrorSubscription: Subscription;
   private purchasesSubscription: Subscription;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
   public currencySymbol$: Observable<string>;
 
-  constructor(public alertController: AlertController,
+  constructor(
+    public alertController: AlertController,
     private purchasesService: PurchasesService,
     private valueService: ValueService,
     private currencyService: CurrencyService,
@@ -35,6 +37,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => { this.purchases = purchases });
+    this.httpErrorSubscription = this.valueService.httpErrorEvent.subscribe(async () => {
+      await this.showConnectivityAlert();
+    });
     this.currencySymbol$ = this.currencyService.getSelectedCurrency();
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
     this.showEmptyPortfolioAlert();
@@ -113,5 +118,17 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       await alert.present();
       this.loggingService.info("Empty portfolio alert shown");
     }
+  }
+
+  private async showConnectivityAlert() {
+    const alert = await this.alertController.create({
+      header: 'Error connecting to server',
+      message: 'Please check that your device is connected to the internet, or try again later.',
+      buttons: [
+        { text: 'OK' }
+      ]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
   }
 }

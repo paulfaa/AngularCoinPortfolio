@@ -1,4 +1,4 @@
-import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { PurchasesService } from './purchases.service';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
@@ -26,6 +26,8 @@ export class ValueService implements OnDestroy {
     private ratesMap: Map<string, Rate[]>;
     private ratesLastUpdateDate: Date | undefined;
     private selectedCurrency: CurrencyEnum;
+
+    public httpErrorEvent: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(
         private purchasesService: PurchasesService,
@@ -92,8 +94,7 @@ export class ValueService implements OnDestroy {
         },
             error => {
                 console.error("Error fetching data:", error);
-                //need to show error on UI side here
-                //There was an error connecting to the server, please try again later
+                this.httpErrorEvent.emit('HTTP call failed');
             }
         );
     }
