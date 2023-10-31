@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Rate } from '../types/rate.type';
 
 @Injectable({
@@ -8,24 +8,19 @@ import { Rate } from '../types/rate.type';
 })
 export class CryptoValueClientService {
 
-  private baseUrl: string = "http://localhost:8080/";
+  private baseUrl: string = "http://localhost:8080/values";
 
   constructor(private http: HttpClient) { }
 
-  public getCryptoValue(coinId: number, currency: string): Observable<Rate>{
-    var params: HttpParams = new HttpParams();
-    const cryptoValueUrl = this.buildGetValueUrl(coinId, currency);
-    return this.http.get<Rate>(cryptoValueUrl);
-  }
-
-  public getCryptoValues(currencyCode: string): Observable<Rate[]>{
-    const allValuesUrl = this.baseUrl + "values?currencyCode=" + currencyCode;
-    return this.http.get<Rate[]>(allValuesUrl);
-  }
-
-  //update on server side to accept list of ids
-  private buildGetValueUrl(coinId: number, currency: string): string {
-    return this.baseUrl + "value?id=" + coinId + "?currency=" + currency;
+  public getCryptoValues(currency: string, ids: number[]): Observable<Rate[]>{
+    if(ids.length !>= 1){
+      console.log("no ids in request")
+      return of<Rate[]>([]);
+    }
+    var requestParams: HttpParams = new HttpParams();
+    requestParams.set('currency', currency);
+    requestParams.set('requestIds', ids.join(','))
+    return this.http.get<Rate[]>(this.baseUrl, {params: requestParams});
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -34,6 +34,7 @@ describe('PortfolioPage', () => {
     it("is called when the user portfolio is empty", () => {
       // Arrange
       mockCoinService.getNumberOfPurchases.and.returnValue(0);
+      spyOn(component, 'showEmptyPortfolioAlert')
 
       // Assert
       expect(component.showEmptyPortfolioAlert).toHaveBeenCalled;

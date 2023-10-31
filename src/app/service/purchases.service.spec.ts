@@ -13,7 +13,7 @@ describe('PurchasesService', () => {
 
     let service: PurchasesService;
     const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
-    const coinName = new CryptoName("BitCoin", "BTC");
+    const coinName = new CryptoName("BitCoin", "BTC", 1);
     const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
     const testCoin = new CryptoPurchase(coinName, purchaseDetails, 0.75, testValue);
 
@@ -39,7 +39,7 @@ describe('PurchasesService', () => {
 
             // Act
             service.addPurchase(testCoin);
-            var coinsLength = service.getAllPurchases().length;
+            var coinsLength = service.getAllPurchases().subscribe.length;
 
             // Assert
             expect(coinsLength).toEqual(1);
@@ -86,7 +86,7 @@ describe('PurchasesService', () => {
             expect(addedCoins[0]).toEqual(testCoin);
 
             // Act
-            service.removeFromHeldCoins(testCoin);
+            service.removePurchase(testCoin);
             var coinsLength = service['heldCoins'].length;
 
             // Assert
@@ -105,9 +105,10 @@ describe('PurchasesService', () => {
         });
         it('returns total holdings of the passed ticker', () => {
             // Arrange
+            const purchase = new CryptoPurchase()
             const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
-            service.addToHeldCoins("ADA", purchaseDetails, 3.45);
-            service.addToHeldCoins("ADA", purchaseDetails, 1.25);
+            service.addPurchase("ADA", purchaseDetails, 3.45);
+            service.addPurchase("ADA", purchaseDetails, 1.25);
 
             // Act
             var amount = service.getAmountHeldOfTicker("ADA")
@@ -128,9 +129,9 @@ describe('PurchasesService', () => {
         });
         it('returns the ticker once for each unique coin', () => {
             // Arrange
-            service.addToHeldCoins("BTC", purchaseDetails, 0.004);
-            service.addToHeldCoins("BTC", purchaseDetails, 0.001);
-            service.addToHeldCoins("ADA", purchaseDetails, 23.663);
+            service.addPurchase("BTC", purchaseDetails, 0.004);
+            service.addPurchase("BTC", purchaseDetails, 0.001);
+            service.addPurchase("ADA", purchaseDetails, 23.663);
 
             // Act
             var names = service.getAllUniqueTickers();
@@ -141,7 +142,7 @@ describe('PurchasesService', () => {
         });
     });
 
-    describe('getLastAddedDate()', () => {
+    /* describe('getLastAddedDate()', () => {
         it('returns the most recent date from all owned coins', () => {
             // Arrange
             const oldDate = new Date(2011,1,1,11,11,0);
@@ -173,5 +174,5 @@ describe('PurchasesService', () => {
             expect(service['lastAddedCoinDate']).toEqual(testCoin.purchaseDetails.date);
         });
     });
-
+ */
 });

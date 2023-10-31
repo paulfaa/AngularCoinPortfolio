@@ -10,19 +10,13 @@ export class CryptoPurchaseBuilder {
 
     constructor() {
         this.purchase = {
-            id: 0,
-            name: new CryptoName("", ""),
+            name: new CryptoName("", "", 0),
             purchaseDetails: new PurchaseDetails(0, CurrencyEnum.EUR, new Date()),
             value: new Value(0, CurrencyEnum.EUR, new Date()),
             quantity: 0,
             profit: 0,
             updateProfit: CryptoPurchase.prototype.updateProfit
         };
-    }
-
-    id(id: number): CryptoPurchaseBuilder {
-        this.purchase.id = id;
-        return this;
     }
 
     name(name: CryptoName): CryptoPurchaseBuilder {

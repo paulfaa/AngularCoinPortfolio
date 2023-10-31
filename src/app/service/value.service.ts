@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { PurchasesService } from './purchases.service';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
@@ -85,9 +85,9 @@ export class ValueService implements OnDestroy {
 
     private callCryptoValueEndpoint() {
         const currencyCode = enumToString(this.selectedCurrency);
-        this.http.getCryptoValues(currencyCode).subscribe(data => {
+        this.http.getCryptoValues(currencyCode, this.purchasesService.getAllUniqueIds()).subscribe(data => {
             this.ratesMap.set(currencyCode, data);
-            console.log("RateService updated " + data.length + " " + currencyCode + " rates.");
+            console.log("ValueService updated " + data.length + " " + currencyCode + " rates.");
             this.ratesLastUpdateDate = new Date();
             StorageUtils.writeToStorage("rates", this.ratesMap);
             StorageUtils.writeToStorage("lastUpdateDate", this.ratesLastUpdateDate);

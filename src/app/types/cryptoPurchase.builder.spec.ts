@@ -10,18 +10,16 @@ describe('CryptoPurchaseBuilder', () => {
     it('returns a CryptoPurchase object with the specified parameters', () => {
         // Arrange
         const id = 123;
-        const name = new CryptoName("Cardano", "Ada");
+        const name = new CryptoName("Cardano", "Ada", 12);
         const purchaseDetails = new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate());
         const value = new Value(5.7363, CurrencyEnum.EUR,  moment().toDate());
         const profit = 44.573;
         const quantity = 0.075;
         const testCoin = new CryptoPurchase(name, purchaseDetails, quantity, value);
-        testCoin.id = id;
         testCoin.profit = profit;
 
         // Act
         const builtCoin = new CryptoPurchaseBuilder()
-            .id(id)
             .name(name)
             .profit(profit)
             .purchaseDetails(purchaseDetails)
@@ -30,7 +28,6 @@ describe('CryptoPurchaseBuilder', () => {
             .build();
 
         // Assert
-        expect(builtCoin.id).toEqual(testCoin.id);
         expect(builtCoin.name).toEqual(testCoin.name);
         expect(builtCoin.purchaseDetails).toEqual(testCoin.purchaseDetails);
         expect(builtCoin.quantity).toEqual(testCoin.quantity);
@@ -39,7 +36,7 @@ describe('CryptoPurchaseBuilder', () => {
 
     it('can ignore optional parameters', () => {
         // Arrange
-        const name = new CryptoName("Cardano", "Ada");
+        const name = new CryptoName("Cardano", "Ada", 12);
         const purchaseDetails = new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate());
         const value = new Value(5.7363, CurrencyEnum.EUR,  moment().toDate());
         const quantity = 0.075;

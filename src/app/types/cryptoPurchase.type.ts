@@ -9,7 +9,7 @@ export class CryptoPurchase {
     quantity: number;
     profit: number; //should be an object with currencyValue
     
-    constructor(name: CryptoName, purchaseDetails?: PurchaseDetails, quantity?: number, value?: Value){
+    constructor(name?: CryptoName, purchaseDetails?: PurchaseDetails, quantity?: number, value?: Value){
         this.name = name;
         this.purchaseDetails = purchaseDetails;
         this.quantity = quantity;

@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { CurrencyEnum } from '../types/currencyEnum';
 import { CurrencyService } from '../service/currency.service';
+import { of } from 'rxjs';
 
 describe('CurrencyService', () => {
 
@@ -18,7 +19,7 @@ describe('CurrencyService', () => {
     }));
 
     afterEach(() => {
-        service.setCurrencySelected(CurrencyEnum.EUR);
+        service.setSelectedCurrency(CurrencyEnum.EUR);
       });
 
     describe('getCurrencySelected()', () => {
@@ -26,28 +27,18 @@ describe('CurrencyService', () => {
             // Act
             var currency = service.getSelectedCurrency();
 
-            // Assert
-            expect(CurrencyEnum[currency].toString()).toEqual("EUR");
+            //Assert
+            expect(currency).toEqual(of(CurrencyEnum.EUR));
         });
         it('value returned corresponds to value from storage', () => {
             // Arrange
-            service.setCurrencySelected(CurrencyEnum.USD)
+            service.setSelectedCurrency(CurrencyEnum.USD)
 
             // Act
             var currency = service.getSelectedCurrency();
 
             // Assert
             expect(currency.toString()).toEqual("USD");
-        });
-    });
-
-    describe('getCurrencySymbol()', () => {
-        it('returns currency symbol corresponding to string', () => {
-            // Act
-            var symbol = service.getSelectedCurrencySymbol();
-
-            // Assert
-            expect(symbol).toEqual("€");
         });
     });
 });

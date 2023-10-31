@@ -13,9 +13,9 @@ import { ValueFooterComponent } from './value-footer.component';
 describe('ValueFooterComponent', () => {
   let component: ValueFooterComponent;
   let fixture: ComponentFixture<ValueFooterComponent>;
-  let mockCoinService: jasmine.SpyObj<PurchasesService>;
+  let mockPurchasesService: jasmine.SpyObj<PurchasesService>;
 
-  mockCoinService = jasmine.createSpyObj('mockCoinService', ['getCoinsByTicker', 'getCoinsById']);
+  mockPurchasesService = jasmine.createSpyObj('mockPurchasesService', ['getCoinsByTicker', 'getCoinsById']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -36,24 +36,22 @@ describe('ValueFooterComponent', () => {
     it('returns the value of all coins for the specified id', () => {
       //Arrange
       const c1 = new CryptoPurchaseBuilder()
-          .name(new CryptoName("Cardano", "ADA"))
-          .id(12)
+          .name(new CryptoName("Cardano", "ADA", 12))
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(0.527)
           .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
           .profit(15)
           .build();
         const c2 = new CryptoPurchaseBuilder()
-          .name(new CryptoName("Cardano", "ADA"))
-          .id(12)
+          .name(new CryptoName("Cardano", "ADA", 12))
           .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
           .quantity(1.847)
           .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
           .profit(10)
           .build();
       const coinList: CryptoPurchase[] = [c1, c2]
-      component.coinId = 12;
-      mockCoinService.getCoinsById.and.returnValue(coinList);
+      component.id = 12;
+      mockPurchasesService.getPurchasesById.and.returnValue(coinList);
 
       //Act
       const result = component.calculateValueOfId();
@@ -64,8 +62,8 @@ describe('ValueFooterComponent', () => {
     it('returns the value of all coins for the specified id', () => {
       //Arrange
       const coinList: CryptoPurchase[] = []
-      component.coinId = 12;
-      mockCoinService.getCoinsById.and.returnValue(coinList);
+      component.id = 12;
+      mockPurchasesService.getPurchasesById.and.returnValue(coinList);
 
       //Act
       const result = component.calculateValueOfId();
@@ -79,14 +77,14 @@ describe('ValueFooterComponent', () => {
     // Arrange
     const coinList: CryptoPurchase[] = [
       new CryptoPurchaseBuilder()
-        .name(new CryptoName("Cardano", "ADA"))
+        .name(new CryptoName("Cardano", "ADA", 12))
         .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
         .quantity(0.527)
         .value(new Value(25.25, CurrencyEnum.EUR, moment().toDate()))
         .profit(15)
         .build(),
       new CryptoPurchaseBuilder()
-        .name(new CryptoName("Cardano", "ADA"))
+        .name(new CryptoName("Cardano", "ADA", 12))
         .purchaseDetails(new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate()))
         .quantity(1.847)
         .value(new Value(15.55, CurrencyEnum.EUR, moment().toDate()))
@@ -98,8 +96,8 @@ describe('ValueFooterComponent', () => {
     //fixture.detectChanges();
 
     // Act
-    mockCoinService.getPurchasesByTicker.and.returnValue(coinList);
-    component.calculateValueOfTicker();
+    mockPurchasesService.getPurchasesById.and.returnValue(coinList);
+    component.calculateValueOfId();
 
     // Assert
     expect(fixture.nativeElement.querySelector('div').innerText).toEqual(40.80);
@@ -110,7 +108,7 @@ describe('ValueFooterComponent', () => {
     component.ticker = "ADA";
 
     // Act
-    component.calculateValueOfTicker();
+    component.calculateValueOfId();
     fixture.detectChanges();
 
     // Assert

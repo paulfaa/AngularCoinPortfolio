@@ -42,12 +42,12 @@ export class PurchasesService {
     return this.purchases$;
   }
 
-  public getAllUniqueTickers(): Set<string> {
-    return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
+  public getAllUniqueTickers(): string[] {
+    return Array.from(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
   }
 
-  public getAllUniqueIds(): Set<number> {
-    return new Set(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
+  public getAllUniqueIds(): number[] {
+    return Array.from(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
   }
 
   private updateStorage(): void {

@@ -13,7 +13,7 @@ export class CurrencyService {
     }
 
     //can probably hnage back to accept enum directly
-    public setSelectedCurrency(c: string) {
+    public setSelectedCurrency(c: string): void {
         const currency = CurrencyEnum[c];
         this.currencySubject.next(currency);
         localStorage.setItem("currencySelected", enumToString(currency));
