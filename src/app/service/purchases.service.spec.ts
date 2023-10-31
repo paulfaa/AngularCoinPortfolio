@@ -1,21 +1,35 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import * as moment from 'moment';
 import { CurrencyEnum } from '../types/currencyEnum';
 import { PurchasesService } from './purchases.service';
-import StorageUtils from '../storage.utils';
-import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { CryptoName } from '../types/cryptoName.type';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
+import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
+import StorageUtils from '../storage.utils';
 
 describe('PurchasesService', () => {
 
     let service: PurchasesService;
-    const testValue = new Value(299.542346, CurrencyEnum.EUR, moment().toDate());
-    const coinName = new CryptoName("BitCoin", "BTC", 1);
-    const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
-    const testCoin = new CryptoPurchase(coinName, purchaseDetails, 0.75, testValue);
+
+    const purchase1 = new CryptoPurchaseBuilder()
+        .name(new CryptoName("Bitcoin", "BTC", 1))
+        .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
+        .quantity(5)
+        .value(new Value(15, CurrencyEnum.EUR, new Date()))
+        .build();
+    const purchase2 = new CryptoPurchaseBuilder()
+        .name(new CryptoName("Bitcoin", "BTC", 1))
+        .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
+        .quantity(10)
+        .value(new Value(30, CurrencyEnum.EUR, new Date()))
+        .build();
+    const purchase3 = new CryptoPurchaseBuilder()
+        .name(new CryptoName("Cardano", "ADA", 12))
+        .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
+        .quantity(1)
+        .value(new Value(5, CurrencyEnum.EUR, new Date()))
+        .build()
 
     beforeEach(waitForAsync(() => {
         service = new PurchasesService();
@@ -26,119 +40,102 @@ describe('PurchasesService', () => {
         }).compileComponents();
     }));
     afterEach(() => {
-	    service['heldCoins'] = [];
-        service['uniqueTickers'] = [];
+	    service.clearAllPurchases();
+        service['purchasesSubject'].next([]);
         StorageUtils.clearAllStorage();
   	});
 
-      describe('addCoin()', () => {
-        it('adds the specified coin to the list', () => {
+      describe('addPurchase()', () => {
+        it('adds the specified purchase to the list', () => {
             // Arrange
-            var coinsLength = service['heldCoins'].length;
-            expect(coinsLength).toEqual(0);
+            var purchases = service['purchasesSubject'].getValue().length;
+            expect(purchases).toEqual(0);
 
             // Act
-            service.addPurchase(testCoin);
-            var coinsLength = service.getAllPurchases().subscribe.length;
+            service.addPurchase(purchase1);
+            var purchasesLength = service.getAllPurchases().subscribe.length;
 
             // Assert
-            expect(coinsLength).toEqual(1);
+            expect(purchasesLength).toEqual(1);
         });
     });
 
-    /* describe('addToHeldCoins()', () => {
-        it('adds a coin with the passed parameters to the list', () => {
-            // Arrange
-            var coinsLength = service['heldCoins'].length;
-            expect(coinsLength).toEqual(0);
-
-            // Act
-            service.addToHeldCoins("BTC", 12.34, 0.004); 
-            var coinsLength = service.getAllHeldCoins().length;
-
-            // Assert
-            expect(coinsLength).toEqual(1);
-        });
-    }); */
-
-    describe('clearAllHeldCoins()', () => {
+    describe('clearAllPurchases()', () => {
         it('removes all coins from the list', () => {
             // Arrange
-            service.addPurchase(testCoin);
-            var coinsLength = service['heldCoins'].length;
-            expect(coinsLength).toEqual(1);
+            service.addPurchase(purchase1);
+            var purchasesLength = service['purchasesSubject'].getValue().length;
+            expect(purchasesLength).toEqual(1);
 
             // Act
             service.clearAllPurchases();
-            coinsLength = service['heldCoins'].length;
+            purchasesLength = service['purchasesSubject'].getValue().length;
 
             // Assert
-            expect(coinsLength).toEqual(0);
+            expect(purchasesLength).toEqual(0);
         }); 
     });
 
     describe('removeFromHeldCoins()', () => {
         it('removes the passed value if it exists in held coins', () => {
             // Arrange
-            service['heldCoins'].push(testCoin);
-            expect(service['heldCoins'].length).toEqual(1);
-            var addedCoins = service['heldCoins']
-            expect(addedCoins[0]).toEqual(testCoin);
+            service.addPurchase(purchase1);
+            expect(service['purchasesSubject'].getValue().length).toEqual(1);
+            const purchases = service['purchasesSubject'].getValue();
+            expect(purchases[0]).toEqual(purchase1);
 
             // Act
-            service.removePurchase(testCoin);
-            var coinsLength = service['heldCoins'].length;
+            service.removePurchase(purchase1);
+            const purchasesLength = service['purchasesSubject'].getValue().length;
 
             // Assert
-            expect(coinsLength).toEqual(0);
+            expect(purchasesLength).toEqual(0);
         });
     });
 
-    describe('getAmountHeldOfTicker()', () => {
+    describe('getQuantityHeldById()', () => {
         it('returns 0 if users owns none', () => {
             // Act
-            expect(service['heldCoins'].length).toEqual(0);
-            var amount = service.getAmountHeldOfTicker("ADA")
+            expect(service['purchasesSubject'].getValue().length).toEqual(0);
+            var amount = service.getQuantityHeldById(23)
 
             // Assert
             expect(amount).toEqual(0);
         });
-        it('returns total holdings of the passed ticker', () => {
+        it('returns total holdings of the passed id', () => {
             // Arrange
-            const purchase = new CryptoPurchase()
-            const purchaseDetails = new PurchaseDetails(250.55, CurrencyEnum.EUR, moment().toDate());
-            service.addPurchase("ADA", purchaseDetails, 3.45);
-            service.addPurchase("ADA", purchaseDetails, 1.25);
+            service.addPurchase(purchase1);
+            service.addPurchase(purchase2);
 
             // Act
-            var amount = service.getAmountHeldOfTicker("ADA")
+            var amount = service.getQuantityHeldById(1)
 
             // Assert
-            expect(amount).toEqual(4.70);
+            expect(amount).toEqual(15);
         });
     });
 
-    describe('getAllUniqueTickers()', () => {
+    describe('getAllUniqueIds()', () => {
         it('returns empty list when no coins owned', () => {
             // Act
-            expect
-            var names = service.getAllUniqueTickers();
+            const ids = service.getAllUniqueIds();
 
             // Assert
-            expect(names.length).toEqual(0);
+            expect(ids.length).toEqual(0);
         });
-        it('returns the ticker once for each unique coin', () => {
+        it('returns the id once for each unique coin', () => {
             // Arrange
-            service.addPurchase("BTC", purchaseDetails, 0.004);
-            service.addPurchase("BTC", purchaseDetails, 0.001);
-            service.addPurchase("ADA", purchaseDetails, 23.663);
+            service.addPurchase(purchase1);
+            service.addPurchase(purchase2);
+            service.addPurchase(purchase3);
 
             // Act
-            var names = service.getAllUniqueTickers();
+            const ids = service.getAllUniqueIds();
 
             // Assert
-            expect(names.length).toEqual(2);
-            expect(names.includes("BTC")).toBe(true);
+            expect(ids.length).toEqual(2);
+            expect(ids.filter(item => item === 1).length).toEqual(1);
+            expect(ids.filter(item => item === 12).length).toEqual(1);
         });
     });
 

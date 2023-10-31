@@ -10,7 +10,7 @@ describe('CurrencyService', () => {
 
     beforeEach(waitForAsync(() => {
         service = new CurrencyService();
-        service['currencySelected'] = CurrencyEnum.EUR;
+        service['currencySubject'].next(CurrencyEnum.EUR);
         localStorage.setItem("currencySelected", "EUR");
         TestBed.configureTestingModule({
             declarations: [CurrencyService],

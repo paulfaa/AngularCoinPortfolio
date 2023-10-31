@@ -33,7 +33,7 @@ export class ValueService implements OnDestroy {
         private purchasesService: PurchasesService,
         private currencyService: CurrencyService,
         private loggingService: LoggingService,
-        private http: CryptoValueClientService
+        private clientService: CryptoValueClientService
     ) {
         this.initService();
         this.updateAllExchangeRates();
@@ -69,7 +69,7 @@ export class ValueService implements OnDestroy {
         }
     }
 
-    public updateAllExchangeRates() {
+    public updateAllExchangeRates(): void {
         if (this.ratesLastUpdateDate == undefined) {
             this.callCryptoValueEndpoint();
             return;
@@ -83,9 +83,9 @@ export class ValueService implements OnDestroy {
         }
     }
 
-    private callCryptoValueEndpoint() {
+    private callCryptoValueEndpoint(): void {
         const currencyCode = enumToString(this.selectedCurrency);
-        this.http.getCryptoValues(currencyCode, this.purchasesService.getAllUniqueIds()).subscribe(data => {
+        this.clientService.getCryptoValues(currencyCode, this.purchasesService.getAllUniqueIds()).subscribe(data => {
             this.ratesMap.set(currencyCode, data);
             console.log("ValueService updated " + data.length + " " + currencyCode + " rates.");
             this.ratesLastUpdateDate = new Date();

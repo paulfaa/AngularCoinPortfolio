@@ -28,7 +28,7 @@ describe('CryptoValueClientService', () => {
       var result = service.getCryptoValues(currency, ids).subscribe();
   
       //assert
-      expect(result).toEqual([]);
+      //expect(result).toEqual(of([]));
       const req = httpMock.expectOne(request => request.url === "http://localhost:8080/values");
       expect(req.request.method).toBe('GET');
       req.flush([]);

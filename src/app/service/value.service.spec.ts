@@ -24,18 +24,19 @@ describe('ValueService', () => {
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
     let mockCryptoValueClientService: jasmine.SpyObj<CryptoValueClientService>;
 
-    mockPurchasesService = jasmine.createSpyObj('mockCoinService', ['getAllHeldCoins', 'getAllUniqueTickers', 'getAmountHeldOfTicker']);
+    mockPurchasesService = jasmine.createSpyObj('mockCoinService', ['getAllPurchases', 'getAllUniqueIds', 'getQuantityHeldById']);
     mockLoggingService = jasmine.createSpyObj('mockLoggingService', ['log'])
-    mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getCurrencySelected']);
-    mockCryptoValueClientService = jasmine.createSpyObj('mockCryptoValueClientService', ['get']);
+    mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getSelectedCurrency']);
+    mockCryptoValueClientService = jasmine.createSpyObj('mockCryptoValueClientService', ['getCryptoValues']);
 
     const coinName = new CryptoName("BitCoin", "BTC", 1);
     const btcRateEur = new Rate(1, "BTC", 500.25, CurrencyEnum.EUR, moment().toDate());
     const btcRateUsd = new Rate(1, "BTC", 500.25, CurrencyEnum.USD, moment().toDate());
 
-    const mockValues = 
-
     beforeEach(waitForAsync(() => {
+        mockPurchasesService.getAllUniqueIds.and.returnValue([]);
+        mockCurrencyService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
+        mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
         serviceUnderTest = new ValueService(mockPurchasesService, mockCurrencyService, mockLoggingService, mockCryptoValueClientService);
         TestBed.configureTestingModule({
             imports: [HttpClientModule]
@@ -109,7 +110,7 @@ describe('ValueService', () => {
         it('should return 0 if no coins are owned', () => {
             // Arrange
             mockPurchasesService.getAllPurchases.and.returnValue(null);
-            mockPurchasesService.getAllUniqueTickers.and.returnValue(null);
+            mockPurchasesService.getAllUniqueIds.and.returnValue(null);
             serviceUnderTest.updateAllExchangeRates();
 
             // Act

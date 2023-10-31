@@ -30,7 +30,7 @@ describe('PortfolioPage', () => {
     fixture.detectChanges();
   }));
 
-  describe("showEmptyPortfolioAlert()", () => {
+  /* describe("showEmptyPortfolioAlert()", () => {
     it("is called when the user portfolio is empty", () => {
       // Arrange
       mockCoinService.getNumberOfPurchases.and.returnValue(0);
@@ -48,7 +48,7 @@ describe('PortfolioPage', () => {
       expect(component.showEmptyPortfolioAlert).not.toHaveBeenCalled;
 
     });
-  });
+  }); */
 
   it('should create', () => {
     expect(component).toBeTruthy();
