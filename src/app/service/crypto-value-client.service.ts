@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { Rate } from '../types/rate.type';
@@ -13,14 +13,15 @@ export class CryptoValueClientService {
   constructor(private http: HttpClient) { }
 
   public getCryptoValues(currency: string, ids: number[]): Observable<Rate[]>{
-    if(ids.length !>= 1){
+    if(ids.length < 1){
       console.log("no ids in request")
       return of<Rate[]>([]);
     }
-    var requestParams: HttpParams = new HttpParams();
-    requestParams.set('currency', currency);
-    requestParams.set('requestIds', ids.join(','))
-    return this.http.get<Rate[]>(this.baseUrl, {params: requestParams});
+    const headers= new HttpHeaders().set('Access-Control-Allow-Origin', '*').set('password', 'password');
+    const requestParams = new HttpParams().set('currency', currency).set('requestIds', ids.join(','));
+    const response = this.http.get<Rate[]>(this.baseUrl, { params: requestParams, headers: headers });
+    console.log(response.subscribe(data => console.log("HELLO", data)))
+    return response;
   }
 
   private handleError(error: HttpErrorResponse) {

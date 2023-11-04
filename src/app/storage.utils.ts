@@ -1,6 +1,11 @@
 export default class StorageUtils {
+    //refactor to single method that checks data type
     static writeToStorage(keyName: string, dataToSave) {
         localStorage.setItem(keyName, JSON.stringify(dataToSave));
+    }
+
+    static writeMapToStorage(keyName: string, mapToSave) {
+        localStorage.setItem(keyName, JSON.stringify(Array.from(mapToSave.entries())));
     }
 
     static readFromStorage(keyName: string): any {

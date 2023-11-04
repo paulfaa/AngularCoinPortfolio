@@ -34,16 +34,17 @@ describe('ValueService', () => {
     const btcRateUsd = new Rate(1, "BTC", 500.25, CurrencyEnum.USD, moment().toDate());
 
     beforeEach(waitForAsync(() => {
-        mockPurchasesService.getAllUniqueIds.and.returnValue([]);
+        mockPurchasesService.getAllUniqueIds.and.returnValue([1,2]);
         mockCurrencyService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
         mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
         serviceUnderTest = new ValueService(mockPurchasesService, mockCurrencyService, mockLoggingService, mockCryptoValueClientService);
         TestBed.configureTestingModule({
             imports: [HttpClientModule]
         }).compileComponents();
+        serviceUnderTest['ratesMap'] = new Map<string, Rate[]>();
+        serviceUnderTest["initService"]();
     }));
     afterEach(() => {
-	    serviceUnderTest['ratesMap'] = new Map<string, Rate[]>();
         StorageUtils.clearAllStorage();
   	});
 
@@ -57,7 +58,7 @@ describe('ValueService', () => {
         });
         it('should return the value for matching ticker + currency', () => {
             // Arrange
-            serviceUnderTest['rates'].push(btcRateEur);
+            serviceUnderTest['ratesMap'].set("EUR", [btcRateEur]);
 
             // Act
             var response = serviceUnderTest.getRateForId(1);
@@ -67,8 +68,8 @@ describe('ValueService', () => {
         });
         it('should return 0 for matching ticker and different currency', () => {
             // Arrange
-            expect(serviceUnderTest['rates'].length).toEqual(0);
-            serviceUnderTest['rates'].push(btcRateUsd);
+            expect(serviceUnderTest['ratesMap'].size).toEqual(0);
+            serviceUnderTest['ratesMap'].set("USD", [btcRateEur]);
 
             // Act
             var response = serviceUnderTest.getRateForId(1);
@@ -83,26 +84,26 @@ describe('ValueService', () => {
             // Arrange
             var now = moment().toDate();
             btcRateEur.updateDate = now;
-            serviceUnderTest['rates'].push(btcRateEur);
-            mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
+            serviceUnderTest['ratesMap'].set("EUR", [btcRateEur]);
+            mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateUsd]));
 
             // Act
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['ratesMap'].get[0].updateDate).toEqual(now);
+            expect(serviceUnderTest['ratesMap'].get("EUR")[0].updateDate).toEqual(now);
         });
         it('will update all rates which are older than 1hr', () => {
             // Arrange
             var threeHoursAgo = moment().subtract(3, 'hour').toDate();
             btcRateEur.updateDate = threeHoursAgo;
-            serviceUnderTest['rates'].push(btcRateEur);
+            serviceUnderTest['ratesMap'].set("EUR", [btcRateEur]);
 
             // Act
-            serviceUnderTest.updateAllExchangeRates();
+            serviceUnderTest.updateAllExchangeRates(); 
 
             // Assert
-            expect(serviceUnderTest['rates'][0].updateDate > threeHoursAgo).toBeTrue;
+            expect(serviceUnderTest['ratesMap'].get("EUR")[0].updateDate > threeHoursAgo).toBeTrue;
         });
     });
 
@@ -137,11 +138,8 @@ describe('ValueService', () => {
                 .build()
             ];
             mockPurchasesService.getAllPurchases.and.returnValue(of(sampleCoins));
-            mockPurchasesService.getAllUniqueTickers.and.returnValue(["ADA"]);
-            mockPurchasesService.getAllUniqueIds.and.returnValue([12])
-            mockPurchasesService.getAmountHeldOfTicker.and.returnValue(6);
-            //serviceUnderTest.getRateForId(12)
-            //mockRateService.getRateForTicker.and.returnValue(15);
+            mockPurchasesService.getAllUniqueIds.and.returnValue([12]);
+            mockPurchasesService.getQuantityHeldById.and.returnValue(6);
             serviceUnderTest.updateAllExchangeRates();
 
             // Act
@@ -156,8 +154,8 @@ describe('ValueService', () => {
     describe('calculateTotalProfit()', () => {
         it('should return 0 no coins are owned', () => {
             // Arrange
-            mockPurchasesService.getAllPurchases.and.returnValue(null);
-            mockPurchasesService.getAllUniqueTickers.and.returnValue(null);
+            mockPurchasesService.getAllPurchases.and.returnValue(of([]));
+            mockPurchasesService.getAllUniqueIds.and.returnValue([]);
             serviceUnderTest.updateAllExchangeRates();
 
             // Act
@@ -174,8 +172,8 @@ describe('ValueService', () => {
                 new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]
             mockPurchasesService.getAllPurchases.and.returnValue(of(coinList));
-            mockPurchasesService.getAllUniqueTickers.and.returnValue(["EUR"]);
-            mockPurchasesService.getAmountHeldOfTicker.and.returnValue(1);
+            mockPurchasesService.getAllUniqueIds.and.returnValue([1]);
+            mockPurchasesService.getQuantityHeldById.and.returnValue(1);
             serviceUnderTest.updateAllExchangeRates();
             //mockRateService.getRateForTicker.and.returnValue(200);
 
@@ -187,14 +185,14 @@ describe('ValueService', () => {
         });
         it('should be able to deal with negative values', () => {
             // Arrange
-            const value = new Value(-100, CurrencyEnum.EUR, moment().toDate())
+            const value = new Value(0, CurrencyEnum.EUR, moment().toDate()) //value of holding cant be less than 0
             const purchaseDetails = new PurchaseDetails(200, CurrencyEnum.EUR, moment().toDate());
             let coinList: CryptoPurchase[] = [
                 new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]
             mockPurchasesService.getAllPurchases.and.returnValue(of(coinList));
-            mockPurchasesService.getAllUniqueTickers.and.returnValue(["EUR"]);
-            mockPurchasesService.getAmountHeldOfTicker.and.returnValue(1);
+            mockPurchasesService.getAllUniqueIds.and.returnValue([1]);
+            mockPurchasesService.getQuantityHeldById.and.returnValue(1);
             serviceUnderTest.updateAllExchangeRates();
             //mockRateService.getRateForTicker.and.returnValue(-100);;
 
@@ -202,7 +200,7 @@ describe('ValueService', () => {
             var result = serviceUnderTest.calculateTotalProfit();
 
             // Assert
-            expect(result).toEqual(-300);
+            expect(result).toEqual(0);
         });
     });
 

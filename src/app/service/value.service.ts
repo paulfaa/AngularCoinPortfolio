@@ -75,7 +75,8 @@ export class ValueService implements OnDestroy {
             return;
         }
         const timeDifference = Math.abs(moment().toDate().getTime() - new Date(this.ratesLastUpdateDate).getTime());
-        if (timeDifference <= twelveHoursInMs) { //should be >= changed for testing
+        if (timeDifference <= twelveHoursInMs) { //should be >= but changed for testing
+            this.loggingService.info("Rates are outdates, calling backend");
             this.callCryptoValueEndpoint();
         }
         else {
@@ -86,10 +87,11 @@ export class ValueService implements OnDestroy {
     private callCryptoValueEndpoint(): void {
         const currencyCode = enumToString(this.selectedCurrency);
         this.clientService.getCryptoValues(currencyCode, this.purchasesService.getAllUniqueIds()).subscribe(data => {
+            console.log(data)
             this.ratesMap.set(currencyCode, data);
             console.log("ValueService updated " + data.length + " " + currencyCode + " rates.");
             this.ratesLastUpdateDate = new Date();
-            StorageUtils.writeToStorage("rates", this.ratesMap);
+            StorageUtils.writeMapToStorage("rates", this.ratesMap);
             StorageUtils.writeToStorage("lastUpdateDate", this.ratesLastUpdateDate);
         },
             error => {
