@@ -1,0 +1,25 @@
+<div class="header">
+  Header {{ this.idInput }} <!--need to convert id to name-->
+</div>
+
+<div *ngFor="let purchase of purchasesMatchingId$ | async">
+  <ion-item-sliding>
+    <ion-item>
+      <p id="quantity">{{ purchase.quantity }}</p>
+      <p>{{ this.currencySymbolInput }}{{ purchase.purchaseDetails.price | number:'1.2-2' }}</p>
+      <p>Current value: {{ purchase.value.currentValue }}</p>
+    </ion-item>
+    <ion-item-options side="end">
+      <ion-item-option color="danger" (click)="onDeletePurchase(purchase)">Delete</ion-item-option>
+    </ion-item-options>
+    <ion-item-options side="start">
+      <ion-item-option color="primary" (click)="onInfoPopup(purchase)">Details</ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+
+</div>
+
+<div class="footer">
+  <p class="big-text">Current value $34.64 | number:'1.2-2'</p>
+  <p class="small-text">Current profit + profit as percentage. $-4.67 | number:'1.2-2'</p>
+</div>

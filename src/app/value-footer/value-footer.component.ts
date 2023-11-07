@@ -27,7 +27,7 @@ export class ValueFooterComponent implements OnInit {
     var totalValue = 0;
     var purchasesMatchingId = this.purchasesService.getPurchasesById(this.id);
     purchasesMatchingId.forEach(purchase => {
-      totalValue = totalValue + purchase.purchaseDetails.price; 
+      //totalValue = totalValue + purchase.purchaseDetails.price; 
     });
     console.log("totalValueFor " + this.ticker + ": " + totalValue);
     return totalValue;
@@ -37,7 +37,7 @@ export class ValueFooterComponent implements OnInit {
     var totalProfit = 0;
     var purchasesMatchingId = this.purchasesService.getPurchasesById(this.id);
     purchasesMatchingId.forEach(purchases => {
-      totalProfit = totalProfit + purchases.profit; 
+      //totalProfit = totalProfit + purchases.profit; 
     });
     console.log("totalValueFor " + this.ticker + ": " + totalProfit);
     return totalProfit;

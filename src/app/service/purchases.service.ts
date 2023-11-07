@@ -2,12 +2,25 @@ import { Injectable } from '@angular/core';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class PurchasesService {
 
   private purchasesSubject = new BehaviorSubject<CryptoPurchase[]>(this.initService());
   private purchases$: Observable<CryptoPurchase[]> = this.purchasesSubject.asObservable();
+  private uniqueCoinmarketIds$: Observable<number[]> = this.purchasesSubject.pipe(
+    map(purchases => {
+      const uniqueIds = new Set();
+      return purchases.reduce((ids, purchase) => {
+        const id = purchase.name.coinMarketId;
+        if (!uniqueIds.has(id)) {
+          uniqueIds.add(id);
+          ids.push(id);
+        }
+        return ids;
+      }, []);
+    }));
   private lastPurchaseDate: Date; //check if needed
 
   constructor() { }
@@ -40,6 +53,10 @@ export class PurchasesService {
 
   public getAllPurchases() {
     return this.purchases$;
+  }
+
+  public getUniqueIds(): Observable<number[]> {
+    return this.uniqueCoinmarketIds$;
   }
 
   public getAllUniqueTickers(): string[] {
@@ -102,8 +119,10 @@ export class PurchasesService {
     return matches;
   }
 
-  public getPurchasesById(coinMarketId: number): CryptoPurchase[] {
-    return this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId === coinMarketId);
+  public getPurchasesById(coinMarketId: number): Observable<CryptoPurchase[]> {
+    return this.purchasesSubject.pipe(
+      map(purchases => purchases.filter(purchase => purchase.name.coinMarketId === coinMarketId))
+    )
   }
 
   //sorts list alphabetically by ticker then by purchase date

@@ -16,6 +16,16 @@
     [profitAsPercentage] = profitAsPercentage$
     [currencySymbol]  =currencySymbol$>
   </value-header>
+
+  <div *ngFor="let id of coinmarketIds$ | async">
+    <value-display
+      [idInput]="id"
+      [currencySymbolInput]="currencySymbol"
+      (deletePurchaseEvent)="onDeletePurchaseClicked($event)"
+      (infoPopupEvent)="showInfoPopup($event)"
+    >
+    </value-display>
+  </div>
   
   <div ngFor *ngFor="let purchase of purchases; let index = index">
     <p id="header" *ngIf="!purchases[index-1] || purchase.name.displayName !== purchases[index-1].name.displayName">
@@ -27,13 +37,13 @@
       <ion-item>
         <p id="quantity">{{ purchase.quantity }}</p>
         <p>{{ currencySymbol$ | async}}{{ purchase.purchaseDetails.price }}</p>
-        <p>{{ purchase.value.currentValue }}</p>
+        <p>Current value: {{ purchase.value.currentValue }}</p>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="onDeletePurchaseClicked(purchase)">Delete</ion-item-option>
       </ion-item-options>
       <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="infoPopup(purchase)">Details</ion-item-option>
+        <ion-item-option color="primary" (click)="showInfoPopup(purchase)">Details</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
 

@@ -23,10 +23,14 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   footer = '';
   private httpErrorSubscription: Subscription;
   private purchasesSubscription: Subscription;
+  private currencySubscription: Subscription;
+
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
+  public currencySymbol: String;
   public currencySymbol$: Observable<string>;
+  public coinmarketIds$: Observable<number[]>;
 
   constructor(
     public alertController: AlertController,
@@ -41,13 +45,20 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       await this.showConnectivityAlert();
     });
     this.currencySymbol$ = this.currencyService.getSelectedCurrency();
+    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(data => {
+      this.currencySymbol = data
+    })
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
+    this.coinmarketIds$ = this.purchasesService.getUniqueIds();
     this.showEmptyPortfolioAlert();
   }
 
   ngOnDestroy(): void {
     if (this.purchasesSubscription) {
       this.purchasesSubscription.unsubscribe();
+    }
+    if (this.currencySubscription) {
+      this.currencySubscription.unsubscribe();
     }
   }
 
@@ -91,11 +102,11 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     return filename
   } */
 
-  public async infoPopup(coin: CryptoPurchase) {
-    const enumIndex = coin.purchaseDetails.currency;
+  public async showInfoPopup(purchase: CryptoPurchase) {
+    const enumIndex = purchase.purchaseDetails.currency;
     const alert = await this.alertController.create({
-      header: coin.quantity + " " + coin.name.displayName + " (" + coin.name.ticker + ")",
-      message: "Date added: " + coin.purchaseDetails.date + "<br>" + "\n Cost: " + coin.purchaseDetails.price + " " + enumToString(coin.purchaseDetails.currency),
+      header: purchase.quantity + " " + purchase.name.displayName + " (" + purchase.name.ticker + ")",
+      message: "Date added: " + purchase.purchaseDetails.date + "<br>" + "\n Cost: " + purchase.purchaseDetails.price + " " + enumToString(purchase.purchaseDetails.currency),
       buttons: [
         { text: 'OK' }
       ]
