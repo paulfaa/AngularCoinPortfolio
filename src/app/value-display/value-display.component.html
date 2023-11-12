@@ -1,5 +1,5 @@
 <div class="header">
-  Header {{ this.idInput }} <!--need to convert id to name-->
+  Image Coinname {{ this.idInput }} <!--need to convert id to name-->
 </div>
 
 <div *ngFor="let purchase of purchasesMatchingId$ | async">
@@ -20,6 +20,9 @@
 </div>
 
 <div class="footer">
-  <p class="big-text">Current value $34.64 | number:'1.2-2'</p>
-  <p class="small-text">Current profit + profit as percentage. $-4.67 | number:'1.2-2'</p>
+  <p class="big-text"> Current value {{ this.currencySymbolInput }}{{ this.totalValue$ | async | number:'1.2-2' }}
+  </p>
+  <p [ngClass]="{'positive-profit': (totalProfit$ | async) > 0, 'negative-profit': (totalProfit$ | async) < 0}"
+    class="small-text"> Current profit {{ this.currencySymbolInput }}{{ this.totalProfit$ | async | number:'1.2-2' }} profit as percentage. ({{ this.profitPercentage$ | async | number:'1.2-2' }}%)
+  </p>
 </div>
