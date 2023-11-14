@@ -28,7 +28,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
-  public currencySymbol: String;
+  public currencySymbol: string;
   public currencySymbol$: Observable<string>;
   public coinmarketIds$: Observable<number[]>;
 

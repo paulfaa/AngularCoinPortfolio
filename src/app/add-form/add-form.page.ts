@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
 import { CurrencyEnum } from '../types/currencyEnum';
-import { cryptoNames } from '../shared/constants/constants';
+import { cryptoNames, cryptoNamesMap } from '../shared/constants/constants';
 
 @Component({
   selector: 'app-add-form',
@@ -23,6 +23,7 @@ import { cryptoNames } from '../shared/constants/constants';
 export class AddFormPage implements OnInit, OnDestroy {
 
   public coinNames = cryptoNames;
+  //public coinNames = Array.from(cryptoNamesMap.values());;
   //can keep all subscriptions in an array
   private paramsSubscription: Subscription;
   private perCoinPurchasePriceSubscription: Subscription;

@@ -26,30 +26,5 @@
     >
     </value-display>
   </div>
-  
-  <div ngFor *ngFor="let purchase of purchases; let index = index">
-    <p id="header" *ngIf="!purchases[index-1] || purchase.name.displayName !== purchases[index-1].name.displayName">
-      <ion-icon name="icon" size=large src="/assets/icon/bitcoin.svg"></ion-icon>
-      {{ purchase.name.displayName }}
-    </p>
-    
-    <ion-item-sliding>
-      <ion-item>
-        <p id="quantity">{{ purchase.quantity }}</p>
-        <p>{{ currencySymbol$ | async}}{{ purchase.purchaseDetails.price }}</p>
-        <p>Current value: {{ purchase.value.currentValue }}</p>
-      </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="onDeletePurchaseClicked(purchase)">Delete</ion-item-option>
-      </ion-item-options>
-      <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="showInfoPopup(purchase)">Details</ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-
-    <footer *ngIf="!purchases[index+1] || purchase.name.displayName !== purchases[index+1].name.displayName">
-      Total {{purchase.name.displayName}} value: <value-footer [id]=purchase.name.coinMarketId></value-footer>
-    </footer>
-  </div>
 
 </ion-content>

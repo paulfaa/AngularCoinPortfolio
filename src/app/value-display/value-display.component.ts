@@ -20,7 +20,7 @@ export class ValueDisplayComponent implements OnInit {
   public purchasesMatchingId$: Observable<CryptoPurchase[]>;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
-  public coinName?: string;
+  public coinName?: CoinDetails;
   public profitPercentage$: Observable<number>;
   private expenditure$: Observable<number>;
 
@@ -44,7 +44,7 @@ export class ValueDisplayComponent implements OnInit {
     this.profitPercentage$ = combineLatest([this.totalProfit$, this.expenditure$]).pipe(
       map(([value1, value2]) => (value1 / value2) * 100)
     );
-    this.coinName = cryptoNamesMap.get(this.idInput).displayName;
+    this.coinName = cryptoNamesMap.get(this.idInput);
   }
 
   public onDeletePurchase(purchase: CryptoPurchase): void {

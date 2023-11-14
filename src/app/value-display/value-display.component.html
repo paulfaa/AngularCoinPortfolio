@@ -1,5 +1,6 @@
 <div class="header">
-  Image {{ this.coinName }} 
+  <img class="icon-image" src='{{ "assets/icon/" + idInput + ".png" }}'>
+  {{ this.coinName.displayName }} ({{ this.coinName.ticker }}) 
 </div>
 
 <div *ngFor="let purchase of purchasesMatchingId$ | async">

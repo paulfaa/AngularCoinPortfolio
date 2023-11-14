@@ -44,3 +44,11 @@ ion-icon {
 .negative-profit {
     color: red;
 }
+.icon-image {
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    margin-left: 10px;
+    margin-right: 10px;
+    filter: drop-shadow(0px 0px 5px #ffffff52);
+}
