@@ -3,6 +3,7 @@ import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { PurchasesService } from '../service/purchases.service';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CoinDetails, cryptoNamesMap } from '../shared/constants/constants';
 
 @Component({
   selector: 'value-display',
@@ -10,8 +11,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./value-display.component.scss'],
 })
 export class ValueDisplayComponent implements OnInit {
-  @Input() idInput;
-  @Input() currencySymbolInput;
+  @Input() idInput: number;
+  @Input() currencySymbolInput: string;
 
   @Output() deletePurchaseEvent: EventEmitter<CryptoPurchase> = new EventEmitter<CryptoPurchase>();
   @Output() infoPopupEvent: EventEmitter<CryptoPurchase> = new EventEmitter<CryptoPurchase>();
@@ -19,6 +20,7 @@ export class ValueDisplayComponent implements OnInit {
   public purchasesMatchingId$: Observable<CryptoPurchase[]>;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
+  public coinName?: string;
   public profitPercentage$: Observable<number>;
   private expenditure$: Observable<number>;
 
@@ -42,6 +44,7 @@ export class ValueDisplayComponent implements OnInit {
     this.profitPercentage$ = combineLatest([this.totalProfit$, this.expenditure$]).pipe(
       map(([value1, value2]) => (value1 / value2) * 100)
     );
+    this.coinName = cryptoNamesMap.get(this.idInput).displayName;
   }
 
   public onDeletePurchase(purchase: CryptoPurchase): void {
