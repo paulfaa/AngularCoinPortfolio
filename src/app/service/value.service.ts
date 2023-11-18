@@ -164,7 +164,7 @@ export class ValueService implements OnDestroy {
                 total = total + (quantity * rate);
             }
         })
-        console.log("Value service total: " + total);
+        console.log("total value calculated: " + total);
         this.totalValueSubject.next(total);
         return total;
     }

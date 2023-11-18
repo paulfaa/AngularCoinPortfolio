@@ -2,14 +2,12 @@
 
   <ion-card-header>
     <ion-card-subtitle>Total value:</ion-card-subtitle>
-    <ion-card-title>{{currencySymbol | async}} {{totalValue | async | number : '1.2-2'}}</ion-card-title> 
+    <ion-card-title>{{currencySymbol$ | async}} {{totalValue$ | async | number : '1.2-2'}}</ion-card-title> 
   </ion-card-header>
   
-  <ion-card-content [ngClass]= "getCssClass()">
-    <!-- Total profit: {{totalProfit | async | profitFormat}} 
-    <br> -->
-    Total profit: {{currencySymbol | async}}
-    {{totalProfit | async | number : '1.2-2'}} ({{profitAsPercentage | async | number : '1.2-2'}}%)
+  <ion-card-content [ngClass]="{'positive': (totalProfit$ | async) > 0, 'negative': (totalProfit$ | async) < 0}">
+    Total profit: {{currencySymbol$ | async}}
+    {{totalProfit$ | async | number : '1.2-2'}} ({{profitAsPercentage$ | async | number : '1.2-2'}}%)
   </ion-card-content>
   
 </ion-card>

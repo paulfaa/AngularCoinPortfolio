@@ -1,30 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'value-header',
   templateUrl: './value-header.component.html',
   styleUrls: ['./value-header.component.scss'],
 })
-export class ValueHeaderComponent implements OnInit {
-  @Input() totalValue;
-  @Input() totalProfit;
-  @Input() profitAsPercentage;
-  @Input() currencySymbol;
-
-  constructor() { }
-
-  ngOnInit() {
-    this.getCssClass();
-  }
-
-  public getCssClass(): string{
-    var className = "default"
-    if(this.totalProfit > 0){
-      className = "positive";
-    }
-    else if(this.totalProfit < 0){
-      className = "negative";
-    }
-    return className;
-  }
+export class ValueHeaderComponent {
+  @Input() totalValue$: Observable<number>;
+  @Input() totalProfit$: Observable<number>;
+  @Input() profitAsPercentage$: Observable<number>;
+  @Input() currencySymbol$: Observable<string>;
 }

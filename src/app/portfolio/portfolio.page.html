@@ -11,10 +11,10 @@
   </ion-refresher> -->
   
   <value-header
-    [totalValue] = totalValue$
-    [totalProfit] = totalProfit$
-    [profitAsPercentage] = profitAsPercentage$
-    [currencySymbol]  =currencySymbol$>
+    [totalValue$] = totalValue$
+    [totalProfit$] = totalProfit$
+    [profitAsPercentage$] = profitAsPercentage$
+    [currencySymbol$]  =currencySymbol$>
   </value-header>
 
   <div *ngFor="let id of coinmarketIds$ | async">

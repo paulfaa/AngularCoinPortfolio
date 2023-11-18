@@ -9,7 +9,7 @@ import { enumToString } from '../types/currencyEnum';
 import { Observable, Subscription } from 'rxjs';
 
 //TODO 
-// Fix icons on portfolio page
+// Display holdings sorted alphabetically
 
 @Component({
   selector: 'app-portfolio',
@@ -18,13 +18,11 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
 
-  purchases: CryptoPurchase[]; //make async instead of duplicating data
-  htmlName = '';
-  footer = '';
   private httpErrorSubscription: Subscription;
   private purchasesSubscription: Subscription;
   private currencySubscription: Subscription;
 
+  public purchases$: Observable<CryptoPurchase[]>;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
@@ -40,7 +38,6 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     private loggingService: LoggingService) { }
 
   ngOnInit() {
-    this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => { this.purchases = purchases });
     this.httpErrorSubscription = this.valueService.httpErrorEvent.subscribe(async () => {
       await this.showConnectivityAlert();
     });
@@ -50,7 +47,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     })
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
     this.coinmarketIds$ = this.purchasesService.getUniqueIds();
-    this.showEmptyPortfolioAlert();
+    this.totalValue$ = this.valueService.getTotalValue();
+    this.totalProfit$ = this.valueService.getTotalProfit();
+    //this.showEmptyPortfolioAlert();
   }
 
   ngOnDestroy(): void {
@@ -64,43 +63,13 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     console.log("ngAfterViewInit all purchases: ", this.purchasesService.getAllPurchases());
-    this.totalValue$ = this.valueService.getTotalValue();
-    this.totalProfit$ = this.valueService.getTotalProfit();
     this.valueService.calculateTotalProfit();
   }
-
-  /* //use event listeners instead
-  public callCalculateValueForTicker(ticker: string){
-    this.valueService.calculateValueForTicker(ticker);
-  } */
 
   public onDeletePurchaseClicked(purchase: CryptoPurchase) {
     console.log("delete clicked for ", purchase)
     this.purchasesService.removePurchase(purchase);
   }
-
-  public displayFooter(purchase: CryptoPurchase): boolean {
-    if (purchase.name.displayName !== this.footer) {
-      this.footer = purchase.name.displayName;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /* public getIconFromCoinName(coin: Coin): string {
-    const filePath = "/assets/icon/";
-    var filename;
-    this.httpClient.get(filePath + coin.name.toLowerCase() + ".svg").subscribe(() => {
-      filename = filePath + coin.name.toLowerCase() + ".svg"
-    }, (err) => {
-      // HANDLE file not found
-      if (err.status === 404) {
-        filename = "circle.svg";
-      }
-    });
-    return filename
-  } */
 
   public async showInfoPopup(purchase: CryptoPurchase) {
     const enumIndex = purchase.purchaseDetails.currency;
@@ -117,7 +86,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.totalValue$)
   }
 
-  private async showEmptyPortfolioAlert() {
+  /* private async showEmptyPortfolioAlert() {
     const alert = await this.alertController.create({
       header: 'Nothing here...',
       message: 'Looks like your portfolio is empty. Click the + symbol below to add something.',
@@ -129,7 +98,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       await alert.present();
       this.loggingService.info("Empty portfolio alert shown");
     }
-  }
+  } */
 
   private async showConnectivityAlert() {
     const alert = await this.alertController.create({

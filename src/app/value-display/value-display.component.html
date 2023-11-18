@@ -8,7 +8,7 @@
     <ion-item>
       <p id="quantity">{{ purchase.quantity }}</p>
       <p>{{ this.currencySymbolInput }}{{ purchase.purchaseDetails.price | number:'1.2-2' }}</p>
-      <p>Current value: {{ purchase.value.currentValue }}</p>
+      <p>Current value: {{ this.currencySymbolInput }}{{ purchase.value.currentValue }}</p>
     </ion-item>
     <ion-item-options side="end">
       <ion-item-option color="danger" (click)="onDeletePurchase(purchase)">Delete</ion-item-option>
@@ -17,13 +17,12 @@
       <ion-item-option color="primary" (click)="onInfoPopup(purchase)">Details</ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
-
 </div>
 
 <div class="footer">
-  <p class="big-text"> Current value {{ this.currencySymbolInput }}{{ this.totalValue$ | async | number:'1.2-2' }}
+  <p class="big-text"> Total value: {{ this.currencySymbolInput }}{{ this.totalValue$ | async | number:'1.2-2' }}
   </p>
   <p [ngClass]="{'positive-profit': (totalProfit$ | async) > 0, 'negative-profit': (totalProfit$ | async) < 0}"
-    class="small-text"> Current profit {{ this.currencySymbolInput }}{{ this.totalProfit$ | async | number:'1.2-2' }} profit as percentage. ({{ this.profitPercentage$ | async | number:'1.2-2' }}%)
+    class="small-text"> Profit: {{ this.currencySymbolInput }}{{ this.totalProfit$ | async | number:'1.2-2' }} ({{ this.profitPercentage$ | async | number:'1.2-2' }}%)
   </p>
 </div>
