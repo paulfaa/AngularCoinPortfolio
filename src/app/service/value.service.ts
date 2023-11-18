@@ -56,9 +56,9 @@ export class ValueService implements OnDestroy {
         this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
             this.selectedCurrency = result
         );
-        const storedRates = StorageUtils.readFromStorage('rates');
+        const storedRates = StorageUtils.readMapFromStorage('rates');
         const lastUpdateDate = StorageUtils.readFromStorage('lastUpdateDate');
-        if (storedRates === null || storedRates.length == 0 || storedRates.length == undefined) {
+        if (storedRates === null || storedRates.size == 0 || storedRates === undefined) {
             this.ratesMap = new Map<string, Rate[]>();
         }
         else {

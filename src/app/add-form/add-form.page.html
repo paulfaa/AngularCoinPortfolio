@@ -11,7 +11,7 @@
     <ion-item-divider></ion-item-divider>
     <form [formGroup]="cryptoForm" (ngSubmit)="submitForm()">
     <ion-item>
-    <ion-label>Coin</ion-label>
+    <ion-label>Select Cryptocurrency:</ion-label>
     <ionic-selectable formControlName="name" item-content [(ngModel)]="coinName" itemValueField="ticker" itemTextField="displayName" [items]="coinNames" [canSearch]="true"
     (onChange)="coinChange($event)">
    </ionic-selectable>

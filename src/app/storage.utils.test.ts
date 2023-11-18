@@ -41,4 +41,21 @@ describe('StorageUtils', () => {
             expect(savedData).toEqual(mapToSave);
         });
     });
+
+    describe('readMapFromStorage()', () => {
+        it('reads the provided map from local storage', () => {
+            // Arrange
+            const mapToSave = new Map([
+                ['key1', 'value1'],
+                ['key2', 'value2'],
+            ]);
+            StorageUtils.writeMapToStorage(testKey, mapToSave);
+            
+            // Act
+            const result = StorageUtils.readMapFromStorage(testKey)
+
+            // Assert
+            expect(result).toEqual(mapToSave);
+        });
+    });
 });

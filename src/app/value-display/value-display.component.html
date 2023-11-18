@@ -20,7 +20,7 @@
 </div>
 
 <div class="footer">
-  <p class="big-text"> Total value: {{ this.currencySymbolInput }}{{ this.totalValue$ | async | number:'1.2-2' }}
+  <p class="big-text"> {{ this.coinName.displayName }} value: {{ this.currencySymbolInput }}{{ this.totalValue$ | async | number:'1.2-2' }}
   </p>
   <p [ngClass]="{'positive-profit': (totalProfit$ | async) > 0, 'negative-profit': (totalProfit$ | async) < 0}"
     class="small-text"> Profit: {{ this.currencySymbolInput }}{{ this.totalProfit$ | async | number:'1.2-2' }} ({{ this.profitPercentage$ | async | number:'1.2-2' }}%)
