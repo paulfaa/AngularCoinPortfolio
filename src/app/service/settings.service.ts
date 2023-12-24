@@ -9,8 +9,8 @@ import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY } from '../shared/
 })
 export class SettingsService {
 
-  private sortModeSubject = new BehaviorSubject<SortModeEnum>(this.loadSavedSetting(SORT_MODE_STORAGE_KEY, SortModeEnum));
-  private currencySelectedSubject = new BehaviorSubject<CurrencyEnum>(this.loadSavedSetting(CURRENCY_SELECTED_STORAGE_KEY, CurrencyEnum));
+  private sortModeSubject = new BehaviorSubject<SortModeEnum>(this.loadSavedSortType());
+  private currencySelectedSubject = new BehaviorSubject<CurrencyEnum>(this.loadSavedCurrency());
   private sortMode$: Observable<SortModeEnum> = this.sortModeSubject.asObservable();
   private currency$: Observable<CurrencyEnum> = this.currencySelectedSubject.asObservable();
 
@@ -35,14 +35,25 @@ export class SettingsService {
     localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, enumToString(currency));
   }
 
-  private loadSavedSetting(localStorageKey: string, enumType: any){
-    const savedSetting = enumType[localStorage.getItem(localStorageKey)];
-    if (savedSetting == null) {
-      localStorage.setItem(localStorageKey, enumType[0].toString()); //set saved value to first (default) value for enum
+  private loadSavedSortType() {
+    const savedSetting = localStorage.getItem(SORT_MODE_STORAGE_KEY);
+    if (savedSetting == null || savedSetting == "undefined") {
+      localStorage.setItem(SORT_MODE_STORAGE_KEY, SortModeEnum[0]);
+      return SortModeEnum[0];
+    }
+    else {
+      return SortModeEnum[savedSetting]; 
+    }
+  }
+
+  private loadSavedCurrency() {
+    const savedSetting = localStorage.getItem(CURRENCY_SELECTED_STORAGE_KEY);
+    if (savedSetting == null || savedSetting == "undefined") {
+      localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, CurrencyEnum.EUR);
       return CurrencyEnum.EUR;
     }
     else {
-      return savedSetting; 
+      return CurrencyEnum[savedSetting as keyof typeof CurrencyEnum];
     }
   }
 }

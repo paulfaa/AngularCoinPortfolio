@@ -1,5 +1,6 @@
 export class CryptoName {
   displayName: string;
+  longName: string;
   ticker: string;
   coinMarketId: number;
 
@@ -7,5 +8,6 @@ export class CryptoName {
     this.displayName = displayName;
     this.ticker = ticker;
     this.coinMarketId = coinMarketId;
+    this.longName = this.displayName + " (" + this.ticker + ")";
   }
 }

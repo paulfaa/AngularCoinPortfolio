@@ -16,4 +16,4 @@ export function enumToString(enumValue: CurrencyEnum): string {
       default:
         return 'Unknown';
     }
-  }
+}

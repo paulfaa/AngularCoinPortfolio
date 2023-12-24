@@ -36,7 +36,7 @@ export class ValueService implements OnDestroy {
         private clientService: CryptoValueClientService
     ) {
         this.initService();
-        this.updateAllExchangeRates();
+        //this.updateAllExchangeRates();
         this.purchasesSubscription = this.purchasesService.getAllPurchases().subscribe(purchases => {
             this.purchases = purchases
             this.calculateTotalProfit();

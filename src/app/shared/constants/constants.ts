@@ -9,7 +9,7 @@ export const cryptoNames: CryptoName[] = [
     new CryptoName("Stella","XLM", 512),
     new CryptoName("Tether","USDT", 825),
     new CryptoName("XRP","XRP", 742),
-    new CryptoName("Solana","SOL", 797)
+    new CryptoName("Solana","SOL", 5426)
   ]
 
   export const twelveHoursInMs: number = 43200000;

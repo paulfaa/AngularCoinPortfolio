@@ -118,6 +118,7 @@ export class SettingsPage implements OnDestroy {
   }
 
   public updateSelectedCurrency(value: CurrencyEnum): void {
+    console.log("updateSelectedCurrency: ", value.toString());
     this.settingsService.setSelectedCurrency(value.toString());
   }
 

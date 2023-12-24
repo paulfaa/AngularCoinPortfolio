@@ -7,7 +7,10 @@
   
   <ion-card-content [ngClass]="{'positive': (totalProfit$ | async) > 0, 'negative': (totalProfit$ | async) < 0}">
     Total profit: {{currencySymbol$ | async}}
-    {{totalProfit$ | async | number : '1.2-2'}} ({{profitAsPercentage$ | async | number : '1.2-2'}}%)
+    {{totalProfit$ | async | number : '1.2-2'}} 
+    <ng-container *ngIf="(profitAsPercentage$ | async) !== undefined && (profitAsPercentage$ | async) >= 0">
+      ({{profitAsPercentage$ | async | number : '1.2-2'}}%)
+    </ng-container>
   </ion-card-content>
   
 </ion-card>
