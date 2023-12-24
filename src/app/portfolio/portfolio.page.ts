@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { PurchasesService } from '../service/purchases.service';
-import { CurrencyService } from '../service/currency.service';
+import { SettingsService } from '../service/settings.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
 import { enumToString } from '../types/currencyEnum';
@@ -34,19 +34,21 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     public alertController: AlertController,
     private purchasesService: PurchasesService,
     private valueService: ValueService,
-    private currencyService: CurrencyService,
+    private settingsService: SettingsService,
     private loggingService: LoggingService) { }
 
   ngOnInit() {
     this.httpErrorSubscription = this.valueService.httpErrorEvent.subscribe(async () => {
       await this.showConnectivityAlert();
     });
-    this.currencySymbol$ = this.currencyService.getSelectedCurrency();
-    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(data => {
+    this.currencySymbol$ = this.settingsService.getSelectedCurrency();
+    this.currencySubscription = this.settingsService.getSelectedCurrency().subscribe(data => {
       this.currencySymbol = data
     })
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
-    this.coinmarketIds$ = this.purchasesService.getUniqueIds();
+    this.coinmarketIds$ = this.purchasesService.getUniqueIds().pipe(
+      //sort here based on selected sort type
+    );
     this.totalValue$ = this.valueService.getTotalValue();
     this.totalProfit$ = this.valueService.getTotalProfit();
     //this.showEmptyPortfolioAlert();

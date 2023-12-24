@@ -9,7 +9,7 @@ import { PurchaseDetails } from "../types/purchaseDetails.type";
 import { Rate } from "../types/rate.type";
 import { Value } from "../types/value.type";
 import { PurchasesService } from "./purchases.service";
-import { CurrencyService } from "./currency.service";
+import { SettingsService } from '../service/settings.service';
 import { ValueService } from "./value.service";
 import { CryptoValueClientService } from "./crypto-value-client.service";
 import { LoggingService } from "./logging.service";
@@ -20,13 +20,13 @@ describe('ValueService', () => {
 
     let serviceUnderTest: ValueService;
     let mockPurchasesService: jasmine.SpyObj<PurchasesService>;
-    let mockCurrencyService: jasmine.SpyObj<CurrencyService>;
+    let mockSettingsService: jasmine.SpyObj<SettingsService>;
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
     let mockCryptoValueClientService: jasmine.SpyObj<CryptoValueClientService>;
 
     mockPurchasesService = jasmine.createSpyObj('mockCoinService', ['getAllPurchases', 'getAllUniqueIds', 'getQuantityHeldById']);
     mockLoggingService = jasmine.createSpyObj('mockLoggingService', ['log'])
-    mockCurrencyService = jasmine.createSpyObj('mockCurrencyService', ['getSelectedCurrency']);
+    mockSettingsService = jasmine.createSpyObj('mockSettingsService', ['getSelectedCurrency']);
     mockCryptoValueClientService = jasmine.createSpyObj('mockCryptoValueClientService', ['getCryptoValues']);
 
     const coinName = new CryptoName("BitCoin", "BTC", 1);
@@ -35,9 +35,9 @@ describe('ValueService', () => {
 
     beforeEach(waitForAsync(() => {
         mockPurchasesService.getAllUniqueIds.and.returnValue([1,2]);
-        mockCurrencyService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
+        mockSettingsService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
         mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
-        serviceUnderTest = new ValueService(mockPurchasesService, mockCurrencyService, mockLoggingService, mockCryptoValueClientService);
+        serviceUnderTest = new ValueService(mockPurchasesService, mockSettingsService, mockLoggingService, mockCryptoValueClientService);
         TestBed.configureTestingModule({
             imports: [HttpClientModule]
         }).compileComponents();

@@ -1,11 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-
+import { SettingsService } from '../service/settings.service';
 import { PurchasesService } from '../service/purchases.service';
-import { CurrencyService } from '../service/currency.service';
 import { Observable, Subscription } from 'rxjs';
 import { CurrencyEnum, enumToString } from '../types/currencyEnum';
 import { ValueService } from '../service/value.service';
+import { SortModeEnum, sortModeEnumToString } from '../types/sortModeEnum';
 
 @Component({
   selector: 'app-settings',
@@ -16,23 +16,30 @@ export class SettingsPage implements OnDestroy {
 
   public ratesLastUpdateDate$: Observable<Date>;
   private selectedCurrencySubscription: Subscription;
+  private selectedSortModeSubscription: Subscription;
   public currencyString: string;
+  public sortModeString: string;
 
   constructor(public alertController: AlertController,
-    private currencyService: CurrencyService,
+    private settingsService: SettingsService,
     private coinService: PurchasesService,
-    private valueService: ValueService
+    private valueService: ValueService,
   ) { }
 
   ngOnInit() {
     this.ratesLastUpdateDate$ = this.valueService.getRatesLastUpdateDate();
-    this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency()
+    this.selectedCurrencySubscription = this.settingsService.getSelectedCurrency()
       .subscribe(data => this.currencyString = enumToString(data));
+    this.selectedSortModeSubscription = this.settingsService.getSelectedSortMode()
+      .subscribe(data => this.sortModeString = sortModeEnumToString(data));
   }
 
   ngOnDestroy(): void {
     if (this.selectedCurrencySubscription) {
       this.selectedCurrencySubscription.unsubscribe();
+    }
+    if (this.selectedSortModeSubscription) {
+      this.selectedSortModeSubscription.unsubscribe();
     }
   }
 
@@ -111,7 +118,10 @@ export class SettingsPage implements OnDestroy {
   }
 
   public updateSelectedCurrency(value: CurrencyEnum): void {
-    this.currencyService.setSelectedCurrency(value.toString());
+    this.settingsService.setSelectedCurrency(value.toString());
   }
 
+  public updateSelectedSortMode(value: SortModeEnum): void {
+    this.settingsService.setSelectedSortMode(value.toString());
+  }
 }

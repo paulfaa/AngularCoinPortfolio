@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import StorageUtils from '../storage.utils';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { SortModeEnum } from '../types/sortModeEnum';
+import { SettingsService } from './settings.service';
 
 @Injectable({ providedIn: 'root' })
-export class PurchasesService {
+export class PurchasesService implements OnDestroy {
 
   private purchasesSubject = new BehaviorSubject<CryptoPurchase[]>(this.initService());
   private purchases$: Observable<CryptoPurchase[]> = this.purchasesSubject.asObservable();
+  private sortModeSubscription: Subscription;
+  private sortMode: SortModeEnum;
   private uniqueCoinmarketIds$: Observable<number[]> = this.purchasesSubject.pipe(
     map(purchases => {
       const uniqueIds = new Set();
@@ -20,10 +24,21 @@ export class PurchasesService {
         }
         return ids;
       }, []);
-    }));
+  }));
   private lastPurchaseDate: Date; //check if needed
 
-  constructor() { }
+  constructor(private settingService: SettingsService) {
+    this.sortModeSubscription = this.settingService.getSelectedSortMode().subscribe(sortMode => {
+      this.sortMode = sortMode;
+      this.updateStorage();
+    });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.sortModeSubscription) {
+        this.sortModeSubscription.unsubscribe();
+    }
+  }
 
   private initService(): CryptoPurchase[] {
     var storedPurchases = StorageUtils.readFromStorage('savedCoins');
@@ -67,24 +82,9 @@ export class PurchasesService {
     return Array.from(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
   }
 
-  private updateStorage(): void {
+  public updateStorage(): void {
     this.sortAllPurchases();
-    StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue())
-  }
-
-  //refactor to use coinMarket id instead
-  public getAmountHeldOfTicker(ticker: string): number {
-    var counter = 0;
-    var purchases = this.purchasesSubject.getValue();
-    if (purchases != null && purchases.length >= 1) {
-      purchases.forEach(purchase => {
-        if (purchase.name.ticker == ticker) {
-          counter = counter + purchase.quantity
-        }
-      });
-    }
-    console.log("user holding " + counter + " ticker")
-    return counter;
+    StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue());
   }
 
   public getQuantityHeldById(id: number): number {
@@ -93,7 +93,7 @@ export class PurchasesService {
     purchases.forEach(purchase => {
       counter = counter + purchase.quantity;
     });
-    console.log(`quantity held of id ${id} is ${counter}`)
+    //console.log(`quantity held of id ${id} is ${counter}`)
     return counter;
   }
 
@@ -108,35 +108,31 @@ export class PurchasesService {
     this.updateStorage();
   }
 
-  //refactor to use coinmarket id
-  public getPurchasesByTicker(ticker: string): CryptoPurchase[] {
-    var matches = [];
-    this.purchasesSubject.getValue().forEach(c => {
-      if (c.name.ticker == ticker) {
-        matches.push(c);
-      }
-    });
-    return matches;
-  }
-
   public getPurchasesById(coinMarketId: number): Observable<CryptoPurchase[]> {
     return this.purchasesSubject.pipe(
       map(purchases => purchases.filter(purchase => purchase.name.coinMarketId === coinMarketId))
     )
   }
 
-  //sorts list alphabetically by ticker then by purchase date
   private sortAllPurchases(): void {
-    const purchases = this.purchasesSubject.getValue();
+    var updated = false;
+    console.log("selected sort mode: ", this.sortMode)
+    var purchases = this.purchasesSubject.getValue();
     if (purchases != null && purchases.length >= 2) {
-      console.log("this.purchases: " + purchases);
-      purchases.sort((a, b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf());
+      switch(this.sortMode){
+        case SortModeEnum.DEFAULT:
+          console.log("Sort default: ", purchases);
+          break;
+        case SortModeEnum.ALPHABETICAL:
+          //sorts list alphabetically by ticker then by purchase date
+          console.log("Sort alphabetically: ", purchases);
+          purchases.sort((a, b) => a.name.ticker.localeCompare(b.name.displayName) || b.purchaseDetails.date.valueOf() - a.purchaseDetails.date.valueOf());
+          break;
+        default:
+          console.log("No sort mode set");
+          break;
+      }
     }
+    this.purchasesSubject.next(purchases);
   }
-
-  /* private filterCoins(coins: CryptoPurchase[], text: string): CryptoPurchase[] {
-    return coins.filter(coin => {
-      return coin.name.displayName.toLowerCase().indexOf(text) !== -1;
-    });
-  } */
 }

@@ -19,6 +19,15 @@
   </ion-item>
 
   <ion-item>
+    <ion-label>Sort Mode:</ion-label>
+    <ion-select (ionChange)="updateSelectedSortMode($event.target.value)" [value]="sortModeString">
+      <ion-select-option value='DEFAULT'>Default</ion-select-option>
+      <ion-select-option value='ALPHABETICAL'>Alphabetical</ion-select-option>
+      <ion-select-option value='VALUE'>Value</ion-select-option>
+    </ion-select>
+  </ion-item> 
+
+  <ion-item>
     <ion-label>Exchange rate last updated:</ion-label>
     {{ratesLastUpdateDate$ | async | date: 'short'}}
   </ion-item>

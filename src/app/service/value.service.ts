@@ -2,7 +2,7 @@ import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { PurchasesService } from './purchases.service';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { Value } from '../types/value.type';
-import { CurrencyService } from './currency.service';
+import { SettingsService } from '../service/settings.service';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
 import { CurrencyEnum, enumToString } from '../types/currencyEnum';
@@ -31,7 +31,7 @@ export class ValueService implements OnDestroy {
 
     constructor(
         private purchasesService: PurchasesService,
-        private currencyService: CurrencyService,
+        private settingsService: SettingsService,
         private loggingService: LoggingService,
         private clientService: CryptoValueClientService
     ) {
@@ -53,7 +53,7 @@ export class ValueService implements OnDestroy {
     }
 
     private initService(): void {
-        this.selectedCurrencySubscription = this.currencyService.getSelectedCurrency().subscribe(result =>
+        this.selectedCurrencySubscription = this.settingsService.getSelectedCurrency().subscribe(result =>
             this.selectedCurrency = result
         );
         const storedRates = StorageUtils.readMapFromStorage('rates');
@@ -113,7 +113,7 @@ export class ValueService implements OnDestroy {
                 return element.id == id && element.currencyCode == currencyCode
             });
             if (matchingRate == undefined) {
-                console.log("no stored rate for id: " + id)
+                //console.log("no stored rate for id: " + id)
                 return undefined;
             }
             else {

@@ -7,7 +7,7 @@ import { CryptoName } from '../types/cryptoName.type';
 import { CryptoPurchase } from '../types/cryptoPurchase.type';
 import { ValueService } from '../service/value.service';
 import { PurchaseDetails } from '../types/purchaseDetails.type';
-import { CurrencyService } from '../service/currency.service';
+import { SettingsService } from '../service/settings.service';
 import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -48,7 +48,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   constructor(
     private purchasesService: PurchasesService,
     private valueService: ValueService,
-    private currencyService: CurrencyService,
+    private settingsService: SettingsService,
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute
@@ -61,7 +61,7 @@ export class AddFormPage implements OnInit, OnDestroy {
     });
     this.perCoinPurchasePriceSubscription = this.createFormChangeSubscription("perCoinPurchasePrice", "totalPurchasePrice");
     this.totalPurchasePriceSubscription = this.createFormChangeSubscription("totalPurchasePrice", "perCoinPurchasePrice");
-    this.currencySubscription = this.currencyService.getSelectedCurrency().subscribe(value => { this.selectedCurrency = value });
+    this.currencySubscription = this.settingsService.getSelectedCurrency().subscribe(value => { this.selectedCurrency = value });
   }
 
   ngOnDestroy(): void {
