@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SortModeEnum } from '../types/sortModeEnum';
 import { SettingsService } from './settings.service';
+import { PURCHASES_STORAGE_KEY } from '../shared/constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class PurchasesService implements OnDestroy {
@@ -41,7 +42,7 @@ export class PurchasesService implements OnDestroy {
   }
 
   private initService(): CryptoPurchase[] {
-    var storedPurchases = StorageUtils.readFromStorage('savedCoins');
+    const storedPurchases = StorageUtils.readFromStorage(PURCHASES_STORAGE_KEY);
     if (storedPurchases === null || storedPurchases == undefined) {
       console.log('init method returning empty list')
       return [];
@@ -61,8 +62,11 @@ export class PurchasesService implements OnDestroy {
 
   public removePurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
-    const updatedPurchases = currentPurchases.filter(p => p !== purchase);  //refactor
-    this.purchasesSubject.next(updatedPurchases);
+    const index = currentPurchases.indexOf(purchase);
+    if(index > -1){
+      currentPurchases.splice(index, 1);
+    }
+    this.purchasesSubject.next(currentPurchases);
     this.updateStorage();
   }
 
@@ -84,7 +88,7 @@ export class PurchasesService implements OnDestroy {
 
   public updateStorage(): void {
     this.sortAllPurchases();
-    StorageUtils.writeToStorage('savedCoins', this.purchasesSubject.getValue());
+    StorageUtils.writeToStorage(PURCHASES_STORAGE_KEY, this.purchasesSubject.getValue());
   }
 
   public getQuantityHeldById(id: number): number {

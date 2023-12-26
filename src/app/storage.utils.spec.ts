@@ -36,9 +36,10 @@ describe('StorageUtils', () => {
             // Act
             StorageUtils.writeMapToStorage(testKey, mapToSave);
             const savedData = JSON.parse(localStorage.getItem(testKey));
+            const savedMap = new Map(savedData);
 
             // Assert
-            expect(savedData).toEqual(mapToSave);
+            expect(savedMap).toEqual(mapToSave);
         });
     });
 

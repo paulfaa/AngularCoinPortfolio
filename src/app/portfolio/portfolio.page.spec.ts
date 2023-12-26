@@ -10,19 +10,19 @@ import { PortfolioPage } from './portfolio.page';
 describe('PortfolioPage', () => {
   let component: PortfolioPage;
   let fixture: ComponentFixture<PortfolioPage>;
-  let coinService: PurchasesService;
+  let purchasesService: PurchasesService;
   let valueService: ValueService;
-  let mockCoinService: jasmine.SpyObj<PurchasesService>;
+  let mockPurchasesService: jasmine.SpyObj<PurchasesService>;
 
-  mockCoinService = jasmine.createSpyObj('mockCoinService', ['getLengthOfHeldCoins']);
+  mockPurchasesService = jasmine.createSpyObj('mockPurchasesService', ['getLengthOfHeldCoins']);
   
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PortfolioPage, ProfitFormatPipe ],
       imports: [IonicModule.forRoot(), HttpClientModule],
       providers: [                   
-        { provide: coinService, useValue: mockCoinService},
-    ]
+        { provide: purchasesService, useValue: mockPurchasesService},
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PortfolioPage);

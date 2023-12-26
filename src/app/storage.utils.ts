@@ -1,10 +1,12 @@
+import { PURCHASES_STORAGE_KEY } from "./shared/constants/constants";
+
 export default class StorageUtils {
     //refactor to single method that checks data type
-    static writeToStorage(keyName: string, dataToSave) {
+    public static writeToStorage(keyName: string, dataToSave) {
         localStorage.setItem(keyName, JSON.stringify(dataToSave));
     }
 
-    static readFromStorage(keyName: string): any {
+    public static readFromStorage(keyName: string): any {
         try {
             var data = localStorage.getItem(keyName);
             if (data != null || data != undefined || data != "undefined") {
@@ -20,11 +22,11 @@ export default class StorageUtils {
         }
     }
 
-    static writeMapToStorage(keyName: string, mapToSave: Map<any, any>) {
+    public static writeMapToStorage(keyName: string, mapToSave: Map<any, any>) {
         localStorage.setItem(keyName, JSON.stringify(Array.from(mapToSave.entries())));
     }
 
-    static readMapFromStorage(keyName: string): Map<any, any> {
+    public static readMapFromStorage(keyName: string): Map<any, any> {
         try {
             var data = localStorage.getItem(keyName);
             if (data != null || data != undefined || data != "undefined") {
@@ -40,8 +42,8 @@ export default class StorageUtils {
         }
     }
 
-    static clearAllStorage(): void {
-        localStorage.clear();
-        console.log("Cleared all storage");
+    public static clearAllStorage(): void {
+        localStorage.removeItem(PURCHASES_STORAGE_KEY);
+        console.log("Cleared all stored purchases");
     }
 }

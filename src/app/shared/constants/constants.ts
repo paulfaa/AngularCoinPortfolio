@@ -1,31 +1,32 @@
 import { CryptoName } from "src/app/types/cryptoName.type";
 
 export const cryptoNames: CryptoName[] = [
-    new CryptoName("Bitcoin","BTC", 1),
-    new CryptoName("Cardano","ADA", 2010),
-    new CryptoName("Litecoin","LTE", 2),
-    new CryptoName("Ethereum","ETH", 1027),
-    new CryptoName("Polkadot","DOT", 6636),
-    new CryptoName("Stella","XLM", 512),
-    new CryptoName("Tether","USDT", 825),
-    new CryptoName("XRP","XRP", 742),
-    new CryptoName("Solana","SOL", 5426)
-  ]
+  new CryptoName("Bitcoin", "BTC", 1),
+  new CryptoName("Cardano", "ADA", 2010),
+  new CryptoName("Litecoin", "LTE", 2),
+  new CryptoName("Ethereum", "ETH", 1027),
+  new CryptoName("Polkadot", "DOT", 6636),
+  new CryptoName("Stella", "XLM", 512),
+  new CryptoName("Tether", "USDT", 825),
+  new CryptoName("XRP", "XRP", 742),
+  new CryptoName("Solana", "SOL", 5426)
+]
 
-  export const twelveHoursInMs: number = 43200000;
-  export const SORT_MODE_STORAGE_KEY: string = "sortMode";
-  export const CURRENCY_SELECTED_STORAGE_KEY: string = "currencySelected";
+export const twelveHoursInMs: number = 43200000;
+export const SORT_MODE_STORAGE_KEY: string = "sortMode";
+export const CURRENCY_SELECTED_STORAGE_KEY: string = "currencySelected";
+export const PURCHASES_STORAGE_KEY: string = "savedCoins";
 
-  /* export const cryptoNames: CryptoName[] = [
-    { displayName: "Bitcoin", ticker: "BTC" },
-    { displayName: "Cardano", ticker: "ADA" },
-    { displayName: "Litecoin", ticker: "LTC" },
-    { displayName: "Ethereum", ticker: "ETH" },
-    { displayName: "Polkadot", ticker: "DOT" },
-    { displayName: "Stellar", ticker: "XLM" },
-    { displayName: "Tether", ticker: "USDT" },
-    { displayName: "XRP", ticker: "XRP" },
-    { displayName: "Solana", ticker: "SOL" }
+/* export const cryptoNames: CryptoName[] = [
+  { displayName: "Bitcoin", ticker: "BTC" },
+  { displayName: "Cardano", ticker: "ADA" },
+  { displayName: "Litecoin", ticker: "LTC" },
+  { displayName: "Ethereum", ticker: "ETH" },
+  { displayName: "Polkadot", ticker: "DOT" },
+  { displayName: "Stellar", ticker: "XLM" },
+  { displayName: "Tether", ticker: "USDT" },
+  { displayName: "XRP", ticker: "XRP" },
+  { displayName: "Solana", ticker: "SOL" }
 ]; */
 
 export interface CoinDetails {

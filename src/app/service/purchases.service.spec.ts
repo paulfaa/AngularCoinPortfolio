@@ -7,10 +7,14 @@ import { PurchaseDetails } from '../types/purchaseDetails.type';
 import { Value } from '../types/value.type';
 import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
 import StorageUtils from '../storage.utils';
+import { SettingsService } from './settings.service';
 
 describe('PurchasesService', () => {
 
     let service: PurchasesService;
+    let mockSettingsService: jasmine.SpyObj<SettingsService>;
+
+    mockSettingsService = jasmine.createSpyObj('mockSettingsService', []);
 
     const purchase1 = new CryptoPurchaseBuilder()
         .name(new CryptoName("Bitcoin", "BTC", 1))
@@ -32,11 +36,12 @@ describe('PurchasesService', () => {
         .build()
 
     beforeEach(waitForAsync(() => {
-        service = new PurchasesService();
+        service = new PurchasesService(mockSettingsService);
         service['currencySelected'] = 'EUR';
         TestBed.configureTestingModule({
             declarations: [PurchasesService],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
         }).compileComponents();
     }));
     afterEach(() => {
