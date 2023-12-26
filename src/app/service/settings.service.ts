@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SortModeEnum, sortModeEnumToString } from '../types/sortModeEnum';
-import { CurrencyEnum, enumToString } from '../types/currencyEnum';
-import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY } from '../shared/constants/constants';
+import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY, currencies } from '../shared/constants/constants';
+import { Currency } from '../types/currency.type';
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +10,15 @@ import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY } from '../shared/
 export class SettingsService {
 
   private sortModeSubject = new BehaviorSubject<SortModeEnum>(this.loadSavedSortType());
-  private currencySelectedSubject = new BehaviorSubject<CurrencyEnum>(this.loadSavedCurrency());
+  private currencySelectedSubject = new BehaviorSubject<Currency>(this.loadSavedCurrency());
   private sortMode$: Observable<SortModeEnum> = this.sortModeSubject.asObservable();
-  private currency$: Observable<CurrencyEnum> = this.currencySelectedSubject.asObservable();
+  private currency$: Observable<Currency> = this.currencySelectedSubject.asObservable();
 
   public getSelectedSortMode(): Observable<SortModeEnum> {
     return this.sortMode$;
   }
 
-  public getSelectedCurrency(): Observable<CurrencyEnum> {
+  public getSelectedCurrency(): Observable<Currency> {
     return this.currency$;
   }
 
@@ -29,10 +29,9 @@ export class SettingsService {
     localStorage.setItem(SORT_MODE_STORAGE_KEY, sortModeEnumToString(mode)); //make generic method for enum to string
   }
 
-  public setSelectedCurrency(c: string): void {
-    const currency = CurrencyEnum[c];
+  public setSelectedCurrency(currency: Currency): void {
     this.currencySelectedSubject.next(currency);
-    localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, enumToString(currency));
+    localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, currency.code);
   }
 
   private loadSavedSortType() {
@@ -46,14 +45,14 @@ export class SettingsService {
     }
   }
 
-  private loadSavedCurrency() {
-    const savedSetting = localStorage.getItem(CURRENCY_SELECTED_STORAGE_KEY);
-    if (savedSetting == null || savedSetting == "undefined") {
-      localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, CurrencyEnum.EUR);
-      return CurrencyEnum.EUR;
+  private loadSavedCurrency(): Currency {
+    const savedCurrencyCode = localStorage.getItem(CURRENCY_SELECTED_STORAGE_KEY);
+    if (savedCurrencyCode == null || savedCurrencyCode == "undefined") {
+      localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, "EUR");
+      return currencies[0];
     }
     else {
-      return CurrencyEnum[savedSetting as keyof typeof CurrencyEnum];
+      return currencies.find(currency => currency.code == savedCurrencyCode);
     }
   }
 }

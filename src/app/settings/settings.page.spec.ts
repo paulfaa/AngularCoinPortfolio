@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
 import { SettingsPage } from './settings.page';
 
 describe('SettingsPage', () => {

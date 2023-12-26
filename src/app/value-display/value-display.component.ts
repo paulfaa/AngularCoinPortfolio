@@ -12,7 +12,7 @@ import { CoinDetails, cryptoNamesMap } from '../shared/constants/constants';
 })
 export class ValueDisplayComponent implements OnInit {
   @Input() idInput: number;
-  @Input() currencySymbolInput: string;
+  @Input() currencySymbolInput: Observable<string>;
 
   @Output() deletePurchaseEvent: EventEmitter<CryptoPurchase> = new EventEmitter<CryptoPurchase>();
   @Output() infoPopupEvent: EventEmitter<CryptoPurchase> = new EventEmitter<CryptoPurchase>();

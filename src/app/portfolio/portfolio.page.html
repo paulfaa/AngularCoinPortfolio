@@ -14,13 +14,13 @@
     [totalValue$] = totalValue$
     [totalProfit$] = totalProfit$
     [profitAsPercentage$] = profitAsPercentage$
-    [currencySymbol$]  =currencySymbol$>
+    [currencySymbol$] = currencySymbol$>
   </value-header>
 
   <div *ngFor="let id of coinmarketIds$ | async">
     <value-display
       [idInput]="id"
-      [currencySymbolInput]="currencySymbol"
+      [currencySymbolInput]="currencySymbol$"
       (deletePurchaseEvent)="onDeletePurchaseClicked($event)"
       (infoPopupEvent)="showInfoPopup($event)"
     >

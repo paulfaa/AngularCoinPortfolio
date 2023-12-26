@@ -5,14 +5,15 @@ import { CryptoPurchase } from "./cryptoPurchase.type";
 import { CryptoName } from "./cryptoName.type";
 import { PurchaseDetails } from "./purchaseDetails.type";
 import { Value } from "./value.type";
+import { Currency } from "./currency.type";
 
 describe('CryptoPurchaseBuilder', () => {
     it('returns a CryptoPurchase object with the specified parameters', () => {
         // Arrange
         const id = 123;
         const name = new CryptoName("Cardano", "Ada", 12);
-        const purchaseDetails = new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate());
-        const value = new Value(5.7363, CurrencyEnum.EUR,  moment().toDate());
+        const purchaseDetails = new PurchaseDetails(12.2346, new Currency("EUR", "€"), moment().toDate());
+        const value = new Value(5.7363, new Currency("EUR", "€"),  moment().toDate());
         const profit = 44.573;
         const quantity = 0.075;
         const testCoin = new CryptoPurchase(name, purchaseDetails, quantity, value);
@@ -37,8 +38,8 @@ describe('CryptoPurchaseBuilder', () => {
     it('can ignore optional parameters', () => {
         // Arrange
         const name = new CryptoName("Cardano", "Ada", 12);
-        const purchaseDetails = new PurchaseDetails(12.2346, CurrencyEnum.EUR, moment().toDate());
-        const value = new Value(5.7363, CurrencyEnum.EUR,  moment().toDate());
+        const purchaseDetails = new PurchaseDetails(12.2346, new Currency("EUR", "€"), moment().toDate());
+        const value = new Value(5.7363, new Currency("EUR", "€"),  moment().toDate());
         const quantity = 0.075;
         const testCoin = new CryptoPurchase(name, purchaseDetails, quantity, value);
 

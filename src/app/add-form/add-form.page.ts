@@ -12,8 +12,8 @@ import * as moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
-import { CurrencyEnum } from '../types/currencyEnum';
-import { cryptoNames, cryptoNamesMap } from '../shared/constants/constants';
+import { cryptoNames } from '../shared/constants/constants';
+import { Currency } from '../types/currency.type';
 
 @Component({
   selector: 'app-add-form',
@@ -29,7 +29,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   private perCoinPurchasePriceSubscription: Subscription;
   private totalPurchasePriceSubscription: Subscription;
   private currencySubscription: Subscription;
-  private selectedCurrency: CurrencyEnum;
+  private selectedCurrency: Currency;
 
   public errorMessages = {
     name: [{ type: 'required', message: 'This field is required' }]

@@ -25,7 +25,7 @@ export class PurchasesService implements OnDestroy {
         }
         return ids;
       }, []);
-  }));
+    }));
   private lastPurchaseDate: Date; //check if needed
 
   constructor(private settingService: SettingsService) {
@@ -37,18 +37,19 @@ export class PurchasesService implements OnDestroy {
 
   public ngOnDestroy(): void {
     if (this.sortModeSubscription) {
-        this.sortModeSubscription.unsubscribe();
+      this.sortModeSubscription.unsubscribe();
     }
   }
 
   private initService(): CryptoPurchase[] {
-    const storedPurchases = StorageUtils.readFromStorage(PURCHASES_STORAGE_KEY);
+    const storedPurchases: CryptoPurchase[] = StorageUtils.readFromStorage(PURCHASES_STORAGE_KEY);
     if (storedPurchases === null || storedPurchases == undefined) {
       console.log('init method returning empty list')
       return [];
     }
     else {
-      console.log('init method returning ' + storedPurchases)
+      //console.log(`quantity held of id ${id} is ${counter}`)
+      console.log(`init method loaded ${storedPurchases.length} purchases`)
       return storedPurchases;
     }
   }
@@ -63,7 +64,7 @@ export class PurchasesService implements OnDestroy {
   public removePurchase(purchase: CryptoPurchase) {
     const currentPurchases = this.purchasesSubject.getValue();
     const index = currentPurchases.indexOf(purchase);
-    if(index > -1){
+    if (index > -1) {
       currentPurchases.splice(index, 1);
     }
     this.purchasesSubject.next(currentPurchases);
@@ -123,7 +124,7 @@ export class PurchasesService implements OnDestroy {
     console.log("selected sort mode: ", this.sortMode)
     var purchases = this.purchasesSubject.getValue();
     if (purchases != null && purchases.length >= 2) {
-      switch(this.sortMode){
+      switch (this.sortMode) {
         case SortModeEnum.DEFAULT:
           console.log("Sort default: ", purchases);
           break;

@@ -5,8 +5,8 @@ import { PurchasesService } from '../service/purchases.service';
 import { SettingsService } from '../service/settings.service';
 import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
-import { enumToString } from '../types/currencyEnum';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 //TODO 
 // Display holdings sorted alphabetically
@@ -20,13 +20,11 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
 
   private httpErrorSubscription: Subscription;
   private purchasesSubscription: Subscription;
-  private currencySubscription: Subscription;
 
   public purchases$: Observable<CryptoPurchase[]>;
   public totalValue$: Observable<number>;
   public totalProfit$: Observable<number>;
   public profitAsPercentage$: Observable<number>;
-  public currencySymbol: string;
   public currencySymbol$: Observable<string>;
   public coinmarketIds$: Observable<number[]>;
 
@@ -41,10 +39,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
     this.httpErrorSubscription = this.valueService.httpErrorEvent.subscribe(async () => {
       await this.showConnectivityAlert();
     });
-    this.currencySymbol$ = this.settingsService.getSelectedCurrency();
-    this.currencySubscription = this.settingsService.getSelectedCurrency().subscribe(data => {
-      this.currencySymbol = data
-    })
+    this.currencySymbol$ = this.settingsService.getSelectedCurrency().pipe(
+      map(data => data.symbol)
+    );
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
     this.coinmarketIds$ = this.purchasesService.getUniqueIds().pipe(
       //sort here based on selected sort type
@@ -57,9 +54,6 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.purchasesSubscription) {
       this.purchasesSubscription.unsubscribe();
-    }
-    if (this.currencySubscription) {
-      this.currencySubscription.unsubscribe();
     }
   }
 
@@ -74,10 +68,9 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public async showInfoPopup(purchase: CryptoPurchase) {
-    const enumIndex = purchase.purchaseDetails.currency;
     const alert = await this.alertController.create({
       header: purchase.quantity + " " + purchase.name.displayName + " (" + purchase.name.ticker + ")",
-      message: "Date added: " + purchase.purchaseDetails.date + "<br>" + "\n Cost: " + purchase.purchaseDetails.price + " " + enumToString(purchase.purchaseDetails.currency),
+      message: "Date added: " + purchase.purchaseDetails.date + "<br>" + "\n Cost: " + purchase.purchaseDetails.price + " " + purchase.purchaseDetails.currency.code,
       buttons: [
         { text: 'OK' }
       ]
