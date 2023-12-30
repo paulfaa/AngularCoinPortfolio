@@ -7,6 +7,7 @@ import { ValueService } from '../service/value.service';
 import { LoggingService } from '../service/logging.service';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CurrencyEnum, currencyEnumToCurrencyCode, currencyEnumToSymbol } from '../types/currencyEnum';
 
 //TODO 
 // Display holdings sorted alphabetically
@@ -40,7 +41,7 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
       await this.showConnectivityAlert();
     });
     this.currencySymbol$ = this.settingsService.getSelectedCurrency().pipe(
-      map(data => data.symbol)
+      map(data => currencyEnumToSymbol(data as CurrencyEnum))
     );
     this.profitAsPercentage$ = this.valueService.getPercentageProfit();
     this.coinmarketIds$ = this.purchasesService.getUniqueIds().pipe(
@@ -68,9 +69,11 @@ export class PortfolioPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public async showInfoPopup(purchase: CryptoPurchase) {
+    const currencyCode = currencyEnumToCurrencyCode(purchase.purchaseDetails.currency)
+    const dateString = new Date(purchase.purchaseDetails.date).toLocaleDateString();
     const alert = await this.alertController.create({
       header: purchase.quantity + " " + purchase.name.displayName + " (" + purchase.name.ticker + ")",
-      message: "Date added: " + purchase.purchaseDetails.date + "<br>" + "\n Cost: " + purchase.purchaseDetails.price + " " + purchase.purchaseDetails.currency.code,
+      message: "Date added: " + dateString + "<br>" + "\n Cost: " + purchase.purchaseDetails.price + " " + currencyCode,
       buttons: [
         { text: 'OK' }
       ]

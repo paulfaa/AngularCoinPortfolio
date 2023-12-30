@@ -1,5 +1,5 @@
 import { CryptoName } from "src/app/types/cryptoName.type";
-import { Currency } from "src/app/types/currency.type";
+import { CurrencyEnum } from "src/app/types/currencyEnum";
 
 export const cryptoNames: CryptoName[] = [
   new CryptoName("Bitcoin", "BTC", 1),
@@ -11,13 +11,6 @@ export const cryptoNames: CryptoName[] = [
   new CryptoName("Tether", "USDT", 825),
   new CryptoName("XRP", "XRP", 742),
   new CryptoName("Solana", "SOL", 5426)
-]
-
-export const currencies: Currency[] = [
-  new Currency("EUR", "€"),
-  new Currency("USD", "$"),
-  new Currency("AUD", "$"),
-  new Currency("NZD", "$")
 ]
 
 export const twelveHoursInMs: number = 43200000;
@@ -41,6 +34,13 @@ export interface CoinDetails {
   displayName: string;
   ticker: string;
 }
+
+export const currencyMap: Map<number, string> = new Map([
+  [CurrencyEnum.EUR, "€"],
+  [CurrencyEnum.USD, "$"],
+  [CurrencyEnum.AUD, "$"],
+  [CurrencyEnum.NZD, "$"],
+]);
 
 export const cryptoNamesMap: Map<number, CoinDetails> = new Map([
   [1, { displayName: "Bitcoin", ticker: "BTC" }],

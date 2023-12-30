@@ -6,7 +6,6 @@ import { of } from 'rxjs';
 import { CurrencyEnum } from '../types/currencyEnum';
 import { SortModeEnum } from '../types/sortModeEnum';
 import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY } from '../shared/constants/constants';
-import { Currency } from '../types/currency.type';
 
 describe('SettingsService', () => {
   let service: SettingsService;
@@ -29,18 +28,13 @@ describe('SettingsService', () => {
   describe('setSelectedCurrency()', () => {
     it('should update the stored value to the provided parameter', () => {
       // Act
-      service.setSelectedCurrency(new Currency("NZD", "$"));
+      service.setSelectedCurrency(CurrencyEnum.NZD);
       const result = service['currency$'];
       //const result = service['currencySelectedSubject'].getValue();
 
       //Assert
-      expect(result).toEqual(of(new Currency("NZD", "$")));
+      expect(result).toEqual(of(CurrencyEnum.NZD));
     });
-    /* it('throws an error if the enum is invalid', () => {
-      service.setSelectedCurrency("invalidValue");
-
-      // Assert
-    }); */
   });
 
   describe('getCurrencySelected()', () => {
@@ -59,7 +53,7 @@ describe('SettingsService', () => {
       const currency = service.getSelectedCurrency();
 
       // Assert
-      expect(currency.toString()).toEqual("USD");
+      expect(currency).toEqual(of(CurrencyEnum.USD));
     });
   });
 

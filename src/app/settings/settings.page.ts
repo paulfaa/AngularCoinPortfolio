@@ -5,7 +5,7 @@ import { PurchasesService } from '../service/purchases.service';
 import { Observable, Subscription } from 'rxjs';
 import { ValueService } from '../service/value.service';
 import { SortModeEnum, sortModeEnumToString } from '../types/sortModeEnum';
-import { currencies } from '../shared/constants/constants';
+import { CurrencyEnum } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +17,7 @@ export class SettingsPage implements OnDestroy {
   public ratesLastUpdateDate$: Observable<Date>;
   private selectedCurrencySubscription: Subscription;
   private selectedSortModeSubscription: Subscription;
-  public currencyString: string;
+  public currency: string;
   public sortModeString: string;
 
   constructor(public alertController: AlertController,
@@ -29,7 +29,7 @@ export class SettingsPage implements OnDestroy {
   ngOnInit() {
     this.ratesLastUpdateDate$ = this.valueService.getRatesLastUpdateDate();
     this.selectedCurrencySubscription = this.settingsService.getSelectedCurrency()
-      .subscribe(data => this.currencyString = data.code);
+      .subscribe(data => this.currency = data.toString());
     this.selectedSortModeSubscription = this.settingsService.getSelectedSortMode()
       .subscribe(data => this.sortModeString = sortModeEnumToString(data));
   }
@@ -117,9 +117,8 @@ export class SettingsPage implements OnDestroy {
     return str;
   }
 
-  public updateSelectedCurrency(selectedCurrency: string): void {
-    console.log("updateSelectedCurrency: ", selectedCurrency);
-    this.settingsService.setSelectedCurrency(currencies.find(currency => currency.code === selectedCurrency));
+  public updateSelectedCurrency(selectedCurrency: CurrencyEnum): void {
+    this.settingsService.setSelectedCurrency(selectedCurrency);
   }
 
   public updateSelectedSortMode(value: SortModeEnum): void {

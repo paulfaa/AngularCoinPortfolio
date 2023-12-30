@@ -1,11 +1,11 @@
-import { Currency } from "./currency.type";
+import { CurrencyEnum } from "./currencyEnum";
 
 export class Value {
     public currentValue: number;
-    public currency: Currency;
+    public currency: CurrencyEnum;
     public updateDate: Date;
 
-    constructor(currentValue: number, currency: Currency, dateValueUpdated: Date){
+    constructor(currentValue: number, currency: CurrencyEnum, dateValueUpdated: Date){
         this.currentValue = currentValue;
         this.currency = currency;
         this.updateDate = dateValueUpdated;
@@ -19,11 +19,11 @@ export class Value {
         this.currentValue = value;
     }
     
-    public getCurrency(): Currency {
+    public getCurrency(): CurrencyEnum {
         return this.currency;
     }
 
-    public setCurrency(value: Currency) {
+    public setCurrency(value: CurrencyEnum) {
         this.currency = value;
     }
 

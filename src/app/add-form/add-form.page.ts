@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
 import { cryptoNames } from '../shared/constants/constants';
-import { Currency } from '../types/currency.type';
+import { CurrencyEnum } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-add-form',
@@ -29,7 +29,7 @@ export class AddFormPage implements OnInit, OnDestroy {
   private perCoinPurchasePriceSubscription: Subscription;
   private totalPurchasePriceSubscription: Subscription;
   private currencySubscription: Subscription;
-  private selectedCurrency: Currency;
+  private selectedCurrency: CurrencyEnum;
 
   public errorMessages = {
     name: [{ type: 'required', message: 'This field is required' }]

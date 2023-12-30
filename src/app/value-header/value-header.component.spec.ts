@@ -57,8 +57,8 @@ describe('ValueHeaderComponent', () => {
 
       // Assert
       const element = fixture.debugElement.query(By.css('ion-card-content'));
-      expect(element.classes['negative']).toBeFalse();
-      expect(element.classes['positive']).toBeFalse();
+      expect(element.classes['negative']).toBeUndefined(); //The class key will not appear in the KV object if it does not exist on the element.
+      expect(element.classes['positive']).toBeUndefined();
     });
   });
 });

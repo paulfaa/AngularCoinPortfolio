@@ -11,7 +11,7 @@ import { LoggingService } from './logging.service';
 import { CryptoValueClientService } from './crypto-value-client.service';
 import StorageUtils from '../storage.utils';
 import { twelveHoursInMs } from '../shared/constants/constants';
-import { Currency } from '../types/currency.type';
+import { CurrencyEnum, currencyEnumToCurrencyCode } from '../types/currencyEnum';
 
 @Injectable({ providedIn: 'root' })
 export class ValueService implements OnDestroy {
@@ -25,7 +25,7 @@ export class ValueService implements OnDestroy {
     private totalProfit$: Observable<number> = this.totalProfitSubject.asObservable();
     private ratesMap: Map<string, Rate[]>;
     private ratesLastUpdateDate: Date | undefined;
-    private selectedCurrency: Currency;
+    private selectedCurrency: CurrencyEnum;
 
     public httpErrorEvent: EventEmitter<string> = new EventEmitter<string>();
 
@@ -65,7 +65,7 @@ export class ValueService implements OnDestroy {
             this.ratesMap = storedRates;
         }
         if (lastUpdateDate != null) {
-            this.ratesLastUpdateDate = lastUpdateDate;
+            this.ratesLastUpdateDate = new Date(lastUpdateDate);
         }
     }
 
@@ -85,7 +85,7 @@ export class ValueService implements OnDestroy {
     }
 
     private callCryptoValueEndpoint(): void {
-        const currencyCode = this.selectedCurrency.code;
+        const currencyCode = currencyEnumToCurrencyCode(this.selectedCurrency);
         this.clientService.getCryptoValues(currencyCode, this.purchasesService.getAllUniqueIds()).subscribe(data => {
             console.log(data)
             this.ratesMap.set(currencyCode, data);
@@ -106,7 +106,7 @@ export class ValueService implements OnDestroy {
     }
 
     public getRateForId(id: number): number | undefined {
-        const currencyCode = this.selectedCurrency.code;
+        const currencyCode = currencyEnumToCurrencyCode(this.selectedCurrency);
         const matchingRates = this.ratesMap.get(currencyCode)
         if (matchingRates != undefined) {
             const matchingRate = matchingRates.find(element => {
@@ -140,7 +140,7 @@ export class ValueService implements OnDestroy {
         );
     }
 
-    public createNewValue(currentValue: number, selectedCurrency: Currency): Value {
+    public createNewValue(currentValue: number, selectedCurrency: CurrencyEnum): Value {
         return new Value(currentValue, selectedCurrency, moment().toDate());
     }
 

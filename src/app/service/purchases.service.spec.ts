@@ -8,7 +8,6 @@ import { Value } from '../types/value.type';
 import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
 import StorageUtils from '../storage.utils';
 import { SettingsService } from './settings.service';
-import { Currency } from '../types/currency.type';
 
 describe('PurchasesService', () => {
 
@@ -19,21 +18,21 @@ describe('PurchasesService', () => {
 
     const purchase1 = new CryptoPurchaseBuilder()
         .name(new CryptoName("Bitcoin", "BTC", 1))
-        .purchaseDetails(new PurchaseDetails(5, new Currency("EUR", "€"), new Date()))
+        .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
         .quantity(5)
-        .value(new Value(15, new Currency("EUR", "€"), new Date()))
+        .value(new Value(15, CurrencyEnum.EUR, new Date()))
         .build();
     const purchase2 = new CryptoPurchaseBuilder()
         .name(new CryptoName("Bitcoin", "BTC", 1))
-        .purchaseDetails(new PurchaseDetails(5, new Currency("EUR", "€"), new Date()))
+        .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
         .quantity(10)
-        .value(new Value(30, new Currency("EUR", "€"), new Date()))
+        .value(new Value(30, CurrencyEnum.EUR, new Date()))
         .build();
     const purchase3 = new CryptoPurchaseBuilder()
         .name(new CryptoName("Cardano", "ADA", 12))
-        .purchaseDetails(new PurchaseDetails(10, new Currency("EUR", "€"), new Date()))
+        .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
         .quantity(1)
-        .value(new Value(5, new Currency("EUR", "€"), new Date()))
+        .value(new Value(5, CurrencyEnum.EUR, new Date()))
         .build()
 
     beforeEach(waitForAsync(() => {

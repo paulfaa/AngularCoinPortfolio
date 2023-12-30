@@ -15,7 +15,6 @@ import { CryptoValueClientService } from "./crypto-value-client.service";
 import { LoggingService } from "./logging.service";
 import { of } from "rxjs";
 import StorageUtils from "../storage.utils";
-import { Currency } from "../types/currency.type";
 
 describe('ValueService', () => {
 
@@ -25,18 +24,18 @@ describe('ValueService', () => {
     let mockLoggingService: jasmine.SpyObj<LoggingService>;
     let mockCryptoValueClientService: jasmine.SpyObj<CryptoValueClientService>;
 
-    mockPurchasesService = jasmine.createSpyObj('mockCoinService', ['getAllPurchases', 'getAllUniqueIds', 'getQuantityHeldById']);
-    mockLoggingService = jasmine.createSpyObj('mockLoggingService', ['log'])
+    mockPurchasesService = jasmine.createSpyObj('mockPurchasesService', ['getAllPurchases', 'getAllUniqueIds', 'getQuantityHeldById']);
+    mockLoggingService = jasmine.createSpyObj('mockLoggingService', ['log', 'info'])
     mockSettingsService = jasmine.createSpyObj('mockSettingsService', ['getSelectedCurrency']);
     mockCryptoValueClientService = jasmine.createSpyObj('mockCryptoValueClientService', ['getCryptoValues']);
 
     const coinName = new CryptoName("BitCoin", "BTC", 1);
-    const btcRateEur = new Rate(1, "BTC", 500.25, CurrencyEnum.EUR, moment().toDate());
-    const btcRateUsd = new Rate(1, "BTC", 500.25, CurrencyEnum.USD, moment().toDate());
+    const btcRateEur = new Rate(1, "BTC", 500.25, CurrencyEnum.EUR.toString(), moment().toDate());
+    const btcRateUsd = new Rate(1, "BTC", 500.25, CurrencyEnum.USD.toString(), moment().toDate());
 
     beforeEach(waitForAsync(() => {
         mockPurchasesService.getAllUniqueIds.and.returnValue([1,2]);
-        mockSettingsService.getSelectedCurrency.and.returnValue(of(new Currency("EUR", "€")));
+        mockSettingsService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
         mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
         serviceUnderTest = new ValueService(mockPurchasesService, mockSettingsService, mockLoggingService, mockCryptoValueClientService);
         TestBed.configureTestingModule({
@@ -127,15 +126,15 @@ describe('ValueService', () => {
             const sampleCoins: CryptoPurchase[] = [
                 new CryptoPurchaseBuilder()
                 .name(new CryptoName("Cardano", "ADA", 12))
-                .purchaseDetails(new PurchaseDetails(5, new Currency("EUR", "€"), new Date()))
+                .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
                 .quantity(5)
-                .value(new Value(15, new Currency("EUR", "€"), new Date()))
+                .value(new Value(15, CurrencyEnum.EUR, new Date()))
                 .build(),
                 new CryptoPurchaseBuilder()
                 .name(new CryptoName("Cardano", "ADA", 12))
-                .purchaseDetails(new PurchaseDetails(10, new Currency("EUR", "€"), new Date()))
+                .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
                 .quantity(1)
-                .value(new Value(15, new Currency("EUR", "€"), new Date()))
+                .value(new Value(15, CurrencyEnum.EUR, new Date()))
                 .build()
             ];
             mockPurchasesService.getAllPurchases.and.returnValue(of(sampleCoins));
@@ -167,8 +166,8 @@ describe('ValueService', () => {
         });
         it('should be able to deal with positive values', () => {
             // Arrange
-            const value = new Value(200, new Currency("EUR", "€"), moment().toDate())
-            const purchaseDetails = new PurchaseDetails(100, new Currency("EUR", "€"), moment().toDate());
+            const value = new Value(200, CurrencyEnum.EUR, moment().toDate())
+            const purchaseDetails = new PurchaseDetails(100, CurrencyEnum.EUR, moment().toDate());
             let coinList: CryptoPurchase[] = [
                 new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]
@@ -186,8 +185,8 @@ describe('ValueService', () => {
         });
         it('should be able to deal with negative values', () => {
             // Arrange
-            const value = new Value(0, new Currency("EUR", "€"), moment().toDate()) //value of holding cant be less than 0
-            const purchaseDetails = new PurchaseDetails(200, new Currency("EUR", "€"), moment().toDate());
+            const value = new Value(0, CurrencyEnum.EUR, moment().toDate()) //value of holding cant be less than 0
+            const purchaseDetails = new PurchaseDetails(200, CurrencyEnum.EUR, moment().toDate());
             let coinList: CryptoPurchase[] = [
                 new CryptoPurchase(coinName, purchaseDetails, 1, value)
             ]

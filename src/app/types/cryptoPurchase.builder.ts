@@ -3,7 +3,6 @@ import { CryptoPurchase } from "./cryptoPurchase.type";
 import { CryptoName } from "./cryptoName.type";
 import { PurchaseDetails } from "./purchaseDetails.type";
 import { Value } from "./value.type";
-import { Currency } from "./currency.type";
 
 export class CryptoPurchaseBuilder {
 
@@ -12,8 +11,8 @@ export class CryptoPurchaseBuilder {
     constructor() {
         this.purchase = {
             name: new CryptoName("", "", 0),
-            purchaseDetails: new PurchaseDetails(0, new Currency("EUR", "€"), new Date()),
-            value: new Value(0, new Currency("EUR", "€"), new Date()),
+            purchaseDetails: new PurchaseDetails(0, CurrencyEnum.EUR, new Date()),
+            value: new Value(0, CurrencyEnum.EUR, new Date()),
             quantity: 0,
             profit: 0,
             updateProfit: CryptoPurchase.prototype.updateProfit

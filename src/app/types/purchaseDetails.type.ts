@@ -1,11 +1,11 @@
-import { Currency } from "./currency.type";
+import { CurrencyEnum } from "./currencyEnum";
 
 export class PurchaseDetails {
     price: number;
-    currency: Currency;
+    currency: CurrencyEnum;
     date: Date;
 
-    constructor(price: number, currency: Currency, date: Date) {
+    constructor(price: number, currency: CurrencyEnum, date: Date) {
         this.price = price;
         this.currency = currency;
         this.date = date;

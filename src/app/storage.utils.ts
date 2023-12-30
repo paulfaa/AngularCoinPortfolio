@@ -7,19 +7,21 @@ export default class StorageUtils {
     }
 
     public static readFromStorage(keyName: string): any {
-        try {
-            var data = localStorage.getItem(keyName);
+        const data = localStorage.getItem(keyName);
             if (data != null || data != undefined || data != "undefined") {
-                return JSON.parse(data);
+                try{
+                    return JSON.parse(data);
+                }
+                catch (err) {
+                    console.log("Unable to process stored JSON for " + keyName);
+                    console.log("Returning as string instead");
+                    return data;
+                }
             }
             else {
                 console.log("Nothing in local storage with key " + keyName);
                 return null;
             }
-        }
-        catch (err) {
-            console.log('Error: ', err.message);
-        }
     }
 
     public static writeMapToStorage(keyName: string, mapToSave: Map<any, any>) {

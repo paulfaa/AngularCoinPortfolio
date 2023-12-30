@@ -10,11 +10,11 @@
 
   <ion-item>
     <ion-label>App Currency:</ion-label>
-    <ion-select (ionChange)="updateSelectedCurrency($event.target.value)" [value]="currencyString">
-      <ion-select-option value='EUR'>Euro</ion-select-option>
-      <ion-select-option value='USD'>US Dollar</ion-select-option>
-      <ion-select-option value='AUD'>Australian Dollar</ion-select-option>
-      <ion-select-option value='NZD'>New Zealand Dollar</ion-select-option>
+    <ion-select (ionChange)="updateSelectedCurrency($event.target.value)" [value]="currency"> 
+      <ion-select-option value='0'>Euro</ion-select-option> <!-- Had to make these strings instead of numbers, as selection was not working otherwise. But now enum getting returned as string instead of int-->
+      <ion-select-option value='1'>US Dollar</ion-select-option> <!-- https://stackoverflow.com/questions/51851708/ionic-4-ionic-select-is-not-selected-if-the-model-is-a-number -->
+      <ion-select-option value='2'>Australian Dollar</ion-select-option>
+      <ion-select-option value='3'>New Zealand Dollar</ion-select-option>
     </ion-select>
   </ion-item>
 
