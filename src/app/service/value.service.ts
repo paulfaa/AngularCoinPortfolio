@@ -157,6 +157,7 @@ export class ValueService implements OnDestroy {
     private calculateTotalValue(): number {
         var total = 0;
         const allIds = this.purchasesService.getAllUniqueIds();
+        //TypeError: Cannot read properties of null (reading 'forEach')
         allIds.forEach(id => {
             const quantity = this.purchasesService.getQuantityHeldById(id);
             const rate = this.getRateForId(id);

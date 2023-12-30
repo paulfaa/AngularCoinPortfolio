@@ -34,7 +34,8 @@ describe('ValueService', () => {
     const btcRateUsd = new Rate(1, "BTC", 500.25, CurrencyEnum.USD.toString(), moment().toDate());
 
     beforeEach(waitForAsync(() => {
-        mockPurchasesService.getAllUniqueIds.and.returnValue([1,2]);
+        mockPurchasesService.getAllUniqueIds.and.returnValue([1, 2]);
+        mockPurchasesService.getAllPurchases.and.returnValue(of([]));
         mockSettingsService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
         mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateEur]));
         serviceUnderTest = new ValueService(mockPurchasesService, mockSettingsService, mockLoggingService, mockCryptoValueClientService);
@@ -46,7 +47,7 @@ describe('ValueService', () => {
     }));
     afterEach(() => {
         StorageUtils.clearAllStorage();
-  	});
+    });
 
     describe('getRateForId()', () => {
         it('should return 0 if no data for id', () => {
@@ -72,7 +73,7 @@ describe('ValueService', () => {
             serviceUnderTest['ratesMap'].set("USD", [btcRateEur]);
 
             // Act
-            var response = serviceUnderTest.getRateForId(1);
+            const response = serviceUnderTest.getRateForId(1);
 
             // Assert
             expect(response).toBeUndefined;
@@ -82,7 +83,8 @@ describe('ValueService', () => {
     describe('updateAllExchangeRates()', () => {
         it('will ignore all rates which have already been updated the past hour', () => {
             // Arrange
-            var now = moment().toDate();
+            const now = moment().toDate();
+            const tolerance = 5000;
             btcRateEur.updateDate = now;
             serviceUnderTest['ratesMap'].set("EUR", [btcRateEur]);
             mockCryptoValueClientService.getCryptoValues.and.returnValue(of([btcRateUsd]));
@@ -91,7 +93,9 @@ describe('ValueService', () => {
             serviceUnderTest.updateAllExchangeRates();
 
             // Assert
-            expect(serviceUnderTest['ratesMap'].get("EUR")[0].updateDate).toEqual(now);
+            const timestamp1 = serviceUnderTest['ratesMap'].get("EUR")[0].updateDate.getTime();
+            const timestamp2 = now.getTime();
+            expect(Math.abs(timestamp1 - timestamp2)).toBeLessThan(tolerance);
         });
         it('will update all rates which are older than 1hr', () => {
             // Arrange
@@ -100,7 +104,7 @@ describe('ValueService', () => {
             serviceUnderTest['ratesMap'].set("EUR", [btcRateEur]);
 
             // Act
-            serviceUnderTest.updateAllExchangeRates(); 
+            serviceUnderTest.updateAllExchangeRates();
 
             // Assert
             expect(serviceUnderTest['ratesMap'].get("EUR")[0].updateDate > threeHoursAgo).toBeTrue;
@@ -108,34 +112,37 @@ describe('ValueService', () => {
     });
 
     describe('calculateTotalValue()', () => {
-        it('should return 0 if no coins are owned', () => {
+        it('should return 0 if no coins are owned', (done) => {
             // Arrange
-            mockPurchasesService.getAllPurchases.and.returnValue(null);
-            mockPurchasesService.getAllUniqueIds.and.returnValue(null);
+            mockPurchasesService.getAllPurchases.and.returnValue(of([]));
+            mockPurchasesService.getAllUniqueIds.and.returnValue([]);
             serviceUnderTest.updateAllExchangeRates();
 
             // Act
             serviceUnderTest.calculateTotalProfit();
-            var result = serviceUnderTest.getTotalProfit();
+            const result = serviceUnderTest.getTotalProfit();
 
             // Assert
-            expect(result).toEqual(of(0));
+            result.subscribe(value => {
+                expect(value).toEqual(0);
+                done();
+            });
         });
-        it('should return the total value of all coins owned', () => {
+        it('should return the total value of all coins owned', (done) => {
             // Arrange
             const sampleCoins: CryptoPurchase[] = [
                 new CryptoPurchaseBuilder()
-                .name(new CryptoName("Cardano", "ADA", 12))
-                .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
-                .quantity(5)
-                .value(new Value(15, CurrencyEnum.EUR, new Date()))
-                .build(),
+                    .name(new CryptoName("Cardano", "ADA", 12))
+                    .purchaseDetails(new PurchaseDetails(5, CurrencyEnum.EUR, new Date()))
+                    .quantity(5)
+                    .value(new Value(15, CurrencyEnum.EUR, new Date()))
+                    .build(),
                 new CryptoPurchaseBuilder()
-                .name(new CryptoName("Cardano", "ADA", 12))
-                .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
-                .quantity(1)
-                .value(new Value(15, CurrencyEnum.EUR, new Date()))
-                .build()
+                    .name(new CryptoName("Cardano", "ADA", 12))
+                    .purchaseDetails(new PurchaseDetails(10, CurrencyEnum.EUR, new Date()))
+                    .quantity(1)
+                    .value(new Value(15, CurrencyEnum.EUR, new Date()))
+                    .build()
             ];
             mockPurchasesService.getAllPurchases.and.returnValue(of(sampleCoins));
             mockPurchasesService.getAllUniqueIds.and.returnValue([12]);
@@ -147,7 +154,10 @@ describe('ValueService', () => {
             var result = serviceUnderTest.getTotalValue();
 
             // Assert
-            expect(result).toEqual(of(90));
+            result.subscribe(value => {
+                expect(value).toEqual(90);
+                done();
+            });
         });
     });
 

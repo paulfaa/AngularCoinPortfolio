@@ -2,7 +2,6 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SettingsService } from './settings.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { of } from 'rxjs';
 import { CurrencyEnum } from '../types/currencyEnum';
 import { SortModeEnum } from '../types/sortModeEnum';
 import { CURRENCY_SELECTED_STORAGE_KEY, SORT_MODE_STORAGE_KEY } from '../shared/constants/constants';
@@ -26,54 +25,66 @@ describe('SettingsService', () => {
   });
 
   describe('setSelectedCurrency()', () => {
-    it('should update the stored value to the provided parameter', () => {
+    it('should update the stored value to the provided parameter', (done: DoneFn) => {
       // Act
       service.setSelectedCurrency(CurrencyEnum.NZD);
-      const result = service['currency$'];
+      const currency = service['currency$'];
       //const result = service['currencySelectedSubject'].getValue();
 
       //Assert
-      expect(result).toEqual(of(CurrencyEnum.NZD));
+      currency.subscribe((result) => {
+        expect(result).toBe(CurrencyEnum.NZD);
+        done();
+      });
     });
   });
 
   describe('getCurrencySelected()', () => {
-    it('should return EUR as default value if no preference saved', () => {
+    it('should return EUR as default value if no preference saved', (done: DoneFn) => {
       // Act
-      var currency = service.getSelectedCurrency();
+      const currency = service.getSelectedCurrency();
 
-      //Assert
-      expect(currency).toEqual(of(CurrencyEnum.EUR));
+      // Assert
+      currency.subscribe((result) => {
+        expect(result).toBe(CurrencyEnum.EUR);
+        done();
+      });
     });
-    it('value returned corresponds to value from storage', () => {
+    it('value returned corresponds to value from storage', (done: DoneFn) => {
       // Arrange
-      localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, CurrencyEnum.USD.toString())
+      localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, "1")
 
       // Act
       const currency = service.getSelectedCurrency();
 
       // Assert
-      expect(currency).toEqual(of(CurrencyEnum.USD));
+      currency.subscribe((result) => {
+        expect(result).toBe(CurrencyEnum.USD);
+        done();
+      });
     });
   });
 
   describe('getSelectedSortMode()', () => {
-    it('should return default sort mode if no preference saved', () => {
+    it('should return default sort mode if no preference saved', (done: DoneFn) => {
       // Act
       const mode = service.getSelectedSortMode();
 
       //Assert
-      expect(mode).toEqual(of(SortModeEnum.DEFAULT));
+      mode.subscribe((result) => {
+        expect(result.toString()).toBe('DEFAULT');
+        done();
+      });
     });
-    it('value returned corresponds to value from storage', () => {
+    it('value returned corresponds to value from storage', (done: DoneFn) => {
       // Arrange
       localStorage.setItem(SORT_MODE_STORAGE_KEY, SortModeEnum.ALPHABETICAL.toString())
 
-      // Act
-      const mode = service.getSelectedSortMode();
-
       // Assert
-      expect(mode.toString()).toEqual("ALPHABETICAL");
+      service.getSelectedSortMode().subscribe((value) => {
+        expect(value.toString()).toBe('ALPHABETICAL');
+        done();
+      });
     });
   });
 

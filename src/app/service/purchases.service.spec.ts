@@ -8,13 +8,15 @@ import { Value } from '../types/value.type';
 import { CryptoPurchaseBuilder } from '../types/cryptoPurchase.builder';
 import StorageUtils from '../storage.utils';
 import { SettingsService } from './settings.service';
+import { of } from 'rxjs';
+import { SortModeEnum } from '../types/sortModeEnum';
 
 describe('PurchasesService', () => {
 
     let service: PurchasesService;
     let mockSettingsService: jasmine.SpyObj<SettingsService>;
 
-    mockSettingsService = jasmine.createSpyObj('mockSettingsService', []);
+    mockSettingsService = jasmine.createSpyObj('mockSettingsService', ['getSelectedSortMode']);
 
     const purchase1 = new CryptoPurchaseBuilder()
         .name(new CryptoName("Bitcoin", "BTC", 1))
@@ -36,53 +38,57 @@ describe('PurchasesService', () => {
         .build()
 
     beforeEach(waitForAsync(() => {
-        service = new PurchasesService(mockSettingsService);
-        service['currencySelected'] = 'EUR';
+        mockSettingsService.getSelectedSortMode.and.returnValue(of(SortModeEnum.DEFAULT));
         TestBed.configureTestingModule({
-            declarations: [PurchasesService],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
-
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [
+                { provide: SettingsService, useValue: mockSettingsService }
+            ]
         }).compileComponents();
+        service = TestBed.inject(PurchasesService);
     }));
     afterEach(() => {
-	    service.clearAllPurchases();
+        service.clearAllPurchases();
         service['purchasesSubject'].next([]);
         StorageUtils.clearAllStorage();
-  	});
+    });
 
-      describe('addPurchase()', () => {
-        it('adds the specified purchase to the list', () => {
+    describe('addPurchase()', () => {
+        it('adds the specified purchase to the list', (done) => {
             // Arrange
-            var purchases = service['purchasesSubject'].getValue().length;
+            const purchases = service['purchasesSubject'].getValue().length;
             expect(purchases).toEqual(0);
 
             // Act
             service.addPurchase(purchase1);
-            var purchasesLength = service.getAllPurchases().subscribe.length;
 
             // Assert
-            expect(purchasesLength).toEqual(1);
+            service.getAllPurchases().subscribe(purchases => {
+                expect(purchases.length).toEqual(1);
+                done();
+            });
         });
     });
 
     describe('clearAllPurchases()', () => {
-        it('removes all coins from the list', () => {
+        it('removes all coins from the list', (done) => {
             // Arrange
             service.addPurchase(purchase1);
-            var purchasesLength = service['purchasesSubject'].getValue().length;
-            expect(purchasesLength).toEqual(1);
+            service.addPurchase(purchase2);
 
             // Act
             service.clearAllPurchases();
-            purchasesLength = service['purchasesSubject'].getValue().length;
 
             // Assert
-            expect(purchasesLength).toEqual(0);
-        }); 
+            service.getAllPurchases().subscribe(purchases => {
+                expect(purchases.length).toEqual(0);
+                done();
+            });
+        });
     });
 
     describe('removeFromHeldCoins()', () => {
-        it('removes the passed value if it exists in held coins', () => {
+        it('removes the passed value if it exists in held coins', (done) => {
             // Arrange
             service.addPurchase(purchase1);
             expect(service['purchasesSubject'].getValue().length).toEqual(1);
@@ -91,10 +97,12 @@ describe('PurchasesService', () => {
 
             // Act
             service.removePurchase(purchase1);
-            const purchasesLength = service['purchasesSubject'].getValue().length;
 
             // Assert
-            expect(purchasesLength).toEqual(0);
+            service.getAllPurchases().subscribe(purchases => {
+                expect(purchases.length).toEqual(0);
+                done();
+            });
         });
     });
 

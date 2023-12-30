@@ -50,7 +50,7 @@ export class SettingsService {
     }
   }
 
-  private loadSavedCurrency() {
+  private loadSavedCurrency(): CurrencyEnum {
     const savedCurrency = parseInt(localStorage.getItem(CURRENCY_SELECTED_STORAGE_KEY));
     if (savedCurrency == null) {
       localStorage.setItem(CURRENCY_SELECTED_STORAGE_KEY, CurrencyEnum[0]);
@@ -58,7 +58,6 @@ export class SettingsService {
     }
     else {
       return savedCurrency as CurrencyEnum
-      //return CurrencyEnum[savedCurrency]
     }
   }
 }
