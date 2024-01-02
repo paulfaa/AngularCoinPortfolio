@@ -44,34 +44,34 @@ export class PurchasesService implements OnDestroy {
   private initService(): CryptoPurchase[] {
     const storedPurchases: CryptoPurchase[] = StorageUtils.readFromStorage(PURCHASES_STORAGE_KEY);
     if (storedPurchases === null || storedPurchases == undefined) {
-      console.log('init method returning empty list')
+      console.log('Purchases service init method returning empty list')
       return [];
     }
     else {
       //console.log(`quantity held of id ${id} is ${counter}`)
-      console.log(`init method loaded ${storedPurchases.length} purchases`)
+      console.log(`Purchases service init method loaded ${storedPurchases.length} purchases`)
       return storedPurchases;
     }
   }
 
-  public addPurchase(purchase: CryptoPurchase) {
+  public addPurchase(purchase: CryptoPurchase): void {
     const currentPurchases = this.purchasesSubject.getValue();
     const updatedPurchases = [...currentPurchases, purchase];
     this.purchasesSubject.next(updatedPurchases);
     this.updateStorage();
   }
 
-  public removePurchase(purchase: CryptoPurchase) {
+  public removePurchase(purchase: CryptoPurchase): void {
     const currentPurchases = this.purchasesSubject.getValue();
     const index = currentPurchases.indexOf(purchase);
     if (index > -1) {
       currentPurchases.splice(index, 1);
+      this.purchasesSubject.next(currentPurchases);
+      this.updateStorage();
     }
-    this.purchasesSubject.next(currentPurchases);
-    this.updateStorage();
   }
 
-  public getAllPurchases() {
+  public getAllPurchases(): Observable<CryptoPurchase[]> {
     return this.purchases$;
   }
 
@@ -83,8 +83,16 @@ export class PurchasesService implements OnDestroy {
     return Array.from(this.purchasesSubject.getValue().map(purchase => purchase.name.ticker));
   }
 
+
+  //can just return this.uniqueCoinmarketIds$
   public getAllUniqueIds(): number[] {
-    return Array.from(this.purchasesSubject.getValue().map(purchase => purchase.name.coinMarketId));
+    var uniqueIds = [];
+    this.purchasesSubject.getValue().forEach(purchase => {
+      if(!uniqueIds.includes(purchase.name.coinMarketId)){
+        uniqueIds.push(purchase.name.coinMarketId);
+      }
+    })
+    return uniqueIds;
   }
 
   public updateStorage(): void {
@@ -94,7 +102,7 @@ export class PurchasesService implements OnDestroy {
 
   public getQuantityHeldById(id: number): number {
     var counter = 0;
-    var purchases = this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId == id);
+    const purchases = this.purchasesSubject.getValue().filter(purchase => purchase.name.coinMarketId == id);
     purchases.forEach(purchase => {
       counter = counter + purchase.quantity;
     });
@@ -108,7 +116,7 @@ export class PurchasesService implements OnDestroy {
 
   public clearAllPurchases(): void {
     console.log("clearing all purchases");
-    StorageUtils.clearAllStorage();
+    localStorage.removeItem(PURCHASES_STORAGE_KEY);
     this.purchasesSubject.next([]);
     this.updateStorage();
   }

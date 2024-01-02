@@ -10,7 +10,7 @@ import { Rate } from '../types/rate.type';
 import { LoggingService } from './logging.service';
 import { CryptoValueClientService } from './crypto-value-client.service';
 import StorageUtils from '../storage.utils';
-import { twelveHoursInMs } from '../shared/constants/constants';
+import { RATES_STORAGE_KEY, twelveHoursInMs } from '../shared/constants/constants';
 import { CurrencyEnum, currencyEnumToCurrencyCode } from '../types/currencyEnum';
 
 @Injectable({ providedIn: 'root' })
@@ -56,13 +56,13 @@ export class ValueService implements OnDestroy {
         this.selectedCurrencySubscription = this.settingsService.getSelectedCurrency().subscribe(result =>
             this.selectedCurrency = result
         );
-        const storedRates = StorageUtils.readMapFromStorage('rates');
+        const storedRates = StorageUtils.readMapFromStorage(RATES_STORAGE_KEY);
         const lastUpdateDate = StorageUtils.readFromStorage('lastUpdateDate');
         if (storedRates === null || storedRates.size == 0 || storedRates === undefined) {
             this.ratesMap = new Map<string, Rate[]>();
         }
         else {
-            this.ratesMap = storedRates;
+            this.ratesMap = storedRates; //check if currencyCodes are getting serialised as numeric or string.
         }
         if (lastUpdateDate != null) {
             this.ratesLastUpdateDate = new Date(lastUpdateDate);
@@ -90,9 +90,8 @@ export class ValueService implements OnDestroy {
             console.log(data)
             this.ratesMap.set(currencyCode, data);
             console.log("ValueService updated " + data.length + " " + currencyCode + " rates.");
-            this.ratesLastUpdateDate = new Date();
-            StorageUtils.writeMapToStorage("rates", this.ratesMap);
-            StorageUtils.writeToStorage("lastUpdateDate", this.ratesLastUpdateDate);
+            StorageUtils.writeMapToStorage(RATES_STORAGE_KEY, this.ratesMap);
+            StorageUtils.writeToStorage("lastUpdateDate", new Date());
         },
             error => {
                 console.error("Error fetching data:", error);
@@ -106,7 +105,7 @@ export class ValueService implements OnDestroy {
     }
 
     public getRateForId(id: number): number | undefined {
-        const currencyCode = currencyEnumToCurrencyCode(this.selectedCurrency);
+        const currencyCode = currencyEnumToCurrencyCode(this.selectedCurrency); //verify
         const matchingRates = this.ratesMap.get(currencyCode)
         if (matchingRates != undefined) {
             const matchingRate = matchingRates.find(element => {
@@ -122,7 +121,8 @@ export class ValueService implements OnDestroy {
             }
         }
         else {
-            console.log(`no stored rates for currency ${currencyCode}!`)
+            console.log(`no stored rates for currency ${currencyCode}!`);
+            return undefined;
         }
     }
 

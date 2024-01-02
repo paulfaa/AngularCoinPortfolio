@@ -16,7 +16,7 @@ describe('SettingsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SettingsPage ],
+      declarations: [SettingsPage],
       imports: [HttpClientModule, IonicModule.forRoot()],
       providers: []
     }).compileComponents();
@@ -30,4 +30,16 @@ describe('SettingsPage', () => {
     mockSettingsService.getSelectedCurrency.and.returnValue(of(CurrencyEnum.EUR));
     expect(component).toBeTruthy();
   });
+
+  /* describe('ngOnInit()', () => {
+    it('should return undefined if no data for id', () => {
+      // Act
+      component.ngOnInit();
+
+      // Assert
+      //assert subscriptions are created etc
+    });
+  }); */
+
+
 });

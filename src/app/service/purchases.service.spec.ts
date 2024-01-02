@@ -10,6 +10,7 @@ import StorageUtils from '../storage.utils';
 import { SettingsService } from './settings.service';
 import { of } from 'rxjs';
 import { SortModeEnum } from '../types/sortModeEnum';
+import { PURCHASES_STORAGE_KEY } from '../shared/constants/constants';
 
 describe('PurchasesService', () => {
 
@@ -38,6 +39,7 @@ describe('PurchasesService', () => {
         .build()
 
     beforeEach(waitForAsync(() => {
+        localStorage.removeItem(PURCHASES_STORAGE_KEY);
         mockSettingsService.getSelectedSortMode.and.returnValue(of(SortModeEnum.DEFAULT));
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -50,7 +52,6 @@ describe('PurchasesService', () => {
     afterEach(() => {
         service.clearAllPurchases();
         service['purchasesSubject'].next([]);
-        StorageUtils.clearAllStorage();
     });
 
     describe('addPurchase()', () => {
@@ -63,7 +64,7 @@ describe('PurchasesService', () => {
             service.addPurchase(purchase1);
 
             // Assert
-            service.getAllPurchases().subscribe(purchases => {
+            service['purchases$'].subscribe(purchases => {
                 expect(purchases.length).toEqual(1);
                 done();
             });
@@ -87,8 +88,8 @@ describe('PurchasesService', () => {
         });
     });
 
-    describe('removeFromHeldCoins()', () => {
-        it('removes the passed value if it exists in held coins', (done) => {
+    describe('removePurchase()', () => {
+        it('removes the passed value if it exists in purchases', (done) => {
             // Arrange
             service.addPurchase(purchase1);
             expect(service['purchasesSubject'].getValue().length).toEqual(1);
@@ -103,6 +104,22 @@ describe('PurchasesService', () => {
                 expect(purchases.length).toEqual(0);
                 done();
             });
+            //assert that updateStorage() and purchasesSubject.next were called
+        });
+        it('does nothing if the purchase is not held', () => {
+            // Arrange
+            service.addPurchase(purchase1);
+            expect(service['purchasesSubject'].getValue().length).toEqual(1);
+            const purchases = service['purchasesSubject'].getValue();
+            expect(purchases[0]).toEqual(purchase1);
+
+            // Act
+            service.removePurchase(purchase2);
+
+            // Assert
+            expect(service['purchasesSubject'].getValue().length).toEqual(1);
+            expect(purchases[0]).toEqual(purchase1);
+            //assert that updateStorage() and purchasesSubject.next were not called
         });
     });
 
@@ -110,7 +127,7 @@ describe('PurchasesService', () => {
         it('returns 0 if users owns none', () => {
             // Act
             expect(service['purchasesSubject'].getValue().length).toEqual(0);
-            var amount = service.getQuantityHeldById(23)
+            const amount = service.getQuantityHeldById(23)
 
             // Assert
             expect(amount).toEqual(0);
@@ -121,7 +138,7 @@ describe('PurchasesService', () => {
             service.addPurchase(purchase2);
 
             // Act
-            var amount = service.getQuantityHeldById(1)
+            const amount = service.getQuantityHeldById(1)
 
             // Assert
             expect(amount).toEqual(15);

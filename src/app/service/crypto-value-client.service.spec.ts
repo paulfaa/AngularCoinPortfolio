@@ -12,7 +12,11 @@ describe('CryptoValueClientService', () => {
       imports: [HttpClientTestingModule]
   }).compileComponents();
     service = TestBed.inject(CryptoValueClientService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
+  afterEach(() => {
+  httpMock.verify();
+});
 
   it('should be created', () => {
     expect(service).toBeTruthy();
@@ -25,10 +29,9 @@ describe('CryptoValueClientService', () => {
       const ids: number[] = [];
   
       //act
-      var result = service.getCryptoValues(currency, ids).subscribe();
+      service.getCryptoValues(currency, ids).subscribe();
   
       //assert
-      //expect(result).toEqual(of([]));
       const req = httpMock.expectOne(request => request.url === "http://localhost:8080/values");
       expect(req.request.method).toBe('GET');
       req.flush([]);
@@ -40,7 +43,7 @@ describe('CryptoValueClientService', () => {
       const ids = [1, 2, 3];
       
       //act
-      var result = service.getCryptoValues(currency, ids).subscribe();
+      service.getCryptoValues(currency, ids).subscribe();
   
       const req = httpMock.expectOne(request => request.url === "http://localhost:8080/values");
       expect(req.request.method).toBe('GET');

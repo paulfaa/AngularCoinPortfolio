@@ -17,6 +17,7 @@ export const twelveHoursInMs: number = 43200000;
 export const SORT_MODE_STORAGE_KEY: string = "sortMode";
 export const CURRENCY_SELECTED_STORAGE_KEY: string = "currencySelected";
 export const PURCHASES_STORAGE_KEY: string = "savedCoins";
+export const RATES_STORAGE_KEY: string = "rates";
 
 /* export const cryptoNames: CryptoName[] = [
   { displayName: "Bitcoin", ticker: "BTC" },

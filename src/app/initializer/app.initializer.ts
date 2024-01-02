@@ -1,5 +1,6 @@
 import { ValueService } from "../service/value.service";
 
 export function initializeAppFactory(valueService: ValueService) {
-    return () => valueService.updateAllExchangeRates();
+    return () => console.log("initializing app");
+    //return () => valueService.updateAllExchangeRates();
 }
