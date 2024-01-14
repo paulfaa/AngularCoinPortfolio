@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { atLeastOne } from '../shared/directives/at-least-one-validator.directive';
 import { cryptoNames } from '../shared/constants/constants';
-import { CurrencyEnum } from '../types/currencyEnum';
+import { CurrencyEnum, currencyEnumToCurrencyCode } from '../types/currencyEnum';
 
 @Component({
   selector: 'app-add-form',
@@ -43,7 +43,8 @@ export class AddFormPage implements OnInit, OnDestroy {
   },
     {
       validator: atLeastOne(Validators.required, ['perCoinPurchasePrice', 'totalPurchasePrice'])
-    });
+    }
+  );
 
   constructor(
     private purchasesService: PurchasesService,
@@ -52,7 +53,6 @@ export class AddFormPage implements OnInit, OnDestroy {
     public toastController: ToastController,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute
-    //private coinName: String
   ) { }
 
   ngOnInit() {
@@ -91,8 +91,9 @@ export class AddFormPage implements OnInit, OnDestroy {
     })
   }
 
-  private async presentToast(toastContent: string) {
+  private async presentToast(toastContent: string): Promise<void> {
     const toast = await this.toastController.create({
+      //positionAnchor="tabs", *need to upgrade to ionic 7*
       message: toastContent,
       duration: 2000
     });
@@ -107,21 +108,21 @@ export class AddFormPage implements OnInit, OnDestroy {
     //this.coinName = event as HTMLElement
   }
 
-  public submitForm() {
-    const coinName: CryptoName = this.cryptoForm.controls['name'].value;
-    const coinQuantity = this.cryptoForm.controls['quantity'].value;
-    const coinValue = this.valueService.createNewValue(coinQuantity, this.selectedCurrency);
+  public submitForm(): void {
+    const name: CryptoName = this.cryptoForm.controls['name'].value;
+    const quantity = this.cryptoForm.controls['quantity'].value;
+    const value = this.valueService.createNewValue(quantity, this.selectedCurrency);
     const purchaseDetails = this.getPurchaseDetails();
-    const purchase = new CryptoPurchase(coinName, purchaseDetails, coinQuantity, coinValue);
+    const purchase = new CryptoPurchase(name, purchaseDetails, quantity, value);
 
     console.log("Newly created purchase: ", purchase)
     this.purchasesService.addPurchase(purchase);
     //need to move toast position
-    //this.presentToast("Added: " + coin.quantity + " " + coin.name.displayName + " @ " + this.selectedCurrency + coin.purchaseDetails.price);
-    this.clearAllInputs();
+    this.presentToast(`Added ${quantity} ${name.displayName} @ ${purchaseDetails.price} ${currencyEnumToCurrencyCode(this.selectedCurrency)}`);
+    this.clearForm();
   }
 
-  public clearAllInputs() {
+  public clearForm() {
     this.cryptoForm.reset();
   }
 
